@@ -139,7 +139,7 @@
     $.form.reset();
     currentView='all';render();
   }
-  $.form.addEventListener('submit',event=>{event.preventDefault();render();byId('jobsResultsTitle').scrollIntoView({block:'start',behavior:'smooth'})});
+  $.form.addEventListener('submit',event=>{event.preventDefault();render();byId('jobsResultsTitle').focus({preventScroll:true});byId('jobsResultsTitle').scrollIntoView({block:'start',behavior:'smooth'})});
   $.form.addEventListener('reset',()=>{queueMicrotask(()=>{currentView='all';render()})});
   for(const id of ['keyword','location'])$[id].addEventListener('input',render);
   for(const id of ['modality','level','focus'])$[id].addEventListener('change',render);
@@ -165,7 +165,14 @@
   exit.addEventListener('click',quickExit);
   document.addEventListener('keydown',event=>{
     if(event.altKey&&event.key.toLowerCase()==='x'){event.preventDefault();quickExit();return}
-    if(event.key==='Escape'&&sidebar.classList.contains('open'))closeMenu(true);
+    if(event.key==='Escape'&&sidebar.classList.contains('open')){event.preventDefault();closeMenu(true);return}
+    if(event.key==='Tab'&&sidebar.classList.contains('open')){
+      const items=[...sidebar.querySelectorAll('a[href],button:not([disabled])')].filter(item=>item.getClientRects().length);
+      if(!items.length)return;
+      const first=items[0],last=items[items.length-1];
+      if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus()}
+      else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus()}
+    }
   });
   const preferences=(()=>{try{return JSON.parse(localStorage.getItem('elasplus_preferences')||'{}')}catch{return {}}})();
   if(preferences&&typeof preferences==='object'){
