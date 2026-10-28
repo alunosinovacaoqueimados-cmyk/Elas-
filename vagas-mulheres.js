@@ -93,7 +93,7 @@ function renderList(list){
   if(favorites.has(job.id))foot.append(node('span','★','jobs-row-saved'));
   content.append(foot);
   row.append(logo,content);
-  row.addEventListener('click',()=>{selected=job.id;render();if(matchMedia('(max-width:900px)').matches){document.querySelector('.jobs-results-head').scrollIntoView({behavior:'smooth',block:'start'});}});
+  row.addEventListener('click',()=>{selected=job.id;render();if(matchMedia('(max-width:900px)').matches){document.querySelector('.jobs-page').classList.add('jobs-detail-open');document.querySelector('.jobs-results-head').scrollIntoView({behavior:'smooth',block:'start'});}});
   root.append(row);
  }
 }
