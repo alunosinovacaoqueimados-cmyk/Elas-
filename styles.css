@@ -13,3 +13,24 @@
 @media(max-width:760px){.app{display:block}.sidebar{width:min(285px,86vw);position:fixed;transform:translateX(-110%);box-shadow:0 0 35px #210b3350;transition:transform .22s;z-index:25}.sidebar.open{transform:translateX(0)}.backdrop:not([hidden]){position:fixed;inset:0;z-index:24;background:#1c0d285c}.topbar{height:64px;gap:9px;padding:0 12px;position:sticky;top:0;z-index:8;background:#fffafd;border-bottom:1px solid #f5ebf2}.mobile-menu{display:grid;flex-shrink:0}.header-actions{gap:4px}.account .avatar{height:32px;width:32px}.account svg,.notification{display:none}.search-box{height:39px;min-width:0}.search-box input{font-size:.79rem}.quick-exit{border-radius:50%;padding:0;justify-content:center;width:34px;height:34px}.quick-exit span{display:none}.content{padding:13px 12px;gap:16px}.hero{min-height:228px;margin-bottom:17px}.hero-copy{padding:22px 20px;max-width:77%}.hero h1{font-size:2rem}.hero-copy>p{font-size:.92rem}.hero-quote{font-size:.82rem;padding:9px}.hero-art{width:66%;background-position:center}.hero:after{background:linear-gradient(90deg,#1e0d38 0%,#250d38e8 33%,#250d3860 82%,transparent)}.quick-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}.quick-card{min-height:94px;font-size:.79rem}.feature-grid{grid-template-columns:1fr;gap:10px}.feature-card{min-height:153px}.feature-card strong{font-size:1.25rem}.feature-card .feature-desc{font-size:.88rem}.feature-card img{width:43%}.article-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.right-column{grid-template-columns:1fr 1fr;gap:10px}.progress-area{flex-wrap:wrap}.panel-heading h2{font-size:1rem}.community-banner{flex-wrap:wrap}.community-button{width:100%}.footer{padding:10px 15px 20px}}
 @media(max-width:520px){.topbar{padding:0 8px}.hero{min-height:218px}.hero-copy{max-width:89%;padding:22px 18px}.hero h1{font-size:1.85rem}.hero-copy>p{max-width:280px;font-size:.91rem}.hero-eyebrow{font-size:.52rem}.hero-art{opacity:.45;background-position:45%}.hero:after{background:linear-gradient(90deg,#1e0d38 5%,#250d38dd 57%,#250d3868 100%)}.feature-card strong{max-width:65%}.right-column{grid-template-columns:1fr}.nearby-panel{grid-row:auto}.community-info h2{font-size:1.12rem}.community-info p{font-size:.82rem}.section-head h2{font-size:1.14rem}.article-copy strong{font-size:.88rem}.search-box input::placeholder{font-size:.7rem}.brand-word{font-size:2.8rem}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+
+
+/* Escala compartilhada: Home e páginas internas usam a mesma largura de menu,
+   espaçamento de conteúdo e cabeçalho nas mesmas faixas de tela. */
+@media (min-width:761px) and (max-width:1340px){
+  .app{grid-template-columns:215px minmax(0,1fr)}
+  .app>.sidebar .brand{padding-left:4px;gap:5px}
+  .app>.sidebar .brand-word{font-size:2.55rem}
+  .app>.sidebar .brand-flower{transform:scale(.84);transform-origin:left center;margin-right:-9px}
+  .app>.sidebar .brand-subtitle{font-size:.82rem;padding:0 4px}
+  .app>.sidebar .nav-link{padding:12px 11px;gap:12px;font-size:.89rem}
+  .app .topbar{padding:0 12px}
+  .app .topbar .account>span:nth-child(2){display:none}
+}
+@media(min-width:761px){
+  .app>.workspace>.content{padding:0 18px 26px 20px}
+}
+@media(max-width:760px){
+  .app .topbar{height:62px;padding:0 10px}
+  .app>.workspace>.content{padding:12px}
+}
