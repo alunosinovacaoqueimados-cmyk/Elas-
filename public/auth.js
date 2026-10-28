@@ -1,4 +1,5 @@
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.76.1';
+window.__elasAuthLoaded=true;
 const supabase=createClient('https://lfaawihslefpimqxfowa.supabase.co','sb_publishable__35BqWQGTqvI-W6gaxerNw_RvJW3KnL');
 const $=id=>document.getElementById(id);let mode='login';
 function feedback(message,error=false){$('feedback').textContent=message;$('feedback').dataset.error=String(error);}
