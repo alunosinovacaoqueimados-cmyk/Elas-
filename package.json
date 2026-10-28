@@ -6,7 +6,7 @@
   "description": "Ecossistema Elas+ com servidor Node, sem banco de dados",
   "scripts": {
     "start": "node server.mjs",
-    "test": "node --test tests/server.test.mjs tests/shell.test.mjs tests/vercel.test.mjs"
+    "test": "node --test tests/server.test.mjs tests/shell.test.mjs tests/vercel.test.mjs tests/ufrrj.test.mjs"
   },
   "engines": {
     "node": ">=20"

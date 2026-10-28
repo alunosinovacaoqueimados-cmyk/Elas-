@@ -62,12 +62,30 @@ async function detectAI(){
     if(remoteAIEnabled&&$('#aiConsentLabel')){$('#aiConsentLabel').hidden=false;$('.assistant-panel .beta').textContent='IA OPCIONAL';notify('IA externa disponível. Ative-a somente se desejar enviar sua mensagem ao serviço.');}
   }catch{/* HTML simples: somente guia local */}
 }
+const supportFlowModule=import('./apoio-fluxos.js').catch(()=>null);
+async function showNextSteps(message){
+  const area=$('#nextSteps');if(!area)return;
+  const module=await supportFlowModule;if(!module)return;
+  const flow=module.nextStepsFor(message);area.replaceChildren();
+  const title=document.createElement('h3');title.textContent=flow.title;
+  const desc=document.createElement('p');desc.textContent=flow.description;
+  const links=document.createElement('div');links.className='support-actions';
+  for(const item of flow.actions){
+    const link=document.createElement('a');link.textContent=item.label;link.href=item.href;
+    if(item.href.startsWith('https://')){link.target='_blank';link.rel='noopener noreferrer';}
+    if(item.kind==='urgent')link.classList.add('support-urgent');
+    links.append(link);
+  }
+  const caveat=document.createElement('small');caveat.textContent='Sugestões informativas. Nenhum relato foi salvo ou enviado ao mapa. Confirme dados dos locais antes da visita.';
+  area.append(title,desc,links,caveat);area.hidden=false;
+}
 async function sendChat(message){const val=message.trim();if(!val)return;addBubble(val,'user');$('#chatInput').value='';
   const sendBtn=$('.send');sendBtn.disabled=true;
   if(remoteAIEnabled && $('#aiConsent').checked){
     try{const res=await fetch('/api/assistente',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:val,consent:true}),signal:AbortSignal.timeout(25000)});const data=await res.json();if(!res.ok)throw Error(data.error||'Falha ao consultar IA');addBubble(data.answer||'Não foi possível obter uma resposta.','bot');}
     catch(err){addBubble('Não foi possível consultar o modelo externo agora. Segue uma orientação local: '+guideReply(val),'bot');}
   }else addBubble(guideReply(val),'bot');
+  await showNextSteps(val);
   sendBtn.disabled=false;
 }
 $('#chatForm')?.addEventListener('submit',e=>{e.preventDefault();sendChat($('#chatInput').value);});
@@ -77,7 +95,7 @@ if ($('#map')) fetch('/api/status',{signal:AbortSignal.timeout(4000)}).then(r=>r
 
 // Mapa Leaflet: dados reais e pontuais via OSM/Overpass; nenhum serviço é inventado.
 function markerIcon(type){const value=TYPES[type]||TYPES.social;return L.divIcon({className:'',iconSize:[27,27],iconAnchor:[14,25],popupAnchor:[0,-23],html:`<div class="poi-pin ${type}"><span>${value.icon}</span></div>`});}
-function initMap(){if(typeof L==='undefined'){$('#map').innerHTML='<div class="map-unavailable">Não foi possível carregar a biblioteca do mapa. Verifique sua conexão. Você ainda pode consultar serviços oficiais pelo Ligue 180.</div>';status('Mapa indisponível sem a biblioteca online.');return;}
+function initMap(){if(typeof L==='undefined'){$('#map').innerHTML='<div class="map-unavailable">Não foi possível carregar a biblioteca do mapa. Verifique sua conexão. Você ainda pode consultar serviços oficiais pelo Ligue 180.</div>';status('Mapa indisponível sem a biblioteca online.');const help=$('#offlineSupport');if(help)help.hidden=false;return;}
   $('#map').replaceChildren();state.map=L.map('map',{zoomControl:true,scrollWheelZoom:false}).setView(DEFAULT_CENTER,13);
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'}).addTo(state.map);
   state.layers=L.layerGroup().addTo(state.map);state.communityLayer=L.layerGroup().addTo(state.map);state.userLayer=L.layerGroup().addTo(state.map);
@@ -96,6 +114,7 @@ async function loadPublished(){
 async function loadPOIs(){
   if(!state.map)return;
   const req=++state.loadToken;const center=state.map.getCenter();
+  if($('#serviceDetails')){$('#serviceDetails').replaceChildren();$('#serviceDetails').hidden=true;}
   status('Buscando serviços da região pelo servidor...');$('#placeList').innerHTML='<p class="muted">Consultando fontes colaborativas...</p>';
   try{
     const url=`/api/locais?lat=${encodeURIComponent(center.lat)}&lon=${encodeURIComponent(center.lng)}`;
@@ -103,12 +122,35 @@ async function loadPOIs(){
     const data=await r.json();if(req!==state.loadToken)return;
     if(!r.ok)throw Error(data.error||'Consulta indisponível');
     state.poi=(data.places||[]).map(p=>({...p,coord:[p.lat,p.lon],tags:{'addr:street':p.address||''}}));state.lastSearchedCenter=center;$('#refreshArea').hidden=true;
+    if($('#offlineSupport'))$('#offlineSupport').hidden=true;
     renderPlaces();status(`${state.poi.length} serviços retornados (dados OpenStreetMap; confirme antes de visitar).`);
-  }catch(e){if(req!==state.loadToken)return;state.poi=[];renderPlaces();status('Não foi possível consultar serviços neste momento. Tente novamente mais tarde.');notify(e.message||'Consulta indisponível.');}
+  }catch(e){if(req!==state.loadToken)return;state.poi=[];renderPlaces();if($('#offlineSupport'))$('#offlineSupport').hidden=false;status('Não foi possível consultar serviços neste momento. Use os canais oficiais abaixo ou tente novamente.');notify(e.message||'Consulta indisponível.');}
 }
-function popupData(place){const tags=place.tags||{};const addr=place.address||[tags['addr:street'],tags['addr:housenumber']].filter(Boolean).join(', ');const data=`<strong>${escapeHtml(place.name)}</strong><br>${escapeHtml(TYPES[place.type].label)}${addr?'<br>'+escapeHtml(addr):''}<br><small>Informação colaborativa; confirme antes de visitar.</small>`;
-  const direction=`https://www.openstreetmap.org/directions?engine=fossgis_osrm_car&route=${encodeURIComponent(place.coord[0]+','+place.coord[1])}`;
-  return data+`<br><a href="https://www.openstreetmap.org/?mlat=${encodeURIComponent(place.coord[0])}&mlon=${encodeURIComponent(place.coord[1])}#map=17/${encodeURIComponent(place.coord[0])}/${encodeURIComponent(place.coord[1])}" target="_blank" rel="noopener noreferrer">Ver no OpenStreetMap ↗</a>`;
+function serviceLinks(place){
+  const lat=Number(place.coord[0]), lon=Number(place.coord[1]);
+  if(!Number.isFinite(lat)||!Number.isFinite(lon))return {map:'#',route:'#',phone:''};
+  return {
+    map:`https://www.openstreetmap.org/?mlat=${encodeURIComponent(lat)}&mlon=${encodeURIComponent(lon)}#map=17/${encodeURIComponent(lat)}/${encodeURIComponent(lon)}`,
+    route:`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(lat+','+lon)}`,
+    phone:String(place.phone||'').replace(/[^0-9+]/g,'')
+  };
+}
+function popupData(place){const links=serviceLinks(place);const phone=links.phone.length>=10?`<br><a href="tel:${escapeHtml(links.phone)}">Ligar para o serviço</a>`:'';
+  return `<strong>${escapeHtml(place.name)}</strong><br>${escapeHtml(TYPES[place.type]?.label||'Serviço')}`+
+  (place.address?`<br>${escapeHtml(place.address)}`:'')+
+  `<br><small>Fonte: OpenStreetMap — informações não verificadas. Confirme antes de visitar.</small>${phone}<br><a href="${links.route}" target="_blank" rel="noopener noreferrer">Como chegar ↗</a>`;
+}
+function showServiceDetails(place){const panel=$('#serviceDetails');if(!panel)return;
+  panel.replaceChildren();const links=serviceLinks(place);
+  const title=document.createElement('h3');title.textContent=place.name;
+  const category=document.createElement('p');category.textContent=(TYPES[place.type]?.label||'Serviço')+(place.address?' · '+place.address:'');
+  const caption=document.createElement('small');caption.textContent='Fonte: OpenStreetMap (colaborativa). Telefone, horários e acessibilidade podem estar incompletos: confirme antes de visitar.';
+  const actions=document.createElement('div');actions.className='support-actions';
+  function addLink(label,href,external){const a=document.createElement('a');a.textContent=label;a.href=href;if(external){a.target='_blank';a.rel='noopener noreferrer';}actions.append(a);}
+  addLink('Como chegar ↗',links.route,true);
+  addLink('Abrir no OpenStreetMap ↗',links.map,true);
+  if(links.phone.length>=10)addLink('Ligar para o serviço',`tel:${links.phone}`,false);
+  panel.append(title,category,actions,caption);panel.hidden=false;
 }
 const CATEGORY={
   lighting:'Iluminação insuficiente',accessibility:'Acessibilidade',support:'Ponto de apoio',transport:'Transporte e circulação',correction:'Informação a corrigir',
@@ -138,7 +180,7 @@ function renderPlaces(){if(!state.map)return;state.layers.clearLayers();state.co
  $('#placeListTitle').textContent=isCommunityFilter?'Relatos da região visível':'Serviços e experiências nesta área';
  if(isCommunityFilter){if(!reportsMatching.length){const p=document.createElement('p');p.className='muted';p.textContent='Nenhum relato aprovado deste tipo na região visível. Mova o mapa ou contribua com sua experiência.';list.append(p);}else reportsMatching.slice(-24).reverse().forEach(r=>renderReportPlace(list,r));return;}
  if(!visible.length){const p=document.createElement('p');p.className='muted';p.textContent='Nenhum serviço encontrado neste trecho. Você pode mover o mapa e atualizar a busca.';list.append(p);}
- visible.slice(0,12).forEach(place=>{const b=document.createElement('button');b.type='button';b.className='place';const sym=document.createElement('span');sym.className='place-icon';sym.textContent=TYPES[place.type].icon;const detail=document.createElement('span');detail.className='place-body';const strong=document.createElement('strong');strong.textContent=place.name;const small=document.createElement('small');small.textContent=(place.address||TYPES[place.type]?.label||'Serviço')+' · OpenStreetMap';detail.append(strong,small);const arrow=document.createElement('span');arrow.className='place-chevron';arrow.textContent='›';b.append(sym,detail,arrow);b.addEventListener('click',()=>{state.map.setView(place.coord,16);place.marker?.openPopup();});list.append(b);});
+ visible.slice(0,12).forEach(place=>{const b=document.createElement('button');b.type='button';b.className='place';const sym=document.createElement('span');sym.className='place-icon';sym.textContent=TYPES[place.type].icon;const detail=document.createElement('span');detail.className='place-body';const strong=document.createElement('strong');strong.textContent=place.name;const small=document.createElement('small');small.textContent=(place.address||TYPES[place.type]?.label||'Serviço')+' · OpenStreetMap';detail.append(strong,small);const arrow=document.createElement('span');arrow.className='place-chevron';arrow.textContent='›';b.append(sym,detail,arrow);b.addEventListener('click',()=>{state.map.setView(place.coord,16);place.marker?.openPopup();showServiceDetails(place);});list.append(b);});
  reports.slice(-5).reverse().forEach(r=>renderReportPlace(list,r));
 }
 function renderReportPlace(list,r){const kind=reportKind(r);const b=document.createElement('button');b.type='button';b.className='place community-place '+kind;

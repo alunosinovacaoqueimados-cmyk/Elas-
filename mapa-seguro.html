@@ -10,7 +10,7 @@
 <link href="unificado.css" rel="stylesheet"/>
 <script crossorigin="" defer="" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script defer="" src="seguranca.js"></script>
-<link href="site-shell.css" rel="stylesheet"/><script defer="" src="site-shell.js"></script><link href="design-system.css" rel="stylesheet"/><link href="mapa-seguro.css" rel="stylesheet"/><link href="separado.css" rel="stylesheet"/></head>
+<link href="apoio-fluxos.css" rel="stylesheet"/><link href="site-shell.css" rel="stylesheet"/><script defer="" src="site-shell.js"></script><link href="design-system.css" rel="stylesheet"/><link href="mapa-seguro.css" rel="stylesheet"/><link href="separado.css" rel="stylesheet"/></head>
 <body>
 <a class="skip-link" href="#main">Pular para conteúdo</a>
 <div class="scrim backdrop" hidden="" id="scrim"></div>
@@ -91,8 +91,13 @@
 </div>
 <div class="map-view"><div aria-label="Mapa interativo com serviços e relatos aproximados da comunidade. Clique para selecionar uma região." id="map" role="region"><div class="map-unavailable">Carregando mapa...</div></div><div aria-live="polite" class="map-status" id="mapStatus" role="status">Preparando localização e serviços…</div></div>
 <div aria-live="polite" class="map-guidance" id="mapGuidance"><span id="mapGuidanceText">Arraste para explorar; use os botões acima para contribuir.</span><button id="refreshArea" type="button">↻ Buscar serviços nesta área</button></div>
+<div class="service-detail-panel" id="offlineSupport" role="status" hidden>
+<strong>Não foi possível carregar os serviços agora.</strong>
+<p>Você ainda pode procurar orientação pelos canais oficiais. O mapa usa dados colaborativos e pode estar temporariamente indisponível.</p>
+<div class="support-actions"><a href="https://www.gov.br/pt-br/servicos" target="_blank" rel="noopener noreferrer">Catálogo de serviços públicos ↗</a><a href="https://www.defensoria.rj.def.br/" target="_blank" rel="noopener noreferrer">Defensoria RJ ↗</a><a href="tel:180">Ligue 180</a></div>
+</div>
 <div class="map-footer"><span class="legend"><i class="spot spot-blue"></i> Serviços OSM <i class="spot spot-green"></i> Experiência positiva <i class="spot spot-orange"></i> Ponto de atenção</span><button class="register-btn" data-action="report" type="button">+ Fazer contribuição</button></div>
-<div class="listing"><div class="listing-title"><h3 id="placeListTitle">Serviços e relatos na região</h3><span class="source-label">Relatos são opiniões moderadas, não garantia de segurança</span></div><div aria-live="polite" class="report-totals" id="reportTotals">Carregando contribuições aprovadas...</div><div class="place-list" id="placeList"><p class="muted">Aguardando a consulta dos pontos da região...</p></div></div>
+<div class="listing"><div class="listing-title"><h3 id="placeListTitle">Serviços e relatos na região</h3><span class="source-label">Relatos são opiniões moderadas, não garantia de segurança</span></div><div aria-live="polite" class="report-totals" id="reportTotals">Carregando contribuições aprovadas...</div><div class="place-list" id="placeList"><p class="muted">Aguardando a consulta dos pontos da região...</p></div><section class="service-detail-panel" id="serviceDetails" aria-label="Detalhes e opções para o serviço selecionado" aria-live="polite" hidden></section></div>
 </section>
 <aside aria-label="Ferramentas de proteção" class="right-panel">
 <div class="action-stack panel"><h3>Ajuda rápida</h3><a class="right-action primary" href="seguranca.html#assistente"><span>♧</span><span><strong>Falar com o assistente</strong><small>Descreva o que aconteceu</small></span>↗</a><a class="right-action" href="#mapa"><span>⌖</span><span><strong>Mapa Seguro</strong><small>Buscar locais e registrar informações</small></span>↗</a><button class="right-action" data-action="emergency" type="button"><span>✹</span><span><strong>Emergência</strong><small>Ligações e orientações oficiais</small></span>↗</button></div>

@@ -1,0 +1,10 @@
+/* PR UFRRJ — ações úteis dentro do design existente do Elas+ */
+.support-steps,.service-detail-panel{background:var(--white,#fff);border:1px solid #ecd9f4;border-radius:16px;padding:16px;margin-top:16px;box-shadow:0 4px 18px #40234b0d}
+.support-steps h3,.service-detail-panel h3{font-size:1.05rem;color:#613174;margin:0 0 6px}
+.support-steps p,.service-detail-panel p{font-size:.94rem;color:#654e72;margin:0 0 10px;line-height:1.5}
+.support-steps small,.service-detail-panel small{display:block;color:#715b78;line-height:1.45;margin-top:10px}
+.support-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.support-actions a{font-size:.86rem;font-weight:700;color:#64317b;text-decoration:none;border-radius:10px;border:1px solid #d8b8e7;padding:10px 12px;background:#faf4ff;min-height:42px;display:inline-flex;align-items:center}
+.support-actions a:hover,.support-actions a:focus-visible{background:#e9d9f5;outline-offset:3px}
+.support-actions .support-urgent{background:#fce8eb;border-color:#d76879;color:#912a41}
+@media(max-width:650px){.support-actions{flex-direction:column}.support-actions a{justify-content:center}}
