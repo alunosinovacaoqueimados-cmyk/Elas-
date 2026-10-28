@@ -1,0 +1,19 @@
+/* Elas+ — separar Assistente Elas+ do Mapa Seguro, preservando o design da página inicial */
+.layout .shell .page-grid.assistant-layout,.layout .shell .page-grid.map-layout{
+  display:grid;grid-template-columns:minmax(0,1.75fr) minmax(265px,.78fr);gap:16px;align-items:start;
+}
+.layout .shell .page-grid.assistant-layout>.assistant-panel{min-width:0;min-height:580px}
+.layout .shell .page-grid.map-layout>.map-panel{min-width:0;min-height:690px}
+.layout .shell .page-grid.map-layout #map{min-height:490px}
+.layout .shell .page-grid.assistant-layout>.right-panel,.layout .shell .page-grid.map-layout>.right-panel{
+  grid-column:auto;display:flex;flex-direction:column;gap:14px;min-width:0;
+}
+.layout .shell .page-grid.assistant-layout>.right-panel>.panel,.layout .shell .page-grid.map-layout>.right-panel>.panel{width:100%;grid-column:auto;grid-row:auto}
+.layout .shell .safety-map-link p{font-size:.78rem;line-height:1.6;color:#685474;margin-bottom:12px}
+.layout .shell .safety-map-link .map-help-caption{font-size:.68rem;margin:12px 0 0;color:#85748e}
+.btn-map-page{display:inline-flex;align-items:center;justify-content:center;border-radius:20px;background:#5e2392;color:#fff!important;font-weight:800;font-size:.77rem;min-height:40px;padding:10px 15px;text-decoration:none}
+.map-page-summary{padding:12px 17px;margin:11px 0 15px;border-radius:12px;background:linear-gradient(100deg,#fff0f8,#f2e8fb);color:#5d306c;border:1px solid #f4e0f3;display:flex;gap:12px;align-items:center;font-size:.8rem}
+.map-page-summary strong{flex-shrink:0;color:#551c77}
+@media(max-width:1140px){.layout .shell .page-grid.assistant-layout,.layout .shell .page-grid.map-layout{grid-template-columns:1fr}
+.layout .shell .page-grid.assistant-layout>.right-panel,.layout .shell .page-grid.map-layout>.right-panel{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:680px){.layout .shell .page-grid.assistant-layout>.right-panel,.layout .shell .page-grid.map-layout>.right-panel{display:grid;grid-template-columns:1fr}.map-page-summary{display:block}.map-page-summary strong{display:block;margin-bottom:5px}.layout .shell .page-grid.map-layout #map{min-height:380px}}

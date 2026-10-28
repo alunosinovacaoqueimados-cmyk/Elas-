@@ -18,7 +18,7 @@ document.addEventListener('click',e=>{
   if(btn){const action=btn.dataset.action;
     if(action==='exit')quickExit();
     if(action==='emergency')show('emergencyModal');
-    if(action==='report'){openReportForm(state.reportKind||'positive');}
+    if(action==='report'){if(!contributionsEnabled){notify('Novas marcações exigem armazenamento persistente. Por enquanto, use a busca de serviços.');return;}openReportForm(state.reportKind||'positive');}
     if(action==='plan')show('planModal');
   }
   if(e.target.matches('[data-close]'))e.target.closest('dialog').close();
@@ -49,6 +49,13 @@ const guidance=[
 function guideReply(message){const norm=message.normalize('NFD').replace(/[\u0300-\u036f]/g,'');const found=guidance.find(g=>g.match.test(norm));return found?.answer || 'Obrigada por contar. Posso ajudar com orientações iniciais sobre relações, limites no trabalho, direitos, serviços públicos e formas de buscar apoio. Você pode me dizer, sem dados que identifiquem pessoas, se sua dúvida é sobre segurança, trabalho, saúde ou algum serviço? Em emergência, ligue 190.';}
 function addBubble(text,type){const d=document.createElement('div');d.className='bubble '+type;d.textContent=text;$('#chatLog').append(d);$('#chatLog').scrollTop=$('#chatLog').scrollHeight;}
 let remoteAIEnabled=false;
+let contributionsEnabled=true;
+function disableContributions(){
+  contributionsEnabled=false;
+  document.querySelectorAll('[data-action="report"],[data-map-kind]').forEach(btn=>{btn.disabled=true;btn.setAttribute('aria-disabled','true');btn.title='Publicação de relatos indisponível até configurar armazenamento persistente';});
+  const msg=$('#reportTotals');if(msg)msg.textContent='Marcações públicas indisponíveis nesta versão online. Busque os serviços no mapa normalmente.';
+}
+
 async function detectAI(){
   if(location.protocol==='file:')return;
   try{const res=await fetch('/api/status',{signal:AbortSignal.timeout(3500)});if(!res.ok)return;const data=await res.json();remoteAIEnabled=Boolean(data.aiEnabled);
@@ -66,6 +73,7 @@ async function sendChat(message){const val=message.trim();if(!val)return;addBubb
 $('#chatForm')?.addEventListener('submit',e=>{e.preventDefault();sendChat($('#chatInput').value);});
 $$('[data-prompt]').forEach(btn=>btn.addEventListener('click',()=>{const message=btn.dataset.prompt;document.querySelector('#assistente').scrollIntoView({block:'start',behavior:'smooth'});sendChat(message);}));
 if ($('#chatForm')) detectAI();
+if ($('#map')) fetch('/api/status',{signal:AbortSignal.timeout(4000)}).then(r=>r.ok?r.json():null).then(data=>{if(data?.contributionsEnabled===false)disableContributions();}).catch(()=>{});
 
 // Mapa Leaflet: dados reais e pontuais via OSM/Overpass; nenhum serviço é inventado.
 function markerIcon(type){const value=TYPES[type]||TYPES.social;return L.divIcon({className:'',iconSize:[27,27],iconAnchor:[14,25],popupAnchor:[0,-23],html:`<div class="poi-pin ${type}"><span>${value.icon}</span></div>`});}
@@ -151,7 +159,7 @@ function chooseReportCoord(latlng){state.selectedReportCoord=latlng;if(state.rep
  state.reportDraftMarker=L.circleMarker(latlng,{radius:9,color:'#7a2ca7',weight:3,fillColor:'#f58bc2',fillOpacity:.7}).addTo(state.map).bindPopup('Região selecionada para contribuição. A marca será aproximada antes de ser publicada.');updateReportLocationLabel();}
 function updateReportLocationLabel(){const c=state.selectedReportCoord||state.map?.getCenter();$('#reportAreaLabel').textContent=c?'Área aproximada selecionada: '+c.lat.toFixed(2)+', '+c.lng.toFixed(2)+'. A localização será arredondada antes de ser armazenada.':'Abra o mapa para selecionar a região.';}
 function setPickingUI(active){$('#mapGuidance').classList.toggle('is-picking',active);$('.map-view').classList.toggle('is-picking',active);$('#map').classList.toggle('is-picking',active);$('#mapGuidanceText').textContent=active?'Agora clique ou toque no ponto desejado do mapa para continuar.':'Arraste para explorar; use os botões acima para contribuir.';}
-$$('[data-map-kind]').forEach(b=>b.addEventListener('click',()=>{state.selectedReportCoord=null;openReportForm(b.dataset.mapKind);}));
+$$('[data-map-kind]').forEach(b=>b.addEventListener('click',()=>{if(!contributionsEnabled){notify('A publicação de relatos precisa de armazenamento persistente.');return;}state.selectedReportCoord=null;openReportForm(b.dataset.mapKind);}));
 $$('input[name="reportKind"]').forEach(input=>input.addEventListener('change',()=>{if(input.checked)setReportKind(input.value);}));
 $('#selectMapArea')?.addEventListener('click',()=>{if(!state.map){notify('Mapa indisponível. Você precisa carregar o mapa antes de selecionar um local.');return;}state.picking=true;$('#reportModal').close();setPickingUI(true);$('#mapa').scrollIntoView({behavior:'smooth',block:'center'});notify('Toque no mapa para selecionar a região da contribuição.');});
 $('#refreshArea')?.addEventListener('click',()=>loadPOIs());if ($('#refreshArea')) $('#refreshArea').hidden=true;
