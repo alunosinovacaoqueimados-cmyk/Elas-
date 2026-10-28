@@ -1,6 +1,6 @@
 'use strict';
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
-const NAMES={servicos:['Serviços Públicos','Serviços ao alcance de quem precisa.'],carreira:['Carreira e Mães Solo','Seu próximo passo profissional começa aqui.'],saude:['Saúde e Corpo','Cuidado e acolhimento em diferentes fases da vida.'],comunidade:['Comunidade','Contribuições úteis, sem expor pessoas.'],perfil:['Meu Perfil','A plataforma se adapta a você.']};
+const NAMES={'direitos-trabalho':['Direitos no Trabalho','Orientação prática sobre respeito, proteção e canais de atendimento.'],servicos:['Serviços Públicos','Serviços ao alcance de quem precisa.'],carreira:['Carreira e Mães Solo','Seu próximo passo profissional começa aqui.'],saude:['Saúde e Corpo','Cuidado e acolhimento em diferentes fases da vida.'],comunidade:['Comunidade','Contribuições úteis, sem expor pessoas.'],perfil:['Meu Perfil','A plataforma se adapta a você.']};
 const read=(k,backup)=>{try{return JSON.parse(localStorage.getItem(k))??backup;}catch{return backup;}};
 const save=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));}catch{notify('Seu navegador não permitiu salvar.');}};
 const PREF_DEFAULT={fontSize:'normal',theme:'purple',contrast:false,dyslexia:false};
