@@ -19,11 +19,11 @@ function toggleSaved(id){const old=localSaved();const next=old.includes(id)?old.
 function dateMs(value){const d=Date.parse(value||'');return Number.isFinite(d)?d:0}
 function formatDate(value){const d=new Date(value);return !Number.isFinite(d.getTime())?'Data não informada':new Intl.DateTimeFormat('pt-BR',{day:'2-digit',month:'short',year:'numeric'}).format(d)}
 function normalizeRemote(x){
- if(!x||!x.id||!safe(x.title)||!safe(x.company)||!validUrls(x.url)||x.source!=='Remotive')return null;
- const role=normalize(x.title);
- // Nível somente quando o título o menciona explicitamente.
+ if(!x||!x.id||!safe(x.title)||!safe(x.company)||!validUrls(x.url)||!['Remotive','Jobicy'].includes(x.source))return null;
+ const role=normalize(x.title+' '+(x.level||''));
+ // Nível informado pela fonte ou explicitamente mencionado no título.
  const level=/\b(internship|intern|estagio|estagiario|estagiaria)\b/.test(role)?'estagio':/\b(junior|jr)\b/.test(role)?'junior':/\b(senior|sr|lead|principal)\b/.test(role)?'senior':/\b(pleno|mid.level)\b/.test(role)?'pleno':'';
- return {id:safe(x.id),title:safe(x.title).slice(0,160),company:safe(x.company).slice(0,120),description:safe(x.description).slice(0,1200),location:safe(x.location).slice(0,140)||'Consulte a fonte',modality:'remoto',level,category:'geral',source:'Remotive',sourceKey:'remotive',url:validUrls(x.url),sourceUrl:validUrls(x.source_url)||validUrls(x.url),publishedAt:dateMs(x.published_at),salary:safe(x.salary).slice(0,120),type:safe(x.type).slice(0,90),area:safe(x.area).slice(0,110),eligibilityUnverified:true};
+ return {id:safe(x.id),title:safe(x.title).slice(0,160),company:safe(x.company).slice(0,120),description:safe(x.description).slice(0,1200),location:safe(x.location).slice(0,140)||'Consulte a fonte',modality:'remoto',level,category:'geral',source:x.source,sourceKey:x.source==='Remotive'?'remotive':'jobicy',url:validUrls(x.url),sourceUrl:validUrls(x.source_url)||validUrls(x.url),publishedAt:dateMs(x.published_at),salary:safe(x.salary).slice(0,120),type:safe(x.type).slice(0,90),area:safe(x.area).slice(0,110),eligibilityUnverified:true};
 }
 function normalizeCurated(x){
  if(!x||!x.id||!safe(x.title)||!safe(x.company)||!safe(x.source)||!validUrls(x.apply_url)||!validUrls(x.source_url)||!safe(x.verified_at)||!safe(x.expires_at))return null;
@@ -91,7 +91,7 @@ function renderList(list){
   content.append(meta);
   if(job.description)content.append(node('p',job.description,'jobs-row-preview'));
   const foot=node('div',undefined,'jobs-row-foot');
-  const tag=node('span',job.sourceKey==='remotive'?'Remotive · Remota':categoryMap[job.category],'jobs-tag');tag.dataset.category=job.category;
+  const tag=node('span',job.sourceKey!=='elas'?job.source+' · Remota':categoryMap[job.category],'jobs-tag');tag.dataset.category=job.category;
   foot.append(tag,node('span',job.publishedAt?shortDate(job.publishedAt):'Data não informada'));
   if(favorites.has(job.id))foot.append(node('span','★','jobs-row-saved'));
   content.append(foot);
@@ -141,7 +141,7 @@ function render(){
  const list=filters();
  $('count').textContent=state==='loading'?'Carregando…':list.length+(list.length===1?' vaga':' vagas');
  $('resultsDescription').textContent=state==='loading'?'Buscando oportunidades nas fontes…':view==='saved'?'Vagas que você salvou neste navegador.':sourceIssues.length?'Mostrando as fontes disponíveis; uma delas não respondeu.':'Oportunidades reais, com indicação da fonte original.';
- $('sourceStatus').textContent=sourceIssues.length?'Aviso: '+sourceIssues.join(' | '):'Fontes: Remotive (remotas) e curadoria Elas+';
+ $('sourceStatus').textContent=sourceIssues.length?'Aviso: '+sourceIssues.join(' | '):'Fontes: Remotive, Jobicy e curadoria Elas+';
  if(!list.some(x=>x.id===selected))selected=list.length?list[0].id:null;
  renderList(list);
  renderDetail(list.find(x=>x.id===selected)||null);
@@ -188,8 +188,8 @@ async function load(){
   fetch('vagas-catalogo.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('Catálogo local indisponível');return r.json()})
  ]);
  const combined=[];
- if(api.status==='fulfilled'&&Array.isArray(api.value.jobs)){combined.push(...api.value.jobs.map(normalizeRemote).filter(Boolean));}
- else sourceIssues.push('Remotive temporariamente indisponível');
+ if(api.status==='fulfilled'&&Array.isArray(api.value.jobs)){combined.push(...api.value.jobs.map(normalizeRemote).filter(Boolean));if(Array.isArray(api.value.warnings))sourceIssues.push(...api.value.warnings.filter(x=>typeof x==='string').slice(0,2));}
+ else sourceIssues.push('Fontes externas temporariamente indisponíveis');
  if(curated.status==='fulfilled'&&Array.isArray(curated.value)){combined.push(...curated.value.map(normalizeCurated).filter(Boolean))}
  else sourceIssues.push('Catálogo interno indisponível');
  const ids=new Set();jobs=combined.filter(job=>{if(ids.has(job.id))return false;ids.add(job.id);return true;});
