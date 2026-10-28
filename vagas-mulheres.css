@@ -78,3 +78,5 @@
 @media(prefers-reduced-motion:reduce){.jobs-page *{scroll-behavior:auto!important;transition:none!important}}
 
 @media(max-width:760px){body.jobs-menu-open{overflow:hidden}}
+
+.jobs-page .jobs-source-link{color:var(--primary);font-weight:750;text-decoration:underline;text-underline-offset:2px;overflow-wrap:anywhere}
