@@ -5,8 +5,8 @@
 .jobs-breadcrumb a{text-decoration:none;color:var(--sub)}.jobs-breadcrumb a:hover{text-decoration:underline}
 .jobs-breadcrumb .jobs-breadcrumb-current{font-weight:800;color:var(--primary)}
 .jobs-hero{min-height:226px;position:relative;isolation:isolate;overflow:hidden;border-radius:15px;display:flex;align-items:center;padding:32px 35px;margin-bottom:17px;background:#2f103f url('assets/hero-women.webp') 76% center/cover no-repeat;color:white}
-.jobs-hero:before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(91deg,#210c3d 1%,#351045f0 43%,#381343b0 65%,#39144435 100%)}
-.jobs-hero-content{position:relative;max-width:610px}.jobs-eyebrow{display:block;color:#ffc7e5;font-size:.7rem;letter-spacing:.15em;font-weight:900;margin-bottom:10px}
+.jobs-hero:before{content:"";position:absolute;inset:0;z-index:0;background:linear-gradient(91deg,#210c3d 1%,#351045f0 43%,#381343b0 65%,#39144435 100%)}
+.jobs-hero-content{position:relative;z-index:1;max-width:610px}.jobs-eyebrow{display:block;color:#ffc7e5;font-size:.7rem;letter-spacing:.15em;font-weight:900;margin-bottom:10px}
 .jobs-hero h1{font-weight:900;font-size:clamp(1.95rem,3vw,2.7rem);line-height:1.09;letter-spacing:-.04em;margin:0 0 11px;color:#fff}
 .jobs-hero h1 span{color:#ff9bd0}.jobs-hero p{color:#fbedf7;font-size:.95rem;line-height:1.5;max-width:510px;margin:0 0 16px}
 .jobs-hero-tags{display:flex;gap:8px;flex-wrap:wrap}.jobs-hero-tags span{background:#ffffff21;border:1px solid #ffffff2b;border-radius:30px;padding:7px 12px;font-size:.74rem;font-weight:700;color:#fff}
@@ -83,3 +83,9 @@
 
 /* No mobile, o backdrop deve ficar acima da topbar e abaixo do menu. */
 @media(max-width:760px){.jobs-screen .scrim:not([hidden]){position:fixed;inset:0;z-index:900;background:#1c0d285c}}
+
+/* O sistema visual global define títulos; escopo de vagas garante hierarquia local. */
+.layout .shell .jobs-side-panel h2{font-size:1.09rem}
+.layout .shell .jobs-hero h1{font-size:clamp(1.95rem,3vw,2.7rem)}
+@media(max-width:590px){.layout .shell .jobs-hero h1{font-size:1.95rem}}
+@media(max-width:360px){.layout .shell .jobs-hero h1{font-size:1.7rem}}
