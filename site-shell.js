@@ -13,6 +13,7 @@
     ['Unidades de saúde','Buscar UBS, hospitais e atendimento','mapa-seguro.html?f=health'],
     ['Creches por perto','Encontrar opções de educação infantil','mapa-seguro.html?f=childcare'],
     ['Carreira e Mães Solo','Currículo e capacitação','recursos.html#carreira'],
+    ['Elas+ Oportunidades','Vagas de emprego e programas de inclusão feminina','vagas-mulheres.html'],
     ['Saúde e Corpo','Cuidados por fase da vida','recursos.html#saude'],
     ['Comunidade','Registros locais publicados','recursos.html#comunidade'],
     ['Meu perfil e Configurações','Fonte, contraste e personalização','recursos.html#perfil']
