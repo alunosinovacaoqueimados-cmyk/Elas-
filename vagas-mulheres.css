@@ -92,3 +92,7 @@
 
 .jobs-clear-row{display:flex;justify-content:flex-end;margin-top:8px}
 .jobs-external-link{margin-top:13px}
+
+.jobs-source{display:flex;flex-direction:column;gap:5px;overflow-wrap:anywhere}
+.jobs-source a{font-weight:800;color:var(--primary);text-decoration:none;width:max-content;max-width:100%}
+.jobs-source a:hover{text-decoration:underline}
