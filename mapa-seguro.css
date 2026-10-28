@@ -7,3 +7,35 @@
 :root[data-contrast="high"] .mark-btn,:root[data-contrast="high"] .report-total,:root[data-contrast="high"] .kind-option,:root[data-contrast="high"] .report-location{background:#151515!important;color:white!important;border:1px solid #fff!important}
 :root[data-contrast="high"] .map-contribute{background:#19121e!important;color:white!important;border:1px solid #fff!important}
 :root[data-contrast="high"] .map-contribute strong,:root[data-contrast="high"] .map-contribute small,:root[data-contrast="high"] .report-location p,:root[data-contrast="high"] .report-privacy{color:white!important}
+/* Descoberta de estabelecimentos — segue as cores e tipografia da página inicial. */
+.map-discovery{background:#fdf8ff;border:1px solid #ead9f2;border-radius:16px;padding:13px 13px 9px;margin:5px 0 11px}
+.map-discovery-heading{display:flex;flex-direction:column;gap:3px;margin-bottom:11px}
+.map-discovery-heading strong{color:#603176;font-size:.95rem}
+.map-discovery-heading small{color:#785b86;font-size:.75rem;line-height:1.45}
+.map-discovery .map-filters{gap:8px;scrollbar-width:thin;padding:3px 1px 11px}
+.map-discovery .filter{background:#fff;border:1px solid #e2cce9;color:#603478;min-height:39px;padding:8px 12px;font-size:.75rem;transition:background .15s,border-color .15s,transform .15s}
+.map-discovery .filter:hover{background:#f7ecff;border-color:#c59cd8}
+.map-discovery .filter:focus-visible,.map-refine-field :focus-visible,.place-result :focus-visible{outline:3px solid #a36abc;outline-offset:2px}
+.map-discovery .filter.is-active{color:#fff;background:#783c9a;border-color:#783c9a;box-shadow:0 3px 8px #6a32802a}
+.map-refinements{display:grid;grid-template-columns:minmax(0,1fr) minmax(150px,190px);gap:12px}
+.map-refine-field{display:flex;flex-direction:column;gap:5px;color:#654573;font-size:.74rem;font-weight:750}
+.map-refine-field input,.map-refine-field select{min-height:43px;border:1px solid #dcc9e7;background:#fff;border-radius:10px;padding:10px 11px;font:inherit;font-weight:500;color:#3f2a53;width:100%;min-width:0}
+.map-results-summary{color:#614878;font-size:.78rem;padding:7px 0 1px}
+.map-panel .place-list{max-height:350px;overflow-y:auto;gap:9px;padding-right:3px}
+.place-result{border:1px solid #ebdff0;background:#fff;border-radius:12px;padding:5px 9px 8px;transition:border-color .15s}
+.place-result:hover{border-color:#cda8df}
+.map-panel .place-result .place{background:transparent;border:0;padding:8px 2px 6px;border-radius:8px;min-height:45px}
+.place-result .place-icon{background:#f1e5fa;color:#692e88}
+.place-result .place-body strong{font-size:.84rem;line-height:1.35;white-space:normal}
+.place-result .place-body small{font-size:.72rem;color:#76617d;line-height:1.35;margin-top:3px}
+.place-distance{color:#7c398c;font-weight:800;font-size:.71rem;white-space:nowrap}
+.place-actions{display:flex;gap:7px;flex-wrap:wrap;margin-left:45px}
+.place-actions a{padding:6px 11px;font-size:.72rem;font-weight:750;border-radius:8px;background:#f7eafc;border:1px solid #e7d0ef;color:#63337c;text-decoration:none;min-height:32px;display:inline-flex;align-items:center}
+.place-actions a:hover{background:#eecff8}
+.map-show-more{border:1px solid #dac1e7;border-radius:10px;padding:11px;width:100%;background:#fcf5ff;color:#6b3286;font-size:.8rem;font-weight:800}
+.map-show-more:hover{background:#f3e5fa}
+.map-page-summary{line-height:1.6}
+@media(max-width:680px){.map-discovery{padding:10px}.map-refinements{grid-template-columns:1fr;gap:10px}.map-discovery .filter{min-height:44px}.map-panel .place-list{max-height:380px}.place-actions{margin-left:3px}.map-discovery-heading strong{font-size:.9rem}}
+html[data-contrast="high"] .map-discovery,html[data-contrast="high"] .place-result{background:#0d0d0d!important;color:#fff!important;border-color:#fff!important}
+html[data-contrast="high"] .map-refine-field,html[data-contrast="high"] .place-distance,html[data-contrast="high"] .map-results-summary{color:#fff!important}
+.poi-pin.shop{background:#8e50b4}.poi-pin.food{background:#d98537}.poi-pin.services{background:#497e9f}.poi-pin.childcare{background:#bd5e9f}

@@ -6,7 +6,14 @@ import path from 'node:path';
 import http from 'node:http';
 import {once} from 'node:events';
 const dir=await fs.mkdtemp(path.join(os.tmpdir(),'elas-test-'));
-const mock=http.createServer(async(req,res)=>{res.setHeader('Content-Type','application/json');if(req.url.startsWith('/search'))return res.end(JSON.stringify([{display_name:'Queimados, Rio de Janeiro, Brasil',lat:'-22.716',lon:'-43.56'}]));res.end(JSON.stringify({elements:[{type:'node',id:123,lat:-22.716,lon:-43.56,tags:{amenity:'police',name:'Ponto de teste OSM'}}]}));});
+const mock=http.createServer(async(req,res)=>{res.setHeader('Content-Type','application/json');if(req.url.startsWith('/search'))return res.end(JSON.stringify([{display_name:'Queimados, Rio de Janeiro, Brasil',lat:'-22.716',lon:'-43.56'}]));res.end(JSON.stringify({elements:[
+ {type:'node',id:123,lat:-22.716,lon:-43.56,tags:{amenity:'police',name:'Delegacia teste OSM'}},
+ {type:'node',id:124,lat:-22.714,lon:-43.559,tags:{amenity:'pharmacy',name:'Farmácia teste OSM'}},
+ {type:'node',id:125,lat:-22.719,lon:-43.555,tags:{shop:'supermarket',name:'Mercado teste OSM'}},
+ {type:'node',id:126,lat:-22.713,lon:-43.562,tags:{shop:'clothes',name:'Loja teste OSM'}},
+ {type:'node',id:127,lat:-22.712,lon:-43.563,tags:{amenity:'restaurant',name:'Restaurante teste OSM'}},
+ {type:'node',id:128,lat:-22.717,lon:-43.561,tags:{amenity:'bank',name:'Banco teste OSM'}}
+]}));});
 mock.listen(0,'127.0.0.1');await once(mock,'listening');const mockPort=mock.address().port;
 process.env.ELAS_ADMIN_TOKEN='segredo_testes_moderacao_2026';
 process.env.ELAS_REPORT_FILE=path.join(dir,'reports.json');
@@ -28,7 +35,16 @@ try{
  });
  await test('consulta externa via Node e validação de localização',async()=>{
    const [a,{results}]=await json('/api/buscar?q=Queimados%2C%20RJ');assert.equal(a,200);assert.equal(results[0].lat,-22.716);
-   const [b,{places}]=await json('/api/locais?lat=-22.716&lon=-43.56');assert.equal(b,200);assert.equal(places[0].name,'Ponto de teste OSM');
+   const [b,{places}]=await json('/api/locais?lat=-22.716&lon=-43.56');assert.equal(b,200);assert.equal(places[0].type,'police');
+   const [shopsCode,shops]=await json('/api/locais?lat=-22.716&lon=-43.56&type=shop&radius=3000');
+   assert.equal(shopsCode,200);assert.deepEqual(shops.places.map(p=>p.type),['shop','shop']);
+   assert.ok(shops.places.every(p=>p.distance>=0&&p.distance<=3000));
+   const [pharmacyCode,pharmacies]=await json('/api/locais?lat=-22.716&lon=-43.56&type=pharmacy&radius=1000');
+   assert.equal(pharmacyCode,200);assert.equal(pharmacies.places[0].name,'Farmácia teste OSM');
+   const [foodCode,food]=await json('/api/locais?lat=-22.716&lon=-43.56&type=food&radius=5000');
+   assert.equal(foodCode,200);assert.equal(food.places[0].type,'food');
+   assert.equal((await json('/api/locais?lat=-22.716&lon=-43.56&type=invalid'))[0],400);
+   assert.equal((await json('/api/locais?lat=-22.716&lon=-43.56&radius=50000'))[0],400);
    assert.equal((await json('/api/locais?lat=abc&lon=xyz'))[0],400);
    assert.equal((await json('/api/buscar?q=a'))[0],400);
  });

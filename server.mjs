@@ -57,12 +57,71 @@ async function geocode(q){const key=q.toLocaleLowerCase('pt-BR');const cached=ge
     const result=await remoteJSON(u.toString());const data=result.map(x=>({name:String(x.display_name||'').slice(0,240),lat:coord(x.lat,-90,90),lon:coord(x.lon,-180,180)})).filter(x=>x.lat!==null&&x.lon!==null);
     geocodeCache.set(key,{data,exp:Date.now()+86400000});return data;});geocodeQueue=task.catch(()=>{});return task;
 }
-function placeType(t){const a=t.amenity||'',o=t.office||'',h=t.healthcare||'';if(a==='police')return 'police';if(['hospital','clinic','doctors','dentist'].includes(a)||['hospital','clinic','doctor'].includes(h))return 'health';if(a==='pharmacy')return 'pharmacy';if(['kindergarten','childcare'].includes(a)||t.social_facility==='day_care')return 'childcare';if(['social_facility','community_centre'].includes(a)||['government','social','lawyer'].includes(o))return 'social';return 'social';}
-async function nearby(lat,lon){const key=[lat.toFixed(2),lon.toFixed(2)].join(':');const cached=placesCache.get(key);if(cached?.exp>Date.now())return cached.data;
+// Consulta categorias explícitas para reduzir ruído e dar resultados úteis em bairros movimentados.
+const PLACE_FILTERS = Object.freeze({
+  police: '[amenity=police]',
+  health: '[amenity~"^(hospital|clinic|doctors|dentist)$"]',
+  pharmacy: '[amenity=pharmacy]',
+  childcare: '[amenity~"^(kindergarten|childcare)$"]',
+  social: '[amenity~"^(social_facility|community_centre)$"]',
+  shop: '[shop~"^(supermarket|convenience|department_store|mall|clothes|variety_store|electronics|books|general|hardware|beauty|chemist|bakery|shoes|mobile_phone|sports|pet|optician|stationery|furniture|florist|car_repair|bicycle|butcher|deli|greengrocer|gift|jewelry|toys|hairdresser|cosmetics)$"]',
+  food: '[amenity~"^(restaurant|cafe|fast_food|food_court)$"]',
+  services: '[amenity~"^(bank|atm|post_office|fuel|library)$"]'
+});
+const EXTRA_FILTERS = Object.freeze({
+  health: '[healthcare~"^(hospital|clinic|doctor)$"]',
+  pharmacy: '[shop=chemist]',
+  food: '[shop=bakery]',
+  childcare: '[social_facility=day_care]',
+  social: '[office~"^(government|social|lawyer)$"]'
+});
+const ALLOWED_PLACE_TYPES = new Set(['all', ...Object.keys(PLACE_FILTERS)]);
+function placeType(t){
+  const a=t.amenity||'', o=t.office||'', h=t.healthcare||'', sh=t.shop||'';
+  if(a==='police')return 'police';
+  if(a==='pharmacy'||sh==='chemist')return 'pharmacy';
+  if(['hospital','clinic','doctors','dentist'].includes(a)||['hospital','clinic','doctor'].includes(h))return 'health';
+  if(['kindergarten','childcare'].includes(a)||t.social_facility==='day_care')return 'childcare';
+  if(['social_facility','community_centre'].includes(a)||['government','social','lawyer'].includes(o))return 'social';
+  if(['restaurant','cafe','fast_food','food_court'].includes(a)||sh==='bakery')return 'food';
+  if(sh)return 'shop';
+  if(['bank','atm','post_office','fuel','library'].includes(a))return 'services';
+  return null;
+}
+function distanceMeters(lat1,lon1,lat2,lon2){
+  const rad=Math.PI/180;
+  const dLat=(lat2-lat1)*rad,dLon=(lon2-lon1)*rad;
+  const a=Math.sin(dLat/2)**2+Math.cos(lat1*rad)*Math.cos(lat2*rad)*Math.sin(dLon/2)**2;
+  return 12742000*Math.asin(Math.min(1,Math.sqrt(a)));
+}
+async function nearby(lat,lon,filter='all',radius=3000){
+  const key=[lat.toFixed(3),lon.toFixed(3),filter,radius].join(':');
+  const cached=placesCache.get(key);if(cached?.exp>Date.now())return cached.data;
   if(cached?.pending)return cached.pending;
-  const task=(async()=>{const query=`[out:json][timeout:18];(nwr(around:4500,${lat.toFixed(3)},${lon.toFixed(3)})[amenity~"^(police|hospital|clinic|doctors|pharmacy|social_facility|community_centre|kindergarten|childcare)$"];nwr(around:4500,${lat.toFixed(3)},${lon.toFixed(3)})[office~"^(government|social|lawyer)$"];nwr(around:4500,${lat.toFixed(3)},${lon.toFixed(3)})[healthcare~"^(hospital|clinic|doctor)$"];);out center 170;`;
-    const result=await remoteJSON(process.env.OVERPASS_URL||'https://overpass-api.de/api/interpreter',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'},body:new URLSearchParams({data:query}).toString()},24000);
-    const data=[],ids=new Set();for(const p of result.elements||[]){const la=coord(p.lat??p.center?.lat,-90,90),lo=coord(p.lon??p.center?.lon,-180,180);const id=String(p.type)+':'+String(p.id);if(la===null||lo===null||ids.has(id))continue;ids.add(id);const t=p.tags||{};data.push({id,lat:la,lon:lo,type:placeType(t),name:String(t.name||t['name:pt']||'Serviço sem nome informado').slice(0,110),address:[t['addr:street'],t['addr:housenumber']].filter(Boolean).join(', ').slice(0,150),phone:String(t.phone||t['contact:phone']||'').slice(0,80),website:(/^https?:\/\//i.test(t.website||'')?t.website:'').slice(0,240),source:'OpenStreetMap'});}placesCache.set(key,{data,exp:Date.now()+30*60000});return data;})();
+  const task=(async()=>{
+    const tags=filter==='all'?Object.keys(PLACE_FILTERS):[filter];
+    const clauses=tags.flatMap(type=>[PLACE_FILTERS[type],EXTRA_FILTERS[type]].filter(Boolean).map(expression=>`nwr(around:${radius},${lat.toFixed(4)},${lon.toFixed(4)})${expression};`)).join('');
+    const query=`[out:json][timeout:22];(${clauses});out center 700;`;
+    const result=await remoteJSON(process.env.OVERPASS_URL||'https://overpass-api.de/api/interpreter',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'},body:new URLSearchParams({data:query}).toString()},28000);
+    const data=[],ids=new Set();
+    for(const p of result.elements||[]){
+      const la=coord(p.lat??p.center?.lat,-90,90),lo=coord(p.lon??p.center?.lon,-180,180);
+      const id=String(p.type)+':'+String(p.id);
+      if(la===null||lo===null||ids.has(id))continue;
+      const t=p.tags||{},type=placeType(t);
+      if(!type||(filter!=='all'&&type!==filter))continue;
+      ids.add(id);
+      data.push({id,lat:la,lon:lo,type,
+        name:String(t.name||t['name:pt']||'Estabelecimento sem nome informado').slice(0,110),
+        address:[t['addr:street'],t['addr:housenumber']].filter(Boolean).join(', ').slice(0,150),
+        phone:String(t.phone||t['contact:phone']||'').slice(0,80),
+        website:(/^https?:\/\//i.test(t.website||'')?t.website:'').slice(0,240),
+        distance:Math.round(distanceMeters(lat,lon,la,lo)),source:'OpenStreetMap'});
+    }
+    data.sort((a,b)=>a.distance-b.distance||a.name.localeCompare(b.name,'pt-BR'));
+    const limited=data.slice(0,400);
+    placesCache.set(key,{data:limited,exp:Date.now()+15*60000});return limited;
+  })();
   placesCache.set(key,{pending:task,exp:0});try{return await task;}catch(e){placesCache.delete(key);throw e;}
 }
 async function getReports(){try{const obj=JSON.parse(await fs.readFile(REPORT_FILE,'utf8'));return Array.isArray(obj.submissions)?obj.submissions:[];}catch(e){if(e.code==='ENOENT')return [];throw e;}}
@@ -72,7 +131,7 @@ function publicReport(r){return {id:r.id,kind:r.kind||'info',category:r.category
 async function api(req,res,u){const p=u.pathname;
   if(p==='/api/status'&&req.method==='GET')return send(res,200,{ok:true,aiEnabled:!!API_KEY,storage:CLOUD?'indisponivel-na-vercel':'arquivo-json',contributionsEnabled:!CLOUD,publicReportsRequireApproval:true});
   if(p==='/api/buscar'&&req.method==='GET'){if(!rate(req,'geocode',12,60000))return send(res,429,{error:'Aguarde um pouco antes de pesquisar novamente.'});const q=String(u.searchParams.get('q')||'').trim();if(q.length<3||q.length>110)return send(res,400,{error:'Informe um município ou bairro com 3 a 110 caracteres.'});try{return send(res,200,{results:await geocode(q)});}catch{return send(res,503,{error:'Busca indisponível. Tente mais tarde.'});}}
-  if(p==='/api/locais'&&req.method==='GET'){if(!rate(req,'places',18,60000))return send(res,429,{error:'Limite temporário de consultas.'});const lat=coord(u.searchParams.get('lat'),-90,90),lon=coord(u.searchParams.get('lon'),-180,180);if(lat===null||lon===null)return send(res,400,{error:'Coordenadas inválidas.'});try{return send(res,200,{source:'OpenStreetMap (colaborativo, não verificado)',places:await nearby(lat,lon)});}catch{return send(res,503,{error:'Serviços da região indisponíveis agora. Confira os canais oficiais.'});}}
+  if(p==='/api/locais'&&req.method==='GET'){if(!rate(req,'places',18,60000))return send(res,429,{error:'Limite temporário de consultas.'});const lat=coord(u.searchParams.get('lat'),-90,90),lon=coord(u.searchParams.get('lon'),-180,180);const type=String(u.searchParams.get('type')||'all');const radius=Number(u.searchParams.get('radius')||3000);if(lat===null||lon===null||!ALLOWED_PLACE_TYPES.has(type)||![1000,3000,5000].includes(radius))return send(res,400,{error:'Informe uma localização, categoria e distância válidas.'});try{return send(res,200,{source:'OpenStreetMap (colaborativo, não verificado)',radius,type,places:await nearby(lat,lon,type,radius)});}catch{return send(res,503,{error:'Busca temporariamente indisponível. Tente outra categoria ou região.'});}}
   if(p==='/api/relatos'&&req.method==='GET'){if(CLOUD)return send(res,200,{reports:[],contributionsEnabled:false,message:'Registros compartilhados requerem armazenamento persistente.'});const all=await getReports();return send(res,200,{reports:all.filter(r=>r.status==='approved').map(publicReport)});}
   if(p==='/api/relatos'&&req.method==='POST'){if(CLOUD)return send(res,503,{error:'Contribuições temporariamente indisponíveis neste ambiente: armazenamento persistente ainda não configurado.'});if(!rate(req,'reports',4,86400000))return send(res,429,{error:'Limite de contribuições atingido neste dispositivo.'});const b=await bodyJSON(req,1500);const category=String(b.category||'');const kind=b.kind===undefined?'info':String(b.kind);const description=String(b.description||'').trim();const lat=coord(b.lat,-90,90),lon=coord(b.lon,-180,180);
     if(!KINDS.has(kind)||!CATEGORIES.has(category)||description.length<12||description.length>280||lat===null||lon===null)return send(res,400,{error:'Informe tipo, categoria, descrição entre 12 e 280 caracteres e região válida.'});
