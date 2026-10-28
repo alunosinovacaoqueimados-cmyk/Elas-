@@ -89,3 +89,6 @@
 .layout .shell .jobs-hero h1{font-size:clamp(1.95rem,3vw,2.7rem)}
 @media(max-width:590px){.layout .shell .jobs-hero h1{font-size:1.95rem}}
 @media(max-width:360px){.layout .shell .jobs-hero h1{font-size:1.7rem}}
+
+.jobs-clear-row{display:flex;justify-content:flex-end;margin-top:8px}
+.jobs-external-link{margin-top:13px}
