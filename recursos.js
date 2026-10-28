@@ -61,7 +61,7 @@ showView();
      const data=await r.json();
      if(!Array.isArray(data.jobs))throw new Error('Formato inesperado');
      const jobs=data.jobs.filter(x=>{
-       try{return x&&x.source==='Remotive'&&x.title&&x.company&&new URL(x.url).protocol==='https:'}
+       try{return x&&['Remotive','Jobicy'].includes(x.source)&&x.title&&x.company&&new URL(x.url).protocol==='https:'}
        catch{return false}
      }).slice(0,3);
      if(!jobs.length){fallback();return}
@@ -70,7 +70,7 @@ showView();
        const card=make('article',undefined,'career-live-card');
        card.append(make('strong',String(job.title).slice(0,130)),make('p',String(job.company).slice(0,100),'career-live-company'));
        card.append(make('p','Remoto · '+String(job.location||'Consulte o país aceito').slice(0,100),'career-live-loc'));
-       const a=make('a','Ver vaga na Remotive ↗');a.href=job.url;a.target='_blank';a.rel='noopener noreferrer';card.append(a);host.append(card);
+       const a=make('a','Ver vaga na '+job.source+' ↗');a.href=job.url;a.target='_blank';a.rel='noopener noreferrer';card.append(a);host.append(card);
      }
    }catch{fallback()}
  }
