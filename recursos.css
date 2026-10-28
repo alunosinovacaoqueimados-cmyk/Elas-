@@ -13,3 +13,11 @@
 @media(max-width:1160px){.tile-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.health-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.career-grid{grid-template-columns:1fr}}
 @media(max-width:760px){.resource-main{padding:12px}.resource-hero{min-height:168px;padding:23px}.hero-icon{font-size:4rem}.tile-grid,.profile-layout{grid-template-columns:1fr}.split-title{align-items:flex-start;flex-direction:column}.form-columns{grid-template-columns:1fr}.resource-hero h1{font-size:1.65rem}.health-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.resource-card{padding:17px}}
 @media print{body *{visibility:hidden!important}#cvOutput,#cvOutput *{visibility:visible!important}#cvOutput{position:absolute;left:0;top:0;width:100%;height:auto;min-height:0;border:0;padding:0;box-shadow:none;font-size:11pt}@page{margin:20mm}}
+
+/* Acesso à central de vagas integrado à identidade da área de Carreira. */
+.layout .shell .resource-card.career-opportunities-banner{display:flex;justify-content:space-between;align-items:center;gap:22px;margin:20px 0 18px;padding:22px 24px;background:linear-gradient(110deg,#f9e7f3 0%,#f8efff 68%,#f2ebff 100%);border:1px solid #ecd7ed;box-shadow:none}
+.career-opportunities-banner .career-opportunities-eyebrow{display:block;color:#913576;font-size:.7rem;font-weight:900;letter-spacing:.12em;margin-bottom:7px}
+.layout .shell .resource-card.career-opportunities-banner h3{margin:0 0 7px;color:#2e1945;font-size:1.25rem;line-height:1.2}
+.layout .shell .resource-card.career-opportunities-banner p{font-size:.87rem;color:#5b4567;line-height:1.5;margin:0;max-width:560px}
+.layout .shell .resource-card.career-opportunities-banner .resource-primary{white-space:nowrap;flex-shrink:0}
+@media(max-width:720px){.layout .shell .resource-card.career-opportunities-banner{flex-direction:column;align-items:stretch;padding:19px;gap:15px}.layout .shell .resource-card.career-opportunities-banner .resource-primary{width:100%}}
