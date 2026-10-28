@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="#fff8fd" name="theme-color"/>
+<meta content="Elas+: conexão, apoio e oportunidades em todas as fases da sua vida." name="description"/>
+<title>Início | Elas+</title>
+<link href="styles.css" rel="stylesheet"/>
+<link href="unificado.css" rel="stylesheet"/>
+<script defer="" src="app.js"></script>
+<link href="design-system.css" rel="stylesheet"/></head>
+<body>
+<a class="skip-link" href="#conteudo">Pular para o conteúdo principal</a>
+<div class="app">
+<div class="backdrop" hidden="" id="navBackdrop"></div>
+<aside aria-label="Menu lateral" class="sidebar" id="sidebar">
+<a aria-label="Elas+ — página inicial" class="brand" href="index.html">
+<span aria-hidden="true" class="brand-flower"><span></span><span></span><span></span></span>
+<span class="brand-word">Elas<span>+</span></span>
+</a>
+<p class="brand-subtitle">Conexão, apoio e oportunidades em todas as fases da sua vida.</p>
+<nav aria-label="Navegação principal" class="main-nav">
+<button aria-current="page" class="nav-link active" data-open="inicio" type="button"><svg aria-hidden="true"><use href="#i-home"></use></svg>Início</button>
+<button class="nav-link" data-open="seguranca" type="button"><svg aria-hidden="true"><use href="#i-shield"></use></svg>Relações e Segurança</button>
+<button class="nav-link" data-open="saude" type="button"><svg aria-hidden="true"><use href="#i-heart"></use></svg>Saúde e Corpo</button>
+<button class="nav-link" data-open="carreira" type="button"><svg aria-hidden="true"><use href="#i-briefcase"></use></svg>Carreira e Mães Solo</button>
+<button class="nav-link" data-open="servicos" type="button"><svg aria-hidden="true"><use href="#i-landmark"></use></svg>Serviços Públicos</button>
+<button class="nav-link" data-open="mapa" type="button"><svg aria-hidden="true"><use href="#i-pin"></use></svg>Mapa Seguro</button>
+<button class="nav-link" data-open="comunidade" type="button"><svg aria-hidden="true"><use href="#i-users"></use></svg>Comunidade</button>
+</nav>
+<div class="nav-secondary">
+<button class="nav-link" data-open="perfil" type="button"><svg aria-hidden="true"><use href="#i-user"></use></svg>Meu Perfil</button>
+<button class="nav-link" data-action="accessibility" type="button"><svg aria-hidden="true"><use href="#i-settings"></use></svg>Configurações</button>
+</div>
+<button class="sidebar-invite" data-open="comunidade" type="button">
+<span>Juntas somos<br/>mais fortes</span>
+<img alt="" loading="lazy" src="assets/community-women.webp"/>
+<span aria-hidden="true" class="invite-arrow">→</span>
+</button>
+</aside>
+<div class="workspace" id="inicio">
+<header class="topbar">
+<button aria-controls="sidebar" aria-expanded="false" aria-label="Abrir menu" class="mobile-menu icon-button" id="menuButton" type="button"><svg aria-hidden="true"><use href="#i-menu"></use></svg></button>
+<div class="search-box">
+<svg aria-hidden="true"><use href="#i-search"></use></svg>
+<label class="sr-only" for="globalSearch">Buscar no Elas+</label>
+<input aria-controls="searchResults" aria-expanded="false" autocomplete="off" id="globalSearch" placeholder="Buscar serviços, conteúdos, vagas, locais..." type="search"/>
+<div aria-label="Resultados da pesquisa" class="search-results" hidden="" id="searchResults" role="region"></div>
+</div>
+<div class="header-actions">
+<button class="quick-exit" data-action="quick-exit" title="Sair imediatamente desta página (Alt+X)" type="button"><svg aria-hidden="true"><use href="#i-exit"></use></svg><span>Saída rápida</span></button>
+<button aria-label="Avisos" class="icon-button notification" data-open="notificacoes" type="button"><svg aria-hidden="true"><use href="#i-bell"></use></svg><span class="notify-dot"></span></button>
+<button class="account" data-open="perfil" type="button"><span aria-hidden="true" class="avatar">E</span><span>Olá, visitante</span><svg aria-hidden="true"><use href="#i-chevron-down"></use></svg></button>
+</div>
+</header>
+<main class="content" id="conteudo">
+<div class="main-column">
+<section aria-labelledby="heroHeading" class="hero">
+<div aria-hidden="true" class="hero-art"></div>
+<div class="hero-copy">
+<span class="hero-eyebrow">SEU ESPAÇO, SEU TEMPO, SUAS ESCOLHAS</span>
+<h1 id="heroHeading">Bem-vinda ao Elas+! <span aria-hidden="true">♥</span></h1>
+<p>Aqui você encontra informação, apoio e oportunidades para todas as fases da sua vida.</p>
+<div class="hero-quote"><svg aria-hidden="true"><use href="#i-quote"></use></svg><span>“Cada fase da sua vida importa.<br/>Você não está sozinha.”</span></div>
+</div>
+</section>
+<section aria-labelledby="quickHeading" class="section">
+<h2 id="quickHeading">Acesso rápido</h2>
+<div class="quick-grid">
+<button class="quick-card rose" data-action="sos" type="button"><svg aria-hidden="true"><use href="#i-shield"></use></svg><span>SOS<br/>e Proteção</span></button>
+<button class="quick-card pink" data-open="saude" type="button"><svg aria-hidden="true"><use href="#i-heart"></use></svg><span>Saúde<br/>e Bem-estar</span></button>
+<button class="quick-card amber" data-open="vagas" type="button"><svg aria-hidden="true"><use href="#i-briefcase"></use></svg><span>Vagas<br/>e Carreira</span></button>
+<button class="quick-card fuchsia" data-open="creches" type="button"><svg aria-hidden="true"><use href="#i-baby"></use></svg><span>Creches<br/>por perto</span></button>
+<button class="quick-card ice" data-open="pediatras" type="button"><svg aria-hidden="true"><use href="#i-stethoscope"></use></svg><span>Pediatras</span></button>
+<button class="quick-card blue" data-open="servicos" type="button"><svg aria-hidden="true"><use href="#i-landmark"></use></svg><span>Serviços<br/>Públicos</span></button>
+<button class="quick-card mint" data-open="mapa" type="button"><svg aria-hidden="true"><use href="#i-pin"></use></svg><span>Mapa<br/>Participativo</span></button>
+<button class="quick-card lavender" data-open="comunidade" type="button"><svg aria-hidden="true"><use href="#i-users"></use></svg><span>Comunidade</span></button>
+</div>
+</section>
+<section aria-labelledby="highlightsHeading" class="section">
+<div class="section-head"><h2 id="highlightsHeading">Destaques para você</h2><button class="text-link" data-open="destaques" type="button">Ver todos <span aria-hidden="true">→</span></button></div>
+<div class="feature-grid">
+<button class="feature-card feature-rights" data-open="trabalho" type="button">
+<span class="pill red">SEGURANÇA</span><strong>Você conhece seus direitos no trabalho?</strong>
+<span class="feature-desc">Saiba como estabelecer limites e identificar situações de assédio.</span>
+<img alt="" loading="lazy" src="assets/feature-rights.webp"/><span aria-hidden="true" class="circle-arrow">→</span>
+</button>
+<button class="feature-card feature-resume" data-open="curriculo" type="button">
+<span class="pill brown">CARREIRA</span><strong>Crie seu currículo com nosso gerador completo</strong>
+<span class="feature-desc">Modelos prontos, dicas e exportação em PDF.</span>
+<img alt="" loading="lazy" src="assets/feature-resume.webp"/><span aria-hidden="true" class="circle-arrow">→</span>
+</button>
+<button class="feature-card feature-services" data-open="servicos" type="button">
+<span class="pill green">SERVIÇOS</span><strong>Encontre serviços públicos perto de você</strong>
+<span class="feature-desc">CRAS, CREAS, saúde, documentação e mais.</span>
+<img alt="" loading="lazy" src="assets/feature-services.webp"/><span aria-hidden="true" class="circle-arrow">→</span>
+</button>
+</div>
+</section>
+<section aria-labelledby="articlesHeading" class="section">
+<div class="section-head"><h2 id="articlesHeading">Conteúdos mais acessados</h2><button class="text-link" data-open="conteudos" type="button">Ver todos <span aria-hidden="true">→</span></button></div>
+<div class="article-grid">
+<button class="article-card" data-open="menopausa" type="button"><div class="article-photo"><img alt="Mulher sorridente de cabelos grisalhos" loading="lazy" src="assets/article-menopause.webp"/></div><div class="article-copy"><span class="tag tag-pink">SAÚDE</span><strong>Menopausa e climatério: entenda as mudanças</strong><span aria-hidden="true" class="little-arrow">→</span></div></button>
+<button class="article-card" data-open="maes" type="button"><div class="article-photo"><img alt="Mãe e filha usando computador" loading="lazy" src="assets/article-maternity.webp"/></div><div class="article-copy"><span class="tag tag-purple">CARREIRA</span><strong>Trabalho remoto para mães solo</strong><span aria-hidden="true" class="little-arrow">→</span></div></button>
+<button class="article-card" data-open="inclusao" type="button"><div class="article-photo"><img alt="Mulher usando computador" loading="lazy" src="assets/article-inclusion.webp"/></div><div class="article-copy"><span class="tag tag-cyan">INCLUSÃO</span><strong>Mulheres PcD e atípicas: mais oportunidades</strong><span aria-hidden="true" class="little-arrow">→</span></div></button>
+<button class="article-card" data-open="jovens" type="button"><div class="article-photo"><img alt="Jovem usando fones de ouvido" loading="lazy" src="assets/article-young.webp"/></div><div class="article-copy"><span class="tag tag-pink">JOVENS</span><strong>Corpo, emoções e autoestima</strong><span aria-hidden="true" class="little-arrow">→</span></div></button>
+</div>
+</section>
+<section aria-labelledby="communityHeading" class="community-banner">
+<span aria-hidden="true" class="community-icon"><svg><use href="#i-users"></use></svg></span>
+<div class="community-info"><h2 id="communityHeading">Comunidade Elas+</h2><p>Troque experiências, tire dúvidas e encontre apoio.</p></div>
+<div aria-hidden="true" class="community-avatars"><span>J</span><span>A</span><span>L</span><span>R</span></div>
+<button class="community-button" data-open="comunidade" type="button">Entrar na comunidade <span aria-hidden="true">→</span></button>
+</section>
+</div>
+<aside aria-label="Sua jornada e ferramentas de apoio" class="right-column">
+<section aria-labelledby="journeyHeading" class="panel journey-panel">
+<div class="panel-heading"><h2 id="journeyHeading">Minha jornada</h2><button class="subtle-link" data-open="jornada" type="button">Ver tudo →</button></div>
+<div class="progress-area"><div aria-label="Progresso da jornada" aria-valuemax="100" aria-valuemin="0" aria-valuenow="50" class="progress-circle" id="journeyProgress" role="progressbar"><strong id="progressValue">50%</strong></div><p>Você está construindo uma versão ainda mais forte de você!</p></div>
+<div class="journey-list">
+<label><input checked="" data-task="perfil" type="checkbox"/><span>Completar meu perfil</span></label>
+<label><input checked="" data-task="servicos" type="checkbox"/><span>Explorar serviços da minha cidade</span></label>
+<label><input data-task="curriculo" type="checkbox"/><span>Criar meu currículo</span></label>
+<label><input data-task="comunidade" type="checkbox"/><span>Participar da comunidade</span></label>
+</div>
+<p class="demo-label">Progresso ilustrativo deste protótipo.</p>
+</section>
+<section aria-labelledby="nearbyHeading" class="panel nearby-panel">
+<div class="panel-heading"><h2 id="nearbyHeading">Serviços de apoio</h2><button class="subtle-link" data-open="servicos" type="button">Ver todos →</button></div>
+<div aria-label="Mapa ilustrativo, sem localização real" class="mini-map" role="img"><span class="pin pin1">●</span><span class="pin pin2">●</span><span class="pin pin3">●</span><span class="pin pin4">●</span><span class="map-stamp">Mapa ilustrativo</span></div>
+<button class="service-item" data-open="cras" type="button"><span class="service-icon light-blue"><svg aria-hidden="true"><use href="#i-home"></use></svg></span><span><strong>CRAS e CREAS</strong><small>Assistência social e acolhimento</small></span></button>
+<button class="service-item" data-open="ubs" type="button"><span class="service-icon light-rose"><svg aria-hidden="true"><use href="#i-heart"></use></svg></span><span><strong>Unidades Básicas de Saúde</strong><small>Atendimento pelo SUS</small></span></button>
+<button class="service-item" data-open="creches" type="button"><span class="service-icon light-purple"><svg aria-hidden="true"><use href="#i-baby"></use></svg></span><span><strong>Creches municipais</strong><small>Informações e busca por vagas</small></span></button>
+<p class="demo-label">Consulte localizações reais na aba Mapa Seguro.</p>
+</section>
+<section aria-labelledby="safetyHeading" class="panel safety-panel">
+<div class="panel-heading"><h2 id="safetyHeading">Sua segurança em primeiro lugar</h2></div>
+<button class="safety-item" data-action="sos" type="button"><span class="safety-icon sos-icon"><svg aria-hidden="true"><use href="#i-alert"></use></svg></span><span><strong>Botão SOS</strong><small>Veja como pedir ajuda rapidamente</small></span><span aria-hidden="true">↗</span></button>
+<button class="safety-item" data-action="quick-exit" type="button"><span class="safety-icon shield-icon"><svg aria-hidden="true"><use href="#i-shield"></use></svg></span><span><strong>Saída rápida</strong><small>Troca de página imediatamente</small></span><span aria-hidden="true">›</span></button>
+<button class="safety-item" data-open="contatos" type="button"><span class="safety-icon phone-icon"><svg aria-hidden="true"><use href="#i-phone"></use></svg></span><span><strong>Contatos confiáveis</strong><small>Orientações para sua rede de apoio</small></span><span aria-hidden="true">›</span></button>
+</section>
+<section aria-labelledby="accessHeading" class="panel accessibility-panel">
+<div class="panel-heading"><h2 id="accessHeading">Personalize sua experiência</h2></div>
+<button class="safety-item" data-action="accessibility" type="button"><span class="safety-icon accessibility-icon"><svg aria-hidden="true"><use href="#i-accessibility"></use></svg></span><span><strong>Acessibilidade</strong><small>Fonte, contraste, cores e mais</small></span><span aria-hidden="true">›</span></button>
+</section>
+</aside>
+</main>
+<footer class="footer">Elas+ · Protótipo demonstrativo · Nenhum alerta ou pedido de ajuda é enviado automaticamente.</footer>
+</div>
+</div>
+<dialog aria-labelledby="moduleTitle" class="app-dialog" id="moduleDialog">
+<div class="dialog-header"><span aria-hidden="true" class="dialog-symbol">✦</span><button aria-label="Fechar" class="close-dialog" data-action="close-dialog" type="button">×</button></div>
+<h2 id="moduleTitle"></h2><p id="moduleDescription"></p><ul class="dialog-list" id="moduleList"></ul>
+<p class="dialog-note" id="moduleNote">Esta área é uma prévia. A navegação completa será implementada nas próximas telas.</p>
+<button class="primary-btn" data-action="close-dialog" type="button">Voltar ao início</button>
+</dialog>
+<dialog aria-labelledby="sosTitle" class="app-dialog" id="sosDialog">
+<div class="dialog-header"><span aria-hidden="true" class="dialog-symbol warning">!</span><button aria-label="Fechar" class="close-dialog" data-action="close-dialog" type="button">×</button></div>
+<h2 id="sosTitle">Precisa de ajuda agora?</h2>
+<p>Se houver perigo imediato, procure um local seguro e entre em contato com um serviço de emergência.</p>
+<div class="emergency-links"><a href="tel:190"><svg aria-hidden="true"><use href="#i-phone"></use></svg><span><strong>190 — Polícia Militar</strong><small>Emergência policial</small></span></a><a href="tel:180"><svg aria-hidden="true"><use href="#i-phone"></use></svg><span><strong>180 — Central de Atendimento à Mulher</strong><small>Orientação e denúncias</small></span></a><a href="tel:192"><svg aria-hidden="true"><use href="#i-heart"></use></svg><span><strong>192 — SAMU</strong><small>Emergência de saúde</small></span></a></div>
+<p class="dialog-note">Este protótipo não aciona socorro, não envia mensagens e não compartilha sua localização. A função de saída rápida não apaga o histórico do navegador.</p>
+<button class="primary-btn danger" data-action="quick-exit" type="button">Sair rapidamente do site</button>
+</dialog>
+<dialog aria-labelledby="accessTitle" class="app-dialog" id="accessDialog">
+<div class="dialog-header"><span aria-hidden="true" class="dialog-symbol">Aa</span><button aria-label="Fechar" class="close-dialog" data-action="close-dialog" type="button">×</button></div>
+<h2 id="accessTitle">Acessibilidade</h2><p>Ajuste a interface de acordo com suas preferências.</p>
+<div class="settings-options">
+<div><label for="fontSize">Tamanho da fonte</label><select id="fontSize"><option value="normal">Padrão</option><option value="large">Grande</option><option value="larger">Muito grande</option></select></div>
+<div><label for="colorTheme">Cor principal</label><select id="colorTheme"><option value="purple">Roxo</option><option value="pink">Rosa</option><option value="green">Verde</option></select></div>
+<label class="switch-row" for="highContrast"><span>Alto contraste</span><input id="highContrast" type="checkbox"/></label>
+<label class="switch-row" for="dyslexicFont"><span>Fonte OpenDyslexic (se instalada)</span><input id="dyslexicFont" type="checkbox"/></label>
+</div>
+<p class="dialog-note">O site usa elementos compatíveis com teclado e leitores de tela. O TalkBack e o leitor de tela precisam estar habilitados no seu dispositivo.</p>
+<button class="primary-btn" data-action="close-dialog" type="button">Concluir</button>
+</dialog>
+<!-- Ícones SVG locais: nenhum pacote externo é necessário. -->
+<svg aria-hidden="true" class="svg-defs" focusable="false" xmlns="http://www.w3.org/2000/svg">
+<symbol id="i-home" viewbox="0 0 24 24"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1Z"></path></symbol>
+<symbol id="i-shield" viewbox="0 0 24 24"><path d="M12 2 4 5v6c0 5.6 3.5 8.8 8 11 4.5-2.2 8-5.4 8-11V5Z"></path><path class="icon-cutout" d="m12 7 1.4 2.8 3.1.4-2.2 2.2.5 3.1-2.8-1.5-2.8 1.5.5-3.1-2.2-2.2 3.1-.4Z"></path></symbol>
+<symbol id="i-heart" viewbox="0 0 24 24"><path d="M20.6 5.4a5.5 5.5 0 0 0-7.8 0L12 6.2l-.8-.8a5.5 5.5 0 0 0-7.8 7.8L12 22l8.6-8.8a5.5 5.5 0 0 0 0-7.8Z"></path></symbol>
+<symbol id="i-briefcase" viewbox="0 0 24 24"><path d="M3 7h18a1 1 0 0 1 1 1v12H2V8a1 1 0 0 1 1-1Z"></path><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M2 12h20M10 12v3h4v-3" fill="none" stroke="currentColor" stroke-width="1.8"></path></symbol>
+<symbol id="i-landmark" viewbox="0 0 24 24"><path d="m2 9 10-6 10 6v2H2Zm2 3h3v7H4Zm6 0h4v7h-4Zm7 0h3v7h-3ZM2 20h20v2H2Z"></path></symbol>
+<symbol id="i-pin" viewbox="0 0 24 24"><path d="M12 2a8 8 0 0 0-8 8c0 6 8 12 8 12s8-6 8-12a8 8 0 0 0-8-8Z"></path><circle class="icon-cutout" cx="12" cy="10" r="3"></circle></symbol>
+<symbol id="i-users" viewbox="0 0 24 24"><circle cx="12" cy="6" r="4"></circle><path d="M4 21v-4a8 8 0 0 1 16 0v4ZM2 10a4 4 0 0 1 4-2v2a6 6 0 0 0-3 5v5H1v-6a6 6 0 0 1 1-4Zm20 0a4 4 0 0 0-4-2v2a6 6 0 0 1 3 5v5h2v-6a6 6 0 0 0-1-4Z"></path></symbol>
+<symbol id="i-user" viewbox="0 0 24 24"><circle cx="12" cy="7" fill="none" r="4" stroke="currentColor" stroke-width="2"></circle><path d="M4 21v-2a8 8 0 0 1 16 0v2" fill="none" stroke="currentColor" stroke-width="2"></path></symbol>
+<symbol id="i-settings" viewbox="0 0 24 24"><path d="m10 2-.5 2.3-2.1.9-2-1.3-2.8 2.8 1.3 2-.9 2.1L1 11v4l2.3.5.9 2.1-1.3 2 2.8 2.8 2-1.3 2.1.9.5 2.3h4l.5-2.3 2.1-.9 2 1.3 2.8-2.8-1.3-2 .9-2.1L23 15v-4l-2.3-.5-.9-2.1 1.3-2-2.8-2.8-2 1.3-2.1-.9L14 2Z" transform="translate(0 -1) scale(1 .96)"></path><circle class="icon-cutout" cx="12" cy="12" r="4"></circle></symbol>
+<symbol id="i-search" viewbox="0 0 24 24"><circle cx="11" cy="11" fill="none" r="7" stroke="currentColor" stroke-width="2"></circle><path d="m16 16 5 5" fill="none" stroke="currentColor" stroke-width="2"></path></symbol>
+<symbol id="i-bell" viewbox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 8-3 9h18c0-1-3-2-3-9ZM10 20a2 2 0 0 0 4 0" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="2"></path></symbol>
+<symbol id="i-chevron-down" viewbox="0 0 24 24"><path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"></path></symbol>
+<symbol id="i-menu" viewbox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"></path></symbol>
+<symbol id="i-exit" viewbox="0 0 24 24"><path d="M14 4H5v16h9M10 12h12m-4-4 4 4-4 4" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></symbol>
+<symbol id="i-quote" viewbox="0 0 24 24"><path d="M10 4C5 7 3 11 3 16a4 4 0 0 0 8 0 4 4 0 0 0-4-4c0-2 1-4 3-6Zm11 0c-5 3-7 7-7 12a4 4 0 0 0 8 0 4 4 0 0 0-4-4c0-2 1-4 3-6Z"></path></symbol>
+<symbol id="i-baby" viewbox="0 0 24 24"><path d="M12 3a4 4 0 0 0-4 4c0 2-2 3-4 3v4a8 8 0 0 0 16 0v-4c-2 0-4-1-4-3a4 4 0 0 0-4-4ZM6 15c0 3 3 5 6 5s6-2 6-5" fill="none" stroke="currentColor" stroke-width="2"></path><circle cx="9" cy="13" r="1"></circle><circle cx="15" cy="13" r="1"></circle></symbol>
+<symbol id="i-stethoscope" viewbox="0 0 24 24"><path d="M5 4H3v6a6 6 0 0 0 12 0V4h-2M9 16v1a4 4 0 0 0 8 0v-3m0-4a2 2 0 1 0 0 4 2 2 0 0 0 0-4" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"></path></symbol>
+<symbol id="i-phone" viewbox="0 0 24 24"><path d="m6 2 4 5-2.5 2.6a18 18 0 0 0 7 7L17 14l5 4c-1 3.4-3.2 4.4-6 4C9 22 2 15 2 8c0-2.8 1-5 4-6Z"></path></symbol>
+<symbol id="i-alert" viewbox="0 0 24 24"><path d="M12 2 1 21h22Z"></path><path d="M12 8v6m0 3v.4" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="2.5"></path></symbol>
+<symbol id="i-accessibility" viewbox="0 0 24 24"><circle cx="12" cy="3" r="2"></circle><path d="M3 7h18M12 7v14m-7-1 7-8 7 8" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"></path></symbol>
+</svg>
+</body>
+</html>

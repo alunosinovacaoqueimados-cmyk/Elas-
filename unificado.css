@@ -1,0 +1,31 @@
+/* Identidade visual compartilhada em todas as páginas Elas+ */
+:root{--elas-ink:#251240;--elas-primary:#5423a4;--elas-pink:#eb3292;--elas-surface:#fff;--elas-bg:#fffafd;--elas-stroke:#f0e4f2}
+body{background:var(--elas-bg)}
+.sidebar{background:linear-gradient(156deg,#fff7fc 0%,#fff 56%,#fcf3ff 100%)!important;border-right:1px solid var(--elas-stroke)!important}
+.sidebar .sidebar-nav a.selected,.main-nav .nav-link.active{background:#f7d9ed;color:#6c1955!important}
+.sidebar .sidebar-nav a:hover,.main-nav .nav-link:hover{background:#f9eafa}
+.sidebar .logo,.sidebar .brand{color:#361554}
+.topbar{background:#fff!important;box-shadow:0 1px 0 #f4e9f2}
+.panel{box-shadow:0 10px 28px #48245f0b}
+button,a{transition:filter .15s,background .15s}
+button:hover,a:hover{filter:saturate(1.09)}
+:root[data-theme="pink"]{--elas-primary:#a9166b;--elas-pink:#ef3288}
+:root[data-theme="green"]{--elas-primary:#087d68;--elas-pink:#087d68}
+:root[data-dyslexia="yes"]{font-family:'OpenDyslexic',Verdana,sans-serif;letter-spacing:.02em;word-spacing:.08em}
+:root[data-theme="green"] .sidebar .sidebar-nav a.selected{color:#075d4c!important;background:#dff6ec}
+:root[data-theme="green"] .btn-main,:root[data-theme="green"] .send,:root[data-theme="green"] .register-btn{background:#087d68!important}
+:root[data-contrast="high"] .topbar,:root[data-contrast="high"] .sidebar{border-color:#382454!important}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
+
+/* Mesma marca de pétalas em todas as páginas */
+.sidebar .logo{padding:5px 6px 19px;gap:10px;min-height:80px;align-items:center}
+.sidebar .brand-flower{width:53px;height:57px;position:relative;display:block;flex:0 0 53px}
+.sidebar .brand-flower span{position:absolute;width:22px;height:43px;border-radius:90% 10% 80% 15%;background:linear-gradient(160deg,#ff9ec8,#c83d95);bottom:6px;left:18px;transform:rotate(-3deg)}
+.sidebar .brand-flower span:nth-child(2){background:linear-gradient(180deg,#ffb4dc,#e84296);transform:rotate(-48deg);transform-origin:bottom left;bottom:7px;left:20px}
+.sidebar .brand-flower span:nth-child(3){background:linear-gradient(130deg,#ee83ba,#942879);transform:rotate(48deg);transform-origin:bottom right;bottom:7px;left:14px}
+.sidebar .logo strong{font-size:2.65rem;line-height:1;letter-spacing:-.075em}
+.sidebar .logo small{color:#645372;margin-top:4px}
+:root[data-contrast="high"] .tool-tile,:root[data-contrast="high"] .resource-card,:root[data-contrast="high"] .resource-main,:root[data-contrast="high"] .health-topic{background:#100a15!important;color:#fff!important;border:1px solid #ded0ff!important}
+:root[data-contrast="high"] .resource-card p,:root[data-contrast="high"] .resource-card label,:root[data-contrast="high"] .tool-tile p,:root[data-contrast="high"] .resource-view p{color:#eee!important}
+:root[data-contrast="high"] .resource-view input,:root[data-contrast="high"] .resource-view textarea,:root[data-contrast="high"] .resource-view select{background:#0b0b0b!important;color:#fff!important;border-color:#ddd!important}
+:root[data-contrast="high"] .cv-output{background:white!important;color:#111!important}

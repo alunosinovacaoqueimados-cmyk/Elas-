@@ -1,0 +1,142 @@
+/* ELAS+ DESIGN SYSTEM | Identidade principal = index.html.
+   Componentes compartilhados e visual consistente, mantendo os comportamentos existentes.
+   Não modificar fontes, logo, nav, topo ou cores por página. */
+:root{
+ --ink:#251240;--sub:#51446e;--muted:#756b8e;--primary:#5423a4;--primary-strong:#47168c;
+ --pink:#f23991;--bg:#fffafd;--surface:#fff;--line:#f0e6f1;--shadow:0 12px 32px #48245f0b;
+ --elas-card-radius:13px;--elas-pill-radius:28px;--elas-card-gap:12px;
+}
+html{scroll-padding-top:86px}
+body{color:var(--ink);background:var(--bg);font-family:'DM Sans','Nunito Sans',system-ui,-apple-system,sans-serif}
+/* Shared navigation and exact dimensions from the home page */
+.layout{display:grid;grid-template-columns:245px minmax(0,1fr);min-height:100vh;background:var(--bg)}
+.layout>.sidebar{font-size:1rem}
+.layout .topbar{box-shadow:0 1px 0 #f4e9f2}
+.layout .topbar .search-box{box-shadow:0 2px 3px #ddd1e330 inset}
+.layout .topbar .notify-dot{display:block}
+.layout .sidebar .brand-subtitle{color:var(--sub)}
+.layout .shell{width:100%;max-width:1750px;margin:0 auto}
+.layout .shell .main,.layout .shell .resource-main,.layout .shell .moderation-main{padding:0 18px 26px 20px}
+.layout .shell .hero,.layout .shell .resource-hero{margin-top:0}
+.layout .shell h1,.layout .shell h2,.layout .shell h3{font-family:'DM Sans','Nunito Sans',system-ui,-apple-system,sans-serif;letter-spacing:-.035em}
+.layout .shell h2{font-size:1.22rem;font-weight:800;line-height:1.22}
+.layout .shell h3{font-size:1.02rem;font-weight:800;line-height:1.25}
+.layout .shell p{line-height:1.48}
+.layout .shell button,.layout .shell input,.layout .shell select,.layout .shell textarea{font-family:inherit}
+.layout .shell :is(button,a,input,select,textarea):focus-visible{outline:3px solid var(--focus,#754be5);outline-offset:3px}
+/* Hero hierarchy and image treatment exactly from Home */
+.layout .shell .hero,.layout .shell .resource-hero{
+ min-height:232px;height:auto;border-radius:13px;overflow:hidden;margin-bottom:18px;
+ background:radial-gradient(ellipse at 88% 40%,#c34a82 0,#7a225f 37%,transparent 67%),linear-gradient(100deg,#200c3d 0%,#421750 65%,#b82a81 100%);
+ box-shadow:none;color:#fff;
+}
+.layout .shell .hero{display:flex;align-items:center;padding:25px 30px}
+.layout .shell .hero:after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(90deg,#1e0d38f5 0%,#260c39b5 40%,#31123a10 74%,transparent 90%)}
+.layout .shell .hero .hero-text{z-index:3;max-width:64%;position:relative}
+.layout .shell .hero .hero-text h1,.layout .shell .resource-hero h1{font-size:2.4rem;line-height:1.05;font-weight:900;letter-spacing:-.045em;margin:8px 0 12px}
+.layout .shell .hero .hero-text p{font-size:1.09rem;line-height:1.36;max-width:515px;margin:0}
+.layout .shell .hero .overline,.layout .shell .resource-overline{font-size:.66rem;letter-spacing:.13em;color:#ffe3ed;font-weight:800}
+.layout .shell .hero-illustration{right:0;top:0;width:56%;height:100%;object-fit:cover;object-position:68% center;mask-image:linear-gradient(to right,transparent 0%,#000 30%)}
+.layout .shell .hero-message{display:none}
+.layout .shell .hero-cta{background:#ffffffed;color:#32134f;border-radius:24px;font-size:.86rem;padding:10px 16px;font-weight:800;margin-top:17px;text-decoration:none}
+.layout .shell .hero-cta:hover{background:#fff}
+.layout .shell .resource-hero{padding:28px 30px;display:flex;align-items:center;background:linear-gradient(90deg,#1e0d38 0%,#260c39d9 38%,#31123a42 71%,transparent 99%),url('assets/hero-women.webp') center right / cover no-repeat}
+.layout .shell .resource-hero>div{max-width:66%}
+.layout .shell .resource-hero p:not(.resource-overline){color:#fff;font-size:1.09rem;line-height:1.36;max-width:515px}
+/* Home quick-access cards also control safety shortcuts */
+.layout .shell #shortcutHeading{font-size:1.22rem;margin:0 0 12px;font-weight:800}
+.layout .shell .shortcuts{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-bottom:15px}
+.layout .shell .shortcuts .shortcut{display:flex;flex-direction:column;justify-content:center;align-items:center;
+ gap:5px;min-height:112px;padding:12px 8px;border:0;border-radius:11px;text-align:center;
+ box-shadow:none;font-size:.94rem;transition:transform .16s,box-shadow .16s;color:#251240}
+.layout .shell .shortcuts .shortcut:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+.layout .shell .shortcuts .shortcut svg{width:29px;height:29px;fill:currentColor}
+.layout .shell .shortcuts .shortcut strong{font-size:.92rem;line-height:1.13;font-weight:800;color:inherit}
+.layout .shell .shortcuts .shortcut small{font-size:.72rem;line-height:1.25;color:inherit;opacity:.79;margin:1px 0 0}
+.layout .shell .shortcuts .rose{background:#fbe0ed;color:#a90b5d}
+.layout .shell .shortcuts .lavender{background:#eee2ff;color:#7137db}
+.layout .shell .shortcuts .blue{background:#dfedff;color:#1d58d6}
+.layout .shell .shortcuts .mint{background:#d8f9e7;color:#0b8550}
+.layout .shell .shortcuts .fuchsia{background:#fae1f7;color:#c51a87}
+.layout .shell .identity-chips{gap:7px;margin:0 0 17px;font-size:.82rem;color:var(--sub)}
+.layout .shell .identity-chips button{border-radius:22px;background:#fff7fb;border:1px solid #f3dce9;color:#87356b;font-size:.78rem;padding:8px 13px;font-weight:700}
+/* Structured content: same white surfaces and corner radii as Home right rail */
+.layout .shell .page-grid{display:grid;grid-template-columns:minmax(295px,.9fr) minmax(355px,1.35fr);gap:14px;align-items:stretch}
+.layout .shell .page-grid>.panel,.layout .shell .page-grid>.right-panel>.panel,
+.layout .shell .resource-card,.layout .shell .tool-tile,.layout .shell .health-topic,.layout .shell .moderation-panel{
+ border-radius:13px;border:1px solid #f0e6f1;box-shadow:0 12px 32px #48245f0b
+}
+.layout .shell .assistant-panel{border:0;background:radial-gradient(circle at 105% 8%,#662177 0%,#321344 66%);padding:21px 18px;min-height:590px}
+.layout .shell .assistant-title-row h2{color:#fff;font-size:1.47rem}
+.layout .shell .assistant-panel .eyebrow{color:#ffb9df}
+.layout .shell .assistant-panel>p{font-size:.9rem;line-height:1.53}
+.layout .shell .assistant-panel .privacy-advice{font-size:.79rem;color:#f0ddf4}
+.layout .shell .assistant-panel .suggestions button{border-radius:24px;padding:10px 12px;font-size:.79rem;background:#fff;color:var(--ink)}
+.layout .shell .assistant-panel .chat-form{border-radius:13px;box-shadow:0 8px 24px #1f123320}
+.layout .shell .map-panel{padding:17px;min-height:590px;background:#fff}
+.layout .shell .map-panel h2{font-size:1.45rem}
+.layout .shell .map-panel .filter{border:1px solid #eadfee;border-radius:24px;background:#fcf6ff;font-size:.75rem}
+.layout .shell .map-panel .filter.is-active{background:var(--primary);border-color:var(--primary);color:white}
+.layout .shell .place{border-radius:10px;background:#fffafd}
+.layout .shell .register-btn,.layout .shell .btn-main{border:0;border-radius:11px;background:linear-gradient(120deg,#d62289,#a826b4);color:#fff;font-size:.84rem;padding:11px 15px;font-weight:800}
+.layout .shell .right-panel{grid-column:1 / -1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:start}
+.layout .shell .right-panel .panel{background:linear-gradient(155deg,#fff3f8,#fff9fc);padding:16px}
+.layout .shell .right-panel .action-stack{grid-row:span 2}
+.layout .shell .right-panel .community-box{grid-column:2}
+.layout .shell .right-panel h3{font-size:1.08rem;margin:0 0 12px}
+.layout .shell .right-action{background:#fff;border-radius:11px;color:var(--ink);padding:12px 13px;font-size:.86rem;min-height:58px}
+.layout .shell .right-action.primary{background:linear-gradient(115deg,#f9d9ed,#f7e4fa);color:#ad1679}
+.layout .shell .right-action small,.layout .shell .plan-item small{font-size:.76rem}
+.layout .shell .safety-plan .plan-item{font-size:.83rem}
+.layout .shell .sos-box{border:1px solid #f6d6e5;background:linear-gradient(110deg,#fff0f7,#ffe3ee)!important}
+.layout .shell .site-footer,.layout .shell .resource-footer{font-size:.77rem;color:var(--muted);text-align:center;margin:22px 0}
+/* Page resources: content tiles use same pastel language as Home */
+.layout .shell .section-tabs{padding:0 0 18px;gap:8px;margin:1px 0 0}
+.layout .shell .section-tabs a{padding:11px 16px;border-radius:24px;font-size:.86rem;border:1px solid #efddeb;background:#fff;color:var(--ink);font-weight:800}
+.layout .shell .section-tabs a.active{background:#f7d9ed;color:#a11769;border-color:#f7d9ed}
+.layout .shell .split-title{margin:2px 0 17px}
+.layout .shell .split-title h2{font-size:1.35rem}
+.layout .shell .split-title p{font-size:.9rem;color:var(--sub)}
+.layout .shell .tile-grid{gap:12px}
+.layout .shell .tool-tile{border:0;min-height:195px;padding:19px;box-shadow:none;background:#fbe0ed}
+.layout .shell .tool-tile:nth-child(6n+1){background:#fbe0ed}
+.layout .shell .tool-tile:nth-child(6n+2){background:#e7e3ff}
+.layout .shell .tool-tile:nth-child(6n+3){background:#e0f0ff}
+.layout .shell .tool-tile:nth-child(6n+4){background:#dff7ef}
+.layout .shell .tool-tile:nth-child(6n+5){background:#fff0d9}
+.layout .shell .tool-tile:nth-child(6n+6){background:#ffe3f2}
+.layout .shell .tool-tile h3{font-size:1.11rem;margin:12px 0 7px}
+.layout .shell .tool-tile p{font-size:.9rem;color:var(--sub)}
+.layout .shell .tool-tile a{font-size:.85rem;font-weight:800;color:var(--primary)}
+.layout .shell .tool-tile .tool-icon{border-radius:11px;width:42px;height:42px}
+.layout .shell .resource-card{background:#fff;border:1px solid #f0e6f1;padding:20px}
+.layout .shell .resource-card h3{font-size:1.1rem}
+.layout .shell .resource-card label{font-size:.84rem;color:var(--sub)}
+.layout .shell .resource-card :is(input:not([type=checkbox]),textarea,select){border:1px solid #e9dfed;border-radius:11px;font-size:.9rem;padding:10px 13px}
+.layout .shell .resource-card :is(input:not([type=checkbox]),textarea,select):focus{border-color:#b28ddc}
+.layout .shell .resource-primary{background:var(--primary);color:#fff;border-radius:11px;font-size:.85rem}
+.layout .shell .resource-outline{background:#f3e8ff;color:var(--primary);border-radius:11px}
+.layout .shell .health-topic{border:0;border-radius:11px;min-height:145px;box-shadow:none;background:#fae0ed}
+.layout .shell .health-topic:nth-child(4n+2){background:#eee2ff}
+.layout .shell .health-topic:nth-child(4n+3){background:#dcf7ee}
+.layout .shell .health-topic:nth-child(4n+4){background:#dfedff}
+.layout .shell .health-topic strong{font-size:.98rem}
+.layout .shell .info-note{border-radius:11px;font-size:.85rem;background:#fbf2fc;color:var(--sub)}
+/* Administration uses home shell, a familiar hero and identical form surfaces */
+.layout .shell .moderation-main{min-width:0}
+.layout .shell .moderation-hero{margin-bottom:20px}
+.layout .shell .moderation-section h2{margin:0 0 8px}
+.layout .shell .moderation-lead{font-size:.91rem;color:var(--sub);margin:0 0 16px}
+.layout .shell .admin-panel{border:1px solid var(--line);background:#fff;border-radius:13px;box-shadow:var(--shadow);max-width:860px;padding:23px}
+.layout .shell .admin-panel label{display:block;font-size:.85rem;font-weight:800}
+.layout .shell .admin-panel input{width:100%;max-width:460px;height:44px;border-radius:11px;border:1px solid #e9dfed;padding:11px 13px;background:white;margin-top:10px}
+.layout .shell .admin-panel button{border:0;background:var(--primary);color:#fff;border-radius:11px;padding:11px 17px;font-weight:800;cursor:pointer}
+.layout .shell .admin-panel .report{background:#fffafd;border:1px solid #f0e6f1;border-radius:12px;padding:15px;margin:12px 0;overflow-wrap:anywhere}
+.layout .shell .admin-panel .report .reject{background:#ae2559}
+.layout .shell .admin-panel .muted{color:var(--muted);font-size:.8rem}
+@media(min-width:1480px){.layout .shell .page-grid{grid-template-columns:minmax(340px,.85fr) minmax(460px,1.2fr) minmax(258px,.71fr)}.layout .shell .right-panel{grid-column:auto;display:grid;grid-template-columns:1fr}.layout .shell .right-panel .action-stack,.layout .shell .right-panel .community-box{grid-column:auto;grid-row:auto}}
+@media(max-width:1340px){.layout{grid-template-columns:215px minmax(0,1fr)}}
+@media(max-width:1000px){.layout .shell .page-grid{grid-template-columns:1fr}.layout .shell .assistant-panel{min-height:0}.layout .shell .map-panel{min-height:530px}.layout .shell .shortcuts{grid-template-columns:repeat(3,minmax(0,1fr))}.layout .shell .right-panel{grid-template-columns:repeat(2,minmax(0,1fr))}.layout .shell .resource-hero>div{max-width:76%}}
+@media(max-width:760px){.layout{display:block}.layout .shell .main,.layout .shell .resource-main,.layout .shell .moderation-main{padding:12px}.layout .shell .hero,.layout .shell .resource-hero{min-height:210px}.layout .shell .hero{padding:22px 20px}.layout .shell .hero .hero-text{max-width:84%}.layout .shell .hero .hero-text h1,.layout .shell .resource-hero h1{font-size:1.87rem}.layout .shell .hero .hero-text p,.layout .shell .resource-hero p:not(.resource-overline){font-size:.97rem}.layout .shell .hero-illustration{width:55%;opacity:.42}.layout .shell .resource-hero{padding:22px 20px;background-position:62% center}.layout .shell .resource-hero>div{max-width:95%}.layout .shell .shortcuts{grid-template-columns:repeat(2,minmax(0,1fr))}.layout .shell .right-panel{grid-template-columns:1fr}.layout .shell .right-panel .action-stack,.layout .shell .right-panel .community-box{grid-column:auto;grid-row:auto}.layout .shell .section-tabs{padding-bottom:14px}}
+@media(max-width:430px){.layout .shell .hero .hero-text{max-width:100%}.layout .shell .hero .hero-text h1{font-size:1.7rem}.layout .shell .shortcuts .shortcut{min-height:102px}.layout .shell .resource-card{padding:16px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.layout .shell :is(.shortcut,.tool-tile,.health-topic){transition:none}}
