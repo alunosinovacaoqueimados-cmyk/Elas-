@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#fffafd">
-<meta name="description" content="Elas+ Oportunidades: encontre vagas e programas de empregabilidade com foco na inclusão de mulheres.">
-<title>Oportunidades para mulheres | Elas+</title>
+<meta name="description" content="Elas+ Oportunidades: veja vagas reais, explore detalhes, filtre oportunidades e salve suas favoritas.">
+<title>Encontre vagas de emprego | Elas+ Oportunidades</title>
 <link rel="stylesheet" href="styles.css">
 <link rel="stylesheet" href="site-shell.css">
 <link rel="stylesheet" href="design-system.css">
@@ -14,7 +14,7 @@
 <script defer src="vagas-mulheres.js"></script>
 </head>
 <body>
-<a class="skip-link" href="#main">Pular para as oportunidades</a>
+<a class="skip-link" href="#main">Ir para as oportunidades</a>
 <div class="layout jobs-page">
 <aside aria-label="Menu lateral" class="sidebar" id="sidebar">
 <a aria-label="Elas+ — página inicial" class="brand" href="index.html">
@@ -57,73 +57,90 @@
 <a class="account" href="recursos.html#perfil"><span aria-hidden="true" class="avatar">E</span><span>Olá, visitante</span><svg aria-hidden="true"><use href="#i-chevron-down"></use></svg></a>
 </div>
 </header>
-<main id="main" class="jobs-main">
-<section class="jobs-hero" aria-labelledby="jobsTitle">
-<div class="jobs-hero-copy">
-<span class="jobs-eyebrow">ELAS+ · CARREIRA E AUTONOMIA</span>
-<h1 id="jobsTitle">Oportunidades para você crescer.</h1>
-<p>Explore vagas de emprego e iniciativas de inclusão feminina em um só lugar, com informação e transparência.</p>
+<main class="jobs-main" id="main">
+<nav aria-label="Caminho de navegação" class="jobs-breadcrumb"><a href="index.html">Início</a><span aria-hidden="true">/</span><a href="recursos.html#carreira">Carreira</a><span aria-hidden="true">/</span><strong>Vagas</strong></nav>
+<header class="jobs-intro">
+<div class="jobs-intro-content">
+<span class="jobs-eyebrow"><span class="jobs-eyebrow-dot"></span> ELAS+ OPORTUNIDADES</span>
+<h1>Encontre sua próxima oportunidade<span>.</span></h1>
+<p>Vagas reais, informações claras e espaço para construir sua carreira. Busque, compare e salve as que fazem sentido para você.</p>
 </div>
-</section>
-<p class="jobs-overview"><span class="jobs-spark" aria-hidden="true"></span><strong>Elas+ Oportunidades</strong><span aria-hidden="true">·</span> Um espaço pensado para sua trajetória profissional. <a class="jobs-cv-link" href="recursos.html#carreira">Criar currículo <span aria-hidden="true">↗</span></a></p>
-<div class="jobs-workspace">
-<section class="jobs-filter-panel" aria-labelledby="filterHeading">
-<div class="jobs-filter-head">
-<div><h2 id="filterHeading">Filtros de busca</h2><p>Encontre o que combina com você.</p></div>
-<button class="jobs-reset" id="clearFilters" type="button">Limpar</button>
+<a class="jobs-cv-button" href="recursos.html#carreira">✦ Criar meu currículo <span aria-hidden="true">↗</span></a>
+</header>
+<form class="jobs-search" id="filters" role="search" autocomplete="off">
+<label class="jobs-search-field jobs-search-keyword" for="keyword">
+<span class="jobs-search-icon" aria-hidden="true">⌕</span><span class="jobs-visually-hidden">Cargo, profissão ou empresa</span>
+<input id="keyword" type="search" maxlength="100" placeholder="Cargo, profissão ou empresa">
+</label>
+<label class="jobs-search-field jobs-search-location" for="location">
+<span class="jobs-search-icon" aria-hidden="true">⌖</span><span class="jobs-visually-hidden">País ou região da vaga</span>
+<input id="location" type="search" maxlength="100" placeholder="País ou região (ex.: Brasil, LATAM)">
+</label>
+<button class="jobs-primary-button jobs-search-button" type="submit"><span aria-hidden="true">⌕</span> Buscar vagas</button>
+</form>
+<div class="jobs-feed-note" role="note">
+<span class="jobs-feed-note-icon" aria-hidden="true">✓</span>
+<span><strong>Vagas reais:</strong> listadas por fontes identificadas. A Remotive oferece oportunidades remotas internacionais; confira restrições de país, idioma e elegibilidade antes de se candidatar.</span>
 </div>
-<form id="filters" role="search" autocomplete="off">
-<div class="jobs-fields">
-<label class="jobs-field" for="keyword"><span>Cargo ou palavra-chave</span><input class="jobs-input" id="keyword" type="search" maxlength="100" placeholder="Ex.: atendimento, tecnologia"></label>
-<label class="jobs-field" for="location"><span>Cidade ou região</span><input class="jobs-input" id="location" type="text" maxlength="100" placeholder="Ex.: Rio de Janeiro"></label>
-<details class="jobs-more" id="advancedFilters" open>
-<summary>Mais filtros</summary>
-<div class="jobs-more-fields">
-<label class="jobs-field" for="modality"><span>Modalidade</span><select class="jobs-select" id="modality"><option value="">Todas as modalidades</option><option value="remoto">Remoto</option><option value="hibrido">Híbrido</option><option value="presencial">Presencial</option></select></label>
-<label class="jobs-field" for="level"><span>Nível de experiência</span><select class="jobs-select" id="level"><option value="">Todos os níveis</option><option value="estagio">Estágio</option><option value="junior">Júnior</option><option value="pleno">Pleno</option><option value="senior">Sênior</option></select></label>
-<label class="jobs-field" for="focus"><span>Tipo de oportunidade</span><select class="jobs-select" id="focus"><option value="">Todas as oportunidades</option><option value="geral">Vagas gerais</option><option value="afirmativa_mulheres">Afirmativas para mulheres</option><option value="diversidade">Programas de diversidade</option></select></label>
+<section class="jobs-board" aria-label="Painel de oportunidades">
+<aside class="jobs-side">
+<details class="jobs-filter-drawer" id="advancedFilters" open>
+<summary><span>☷ <strong>Filtros</strong></span><span class="jobs-filter-toggle">Mostrar / ocultar</span></summary>
+<div class="jobs-filter-content">
+<div class="jobs-filter-bar"><strong>Refine sua busca</strong><button type="button" id="clearFilters">Limpar tudo</button></div>
+<fieldset class="jobs-filter-group">
+<legend>Modalidade</legend>
+<label><input type="radio" name="modality" value="" checked> Todas</label>
+<label><input type="radio" name="modality" value="remoto"> Remoto</label>
+<label><input type="radio" name="modality" value="hibrido"> Híbrido</label>
+<label><input type="radio" name="modality" value="presencial"> Presencial</label>
+</fieldset>
+<div class="jobs-filter-group">
+<label for="level" class="jobs-filter-label">Nível profissional</label>
+<select id="level"><option value="">Todos os níveis</option><option value="estagio">Estágio</option><option value="junior">Júnior</option><option value="pleno">Pleno</option><option value="senior">Sênior</option></select>
+</div>
+<div class="jobs-filter-group">
+<label for="focus" class="jobs-filter-label">Tipo de oportunidade</label>
+<select id="focus"><option value="">Todas as oportunidades</option><option value="afirmativa_mulheres">Afirmativas para mulheres</option><option value="diversidade">Programas de diversidade</option><option value="geral">Vagas gerais</option></select>
+<small>Oportunidades afirmativas só aparecem assim quando verificadas por curadoria.</small>
+</div>
+<div class="jobs-filter-group">
+<label for="source" class="jobs-filter-label">Fonte das vagas</label>
+<select id="source"><option value="">Todas as fontes</option><option value="remotive">Remotive (remotas)</option><option value="elas">Elas+ (curadoria)</option></select>
+</div>
 </div>
 </details>
+<div class="jobs-side-tip"><span aria-hidden="true">✦</span><p><strong>Dica de carreira</strong> Salve vagas interessantes para comparar depois e prepare seu currículo antes de se candidatar.</p></div>
+</aside>
+<div class="jobs-results">
+<div class="jobs-results-head">
+<div class="jobs-results-head-text"><h2 id="resultsHeading">Oportunidades abertas</h2><p id="resultsDescription">Carregando informações das fontes de vagas…</p></div>
+<div class="jobs-results-control">
+<label for="sort">Ordenar por <select id="sort"><option value="recent">Mais recentes</option><option value="title">Título A–Z</option></select></label>
 </div>
-</form>
-<p class="jobs-sidebar-help">Os resultados são atualizados automaticamente. Vagas afirmativas são identificadas somente quando a fonte informa esse critério.</p>
-</section>
-<section class="jobs-results-panel" aria-labelledby="resultsHeading">
-<div class="jobs-section-title">
-<div><h2 id="resultsHeading">Encontre sua próxima oportunidade</h2><p id="resultsDescription">Vagas com informações verificadas e candidaturas na fonte original.</p></div>
-<span class="jobs-counter" id="count" role="status" aria-live="polite">Carregando…</span>
 </div>
-<div class="jobs-tabs" role="tablist" aria-label="Visualizar vagas">
-<button type="button" class="jobs-tab" id="tabAll" role="tab" aria-selected="true" aria-controls="jobsResults" data-view="all">Todas as vagas</button>
-<button type="button" class="jobs-tab" id="tabSaved" role="tab" aria-selected="false" aria-controls="jobsResults" data-view="saved">★ Salvas</button>
+<div class="jobs-tabs" role="tablist" aria-label="Visualização de vagas">
+<button id="tabAll" class="jobs-tab" role="tab" aria-selected="true" aria-controls="jobsResults" data-view="all">Todas as vagas</button>
+<button id="tabSaved" class="jobs-tab" role="tab" aria-selected="false" aria-controls="jobsResults" data-view="saved">★ Salvas</button>
+<span id="count" class="jobs-count" role="status" aria-live="polite">Carregando…</span>
 </div>
-<div id="jobsResults" role="tabpanel" aria-labelledby="tabAll" tabindex="0">
-<div id="cards" class="jobs-cards"></div>
-</div>
-</section>
-</div>
-<div class="jobs-footer-grid">
-<section class="jobs-information" aria-labelledby="exploreMoreTitle">
-<h2 id="exploreMoreTitle">Explore outras oportunidades</h2>
-<p>Enquanto ampliamos nosso catálogo, você pode buscar diretamente no LinkedIn. Esses resultados externos não são verificados pelo Elas+.</p>
-<div class="jobs-quick-links" aria-label="Sugestões de buscas">
-<button class="jobs-quick-link" type="button" data-suggestion="estágio">Primeiro emprego</button>
-<button class="jobs-quick-link" type="button" data-suggestion="tecnologia">Tecnologia</button>
-<button class="jobs-quick-link" type="button" data-suggestion="administração">Administração</button>
-<button class="jobs-quick-link" type="button" data-suggestion="atendimento">Atendimento</button>
-</div>
-<p class="jobs-external-cta"><a id="externalSearchLink" class="jobs-button" href="https://www.linkedin.com/jobs/" target="_blank" rel="noopener noreferrer">Pesquisar vagas no LinkedIn ↗</a></p>
-</section>
-<section class="jobs-information" aria-labelledby="transparencyTitle">
-<h2 id="transparencyTitle">Informação confiável, sem promessas vazias</h2>
-<p>Somente anúncios com empresa, fonte, endereço de candidatura e datas válidas entram no catálogo. Vagas vencidas ficam ocultas.</p>
-<p>Se você salvar uma oportunidade, ela fica apenas neste navegador. Nenhuma candidatura é enviada automaticamente.</p>
+<div id="jobsResults" class="jobs-body" role="tabpanel" aria-labelledby="tabAll" tabindex="0">
+<section class="jobs-list" aria-label="Resultados da busca"><div id="cards" class="jobs-list-inner"></div></section>
+<section class="jobs-details" aria-label="Detalhes da oportunidade" id="jobDetails">
+<div id="detailContent" class="jobs-detail-content"><div class="jobs-detail-welcome"><span aria-hidden="true">✦</span><h3>Escolha uma vaga</h3><p>Veja detalhes, local de contratação e o link oficial de candidatura.</p></div></div>
 </section>
 </div>
-<footer class="jobs-footer">Elas+ · Conexão, apoio e oportunidades · <a href="recursos.html#carreira">Voltar para Carreira</a></footer>
+<div class="jobs-results-bottom"><span id="sourceStatus">Fontes: catálogo Elas+ e Remotive</span><a id="externalSearchLink" href="https://www.linkedin.com/jobs/" target="_blank" rel="noopener noreferrer">Pesquisar também no LinkedIn ↗</a></div>
+</div>
+</section>
+<section class="jobs-bottom" aria-label="Informações sobre as oportunidades">
+<div><h2>Mais possibilidades para sua carreira</h2><p>Quer encontrar vagas presenciais, híbridas ou específicas da sua cidade? Abra uma pesquisa atualizada no LinkedIn com o cargo e a região escolhidos acima.</p></div>
+<a id="linkedinSearchButton" class="jobs-outline-button" target="_blank" rel="noopener noreferrer" href="https://www.linkedin.com/jobs/">Abrir busca no LinkedIn <span aria-hidden="true">↗</span></a>
+</section>
+<p class="jobs-disclosure">O Elas+ não é afiliado ao LinkedIn ou à Remotive. A Remotive permite a exibição de vagas com atribuição e link para a fonte. As vagas internacionais podem não aceitar candidatas do Brasil. Programas afirmativos precisam de confirmação expressa; não inferimos elegibilidade por gênero. Favoritos ficam apenas no seu navegador.</p>
+<footer class="jobs-footer">Elas+ · Conexão, apoio e oportunidades · <a href="recursos.html#carreira">Carreira e Mães Solo</a></footer>
 </main>
-</div>
-</div>
+</div></div>
 <svg aria-hidden="true" class="svg-defs" focusable="false" xmlns="http://www.w3.org/2000/svg">
 <symbol id="i-home" viewbox="0 0 24 24"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1Z"></path></symbol>
 <symbol id="i-shield" viewbox="0 0 24 24"><path d="M12 2 4 5v6c0 5.6 3.5 8.8 8 11 4.5-2.2 8-5.4 8-11V5Z"></path><path class="icon-cutout" d="m12 7 1.4 2.8 3.1.4-2.2 2.2.5 3.1-2.8-1.5-2.8 1.5.5-3.1-2.2-2.2 3.1-.4Z"></path></symbol>
