@@ -21,3 +21,24 @@
 .layout .shell .resource-card.career-opportunities-banner p{font-size:.87rem;color:#5b4567;line-height:1.5;margin:0;max-width:560px}
 .layout .shell .resource-card.career-opportunities-banner .resource-primary{white-space:nowrap;flex-shrink:0}
 @media(max-width:720px){.layout .shell .resource-card.career-opportunities-banner{flex-direction:column;align-items:stretch;padding:19px;gap:15px}.layout .shell .resource-card.career-opportunities-banner .resource-primary{width:100%}}
+
+
+/* Área de Carreira: oportunidades visíveis acima do formulário de currículo. */
+.layout .shell .career-live-board{background:#fff;border:1px solid #f0e6f1;border-radius:13px;padding:19px;margin:0 0 22px;box-shadow:0 8px 25px #48245f08}
+.layout .shell .career-live-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px}
+.layout .shell .career-live-head h3{font-size:1.12rem;margin:0 0 5px}
+.layout .shell .career-live-head p{font-size:.85rem;color:var(--sub);margin:0}
+.layout .shell .career-live-head>a{color:var(--primary);font-size:.83rem;font-weight:800;text-decoration:none}
+.layout .shell .career-live-head>a:hover{text-decoration:underline}
+.layout .shell .career-live-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.layout .shell .career-live-card{display:flex;flex-direction:column;border:1px solid #e9ddea;border-radius:12px;background:#fff;padding:16px;gap:9px;min-width:0;transition:border-color .16s,background .16s}
+.layout .shell .career-live-card:hover{border-color:#c99fdb;background:#fdf8ff}
+.layout .shell .career-live-card strong{font-size:.95rem;line-height:1.35;overflow-wrap:anywhere}
+.layout .shell .career-live-card .career-live-company{font-size:.8rem;color:var(--sub);margin:0}
+.layout .shell .career-live-card .career-live-loc{font-size:.76rem;color:#7d7188;margin:0;line-height:1.4}
+.layout .shell .career-live-card a{color:var(--primary);font-size:.84rem;font-weight:800;text-decoration:none;margin-top:auto}
+.layout .shell .career-live-card a:hover{text-decoration:underline}
+.layout .shell .career-live-disclaimer{font-size:.73rem;line-height:1.55;color:#746682;margin:12px 0 0}
+.layout .shell .career-cv-title{margin-top:23px}
+@media(max-width:1000px){.layout .shell .career-live-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){.layout .shell .career-live-board{padding:15px}.layout .shell .career-live-grid{grid-template-columns:1fr}.layout .shell .career-live-card{padding:14px}.layout .shell .career-live-head{align-items:flex-start}}
