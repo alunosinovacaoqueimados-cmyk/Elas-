@@ -211,12 +211,14 @@ const menuButton = byId('menu');
 const backdrop = byId('scrim');
 function closeMenu() {
   sidebar.classList.remove('open');
+  document.body.classList.remove('jobs-menu-open');
   backdrop.hidden = true;
   menuButton.setAttribute('aria-expanded', 'false');
 }
 function toggleMenu() {
   const open = sidebar.classList.toggle('open');
   backdrop.hidden = !open;
+  document.body.classList.toggle('jobs-menu-open', open);
   menuButton.setAttribute('aria-expanded', String(open));
   if (open) sidebar.querySelector('a.nav-link')?.focus();
 }
@@ -226,7 +228,15 @@ sidebar?.querySelectorAll('a').forEach(link => link.addEventListener('click', cl
 function quickExit() { window.location.replace('https://www.google.com/'); }
 document.querySelectorAll('[data-action="exit"]').forEach(button => button.addEventListener('click', quickExit));
 document.addEventListener('keydown', event => {
-  if (event.key === 'Escape') closeMenu();
+  if (event.key === 'Escape' && sidebar.classList.contains('open')) { closeMenu(); menuButton.focus(); }
+  if (event.key === 'Tab' && sidebar.classList.contains('open')) {
+    const items = [...sidebar.querySelectorAll('a[href],button:not([disabled])')];
+    if (items.length) {
+      const first = items[0], last = items[items.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    }
+  }
   if (event.altKey && event.key.toLowerCase() === 'x') { event.preventDefault(); quickExit(); }
 });
 const careerLink = sidebar?.querySelector('a[href="recursos.html#carreira"]');
@@ -235,6 +245,7 @@ const mobileQuery = matchMedia('(max-width: 620px)');
 function adaptMoreFilters() { byId('advancedFilters').open = !mobileQuery.matches; }
 adaptMoreFilters();
 mobileQuery.addEventListener?.('change', adaptMoreFilters);
+matchMedia('(max-width: 760px)').addEventListener?.('change', event => { if (!event.matches) closeMenu(); });
 fetch('vagas-catalogo.json', { cache: 'no-store' })
   .then(response => { if (!response.ok) throw Error('Catálogo indisponível'); return response.json(); })
   .then(data => { jobs = (Array.isArray(data) ? data : []).filter(isValidJob); loadState = 'ready'; render(); })
