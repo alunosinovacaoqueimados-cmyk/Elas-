@@ -91,7 +91,13 @@ function cardFor(job) {
   badge.dataset.category = job.category || 'geral';
   article.append(title, company, particulars, badge);
   if (job.description) article.append(node('p', String(job.description)));
-  article.append(node('p', 'Fonte: ' + job.source + ' · Verificada em ' + formatDate(job.verified_at) + ' · Até ' + formatDate(job.expires_at), 'jobs-meta'));
+  const sourceLine = node('p', 'Fonte: ', 'jobs-meta');
+  const sourceLink = node('a', job.source, 'jobs-source-link');
+  sourceLink.href = job.source_url;
+  sourceLink.target = '_blank';
+  sourceLink.rel = 'noopener noreferrer';
+  sourceLine.append(sourceLink, document.createTextNode(' · Verificada em ' + formatDate(job.verified_at) + ' · Até ' + formatDate(job.expires_at)));
+  article.append(sourceLine);
   const actions = node('div', undefined, 'jobs-card-actions');
   const link = node('a', 'Ver vaga e candidatar-se ↗', 'jobs-button');
   link.href = job.apply_url;
