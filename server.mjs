@@ -48,7 +48,7 @@ const SYSTEM='Você é a assistente informativa Elas+ para mulheres brasileiras.
 function send(res,code,data,extra={}){res.writeHead(code,{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff',...extra});res.end(JSON.stringify(data));}
 function rate(req,scope,max,period){const ip=req.socket.remoteAddress||'anon';const k=ip+':'+scope,now=Date.now();const times=(limiter.get(k)||[]).filter(t=>now-t<period);if(times.length>=max)return false;times.push(now);limiter.set(k,times);if(limiter.size>2000){for(const [key,t] of limiter)if(t.every(x=>now-x>period))limiter.delete(key);}return true;}
 async function bodyJSON(req,limit=2000){if(req.body!==undefined&&req.body!==null){const raw=typeof req.body==='string'?req.body:JSON.stringify(req.body);if(Buffer.byteLength(raw)>limit){const e=new Error('Corpo muito grande');e.status=413;throw e;}try{return typeof req.body==='string'?JSON.parse(raw):req.body;}catch{const e=new Error('JSON inválido');e.status=400;throw e;}}const chunks=[];let len=0;for await(const chunk of req){len+=chunk.length;if(len>limit){const e=new Error('Corpo muito grande');e.status=413;throw e;}chunks.push(chunk);}try{return JSON.parse(Buffer.concat(chunks).toString('utf8'));}catch{const e=new Error('JSON inválido');e.status=400;throw e;}}
-const remoteHeaders={'User-Agent':'ElasPlus/1.0 (prototipo de apoio; contato: administrador-local)','Accept':'application/json'};
+const remoteHeaders={'User-Agent':'ElasPlus/2.0 (+https://github.com/alunosinovacaoqueimados-cmyk/Elas-)','Accept':'application/json'};
 async function remoteJSON(url,opts={},timeout=12000){const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),timeout);try{const response=await fetch(url,{...opts,headers:{...remoteHeaders,...opts.headers},signal:controller.signal});if(!response.ok)throw Error('Fonte externa retornou '+response.status);const text=await response.text();if(text.length>4_000_000)throw Error('Resultado excessivo');return JSON.parse(text);}finally{clearTimeout(timer);}}
 function coord(value,min,max){if(value===null||value===undefined||value==='')return null;const n=Number(value);return Number.isFinite(n)&&n>=min&&n<=max?n:null;}
 async function geocode(q){const key=q.toLocaleLowerCase('pt-BR');const cached=geocodeCache.get(key);if(cached&&cached.exp>Date.now())return cached.data;
@@ -60,13 +60,27 @@ async function geocode(q){const key=q.toLocaleLowerCase('pt-BR');const cached=ge
 function placeType(t){const a=t.amenity||'',o=t.office||'',h=t.healthcare||'';if(a==='police')return 'police';if(['hospital','clinic','doctors','dentist'].includes(a)||['hospital','clinic','doctor'].includes(h))return 'health';if(a==='pharmacy')return 'pharmacy';if(['kindergarten','childcare'].includes(a)||t.social_facility==='day_care')return 'childcare';if(['social_facility','community_centre'].includes(a)||['government','social','lawyer'].includes(o))return 'social';return 'social';}
 async function nearby(lat,lon){const key=[lat.toFixed(2),lon.toFixed(2)].join(':');const cached=placesCache.get(key);if(cached?.exp>Date.now())return cached.data;
   if(cached?.pending)return cached.pending;
-  const task=(async()=>{const query=`[out:json][timeout:18];(nwr(around:4500,${lat.toFixed(3)},${lon.toFixed(3)})[amenity~"^(police|hospital|clinic|doctors|pharmacy|social_facility|community_centre|kindergarten|childcare)$"];nwr(around:4500,${lat.toFixed(3)},${lon.toFixed(3)})[office~"^(government|social|lawyer)$"];nwr(around:4500,${lat.toFixed(3)},${lon.toFixed(3)})[healthcare~"^(hospital|clinic|doctor)$"];);out center 170;`;
-    const result=await remoteJSON(process.env.OVERPASS_URL||'https://overpass-api.de/api/interpreter',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'},body:new URLSearchParams({data:query}).toString()},24000);
+  const task=(async()=>{const query=`[out:json][timeout:12];(nwr(around:4500,${lat.toFixed(3)},${lon.toFixed(3)})[amenity~"^(police|hospital|clinic|doctors|pharmacy|social_facility|community_centre|kindergarten|childcare)$"];nwr(around:4500,${lat.toFixed(3)},${lon.toFixed(3)})[office~"^(government|social|lawyer)$"];nwr(around:4500,${lat.toFixed(3)},${lon.toFixed(3)})[healthcare~"^(hospital|clinic|doctor)$"];);out center 170;`;
+    const endpoints=process.env.OVERPASS_URL?[process.env.OVERPASS_URL]:[
+      'https://overpass.kumi.systems/api/interpreter',
+      'https://overpass-api.de/api/interpreter',
+      'https://overpass.private.coffee/api/interpreter'
+    ];
+    const request=endpoint=>remoteJSON(endpoint,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'},body:new URLSearchParams({data:query}).toString()},8000);
+    const result=endpoints.length===1?await request(endpoints[0]):await Promise.any(endpoints.map(request));
     const data=[],ids=new Set();for(const p of result.elements||[]){const la=coord(p.lat??p.center?.lat,-90,90),lo=coord(p.lon??p.center?.lon,-180,180);const id=String(p.type)+':'+String(p.id);if(la===null||lo===null||ids.has(id))continue;ids.add(id);const t=p.tags||{};data.push({id,lat:la,lon:lo,type:placeType(t),name:String(t.name||t['name:pt']||'Serviço sem nome informado').slice(0,110),address:[t['addr:street'],t['addr:housenumber']].filter(Boolean).join(', ').slice(0,150),phone:String(t.phone||t['contact:phone']||'').slice(0,80),website:(/^https?:\/\//i.test(t.website||'')?t.website:'').slice(0,240),source:'OpenStreetMap'});}placesCache.set(key,{data,exp:Date.now()+30*60000});return data;})();
   placesCache.set(key,{pending:task,exp:0});try{return await task;}catch(e){placesCache.delete(key);throw e;}
 }
 async function getReports(){try{const obj=JSON.parse(await fs.readFile(REPORT_FILE,'utf8'));return Array.isArray(obj.submissions)?obj.submissions:[];}catch(e){if(e.code==='ENOENT')return [];throw e;}}
-async function mutateReports(mutator){const task=reportQueue.then(async()=>{const reports=await getReports();const result=mutator(reports);await fs.mkdir(path.dirname(REPORT_FILE),{recursive:true});const tmp=REPORT_FILE+'.tmp';await fs.writeFile(tmp,JSON.stringify({submissions:reports},null,2),{mode:0o600});await fs.rename(tmp,REPORT_FILE);return result;});reportQueue=task.catch(()=>{});return task;}
+async function replaceReportFile(tmp){
+  try{await fs.rename(tmp,REPORT_FILE);}
+  catch(e){
+    if(!['EPERM','EACCES'].includes(e.code))throw e;
+    // Alguns ambientes Windows bloqueiam rename mesmo dentro de um diretório gravável.
+    await fs.copyFile(tmp,REPORT_FILE);await fs.rm(tmp,{force:true});
+  }
+}
+async function mutateReports(mutator){const task=reportQueue.then(async()=>{const reports=await getReports();const result=mutator(reports);await fs.mkdir(path.dirname(REPORT_FILE),{recursive:true});const tmp=REPORT_FILE+'.tmp';await fs.writeFile(tmp,JSON.stringify({submissions:reports},null,2),{mode:0o600});await replaceReportFile(tmp);return result;});reportQueue=task.catch(()=>{});return task;}
 function isAdmin(req){if(!ADMIN_TOKEN||ADMIN_TOKEN.length<16)return false;const incoming=req.headers.authorization||'';if(!incoming.startsWith('Bearer '))return false;const a=Buffer.from(incoming.slice(7)),b=Buffer.from(ADMIN_TOKEN);return a.length===b.length&&crypto.timingSafeEqual(a,b);}
 function publicReport(r){return {id:r.id,kind:r.kind||'info',category:r.category,description:r.description,lat:r.lat,lon:r.lon,createdAt:r.createdAt};}
 async function api(req,res,u){const p=u.pathname;
