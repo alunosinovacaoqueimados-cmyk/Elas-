@@ -45,7 +45,7 @@ function showDialog(dialog){
 function openModule(key){
   const destination={
     seguranca:'seguranca.html',mapa:'mapa-seguro.html',servicos:'recursos.html#servicos',
-    saude:'recursos.html#saude',carreira:'recursos.html#carreira',vagas:'recursos.html#carreira',
+    saude:'recursos.html#saude',carreira:'recursos.html#carreira',vagas:'vagas-mulheres.html',
     curriculo:'recursos.html#carreira',creches:'mapa-seguro.html?f=childcare',pediatras:'mapa-seguro.html?f=health',
     comunidade:'recursos.html#comunidade',perfil:'recursos.html#perfil',menopausa:'recursos.html#saude',
     jovens:'recursos.html#saude',inclusao:'recursos.html#saude',maes:'recursos.html#carreira',
