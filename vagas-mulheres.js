@@ -34,7 +34,7 @@ function isValidJob(job) {
   if (!job || typeof job !== 'object') return false;
   const required = ['id', 'title', 'company', 'source', 'source_url', 'apply_url', 'verified_at', 'expires_at'];
   if (required.some(k => typeof job[k] !== 'string' || !job[k].trim())) return false;
-  if (job.category && !allowedCategories.has(job.category)) return false;
+  if (!allowedCategories.has(job.category)) return false;
   if (job.modality && !allowedModalities.has(job.modality)) return false;
   if (job.level && !allowedLevels.has(job.level)) return false;
   try {
@@ -65,10 +65,8 @@ function externalUrl(override) {
   params.set('keywords', [keyword, suffix].filter(Boolean).join(' ') || 'vagas');
   const location = byId('location').value.trim();
   if (location) params.set('location', location);
-  const modality = { presencial: '1', remoto: '2', hibrido: '3' }[byId('modality').value];
-  const level = { estagio: '1', junior: '2', pleno: '3', senior: '4' }[byId('level').value];
-  if (modality) params.set('f_WT', modality);
-  if (level) params.set('f_E', level);
+  // Modalidade/nível filtram apenas o catálogo Elas+. Evita equivalências
+  // incorretas entre os nomes das categorias do Elas+ e códigos de terceiros.
   return 'https://www.linkedin.com/jobs/search/?' + params.toString();
 }
 function updateExternalLinks() {
@@ -245,6 +243,17 @@ document.addEventListener('keydown', event => {
   }
   if (event.altKey && event.key.toLowerCase() === 'x') { event.preventDefault(); quickExit(); }
 });
+// Respeita preferências de legibilidade já definidas no restante do Elas+.
+try {
+  const preferences = JSON.parse(localStorage.getItem('elasplus_preferences') || '{}');
+  if (preferences && typeof preferences === 'object') {
+    const root = document.documentElement;
+    if (['normal', 'large', 'larger'].includes(preferences.fontSize)) root.dataset.font = preferences.fontSize;
+    if (['purple', 'pink', 'green'].includes(preferences.theme)) root.dataset.theme = preferences.theme;
+    root.dataset.contrast = preferences.contrast ? 'high' : 'normal';
+    root.dataset.dyslexia = preferences.dyslexia ? 'yes' : 'no';
+  }
+} catch { /* Preferências opcionais. */ }
 const careerLink = sidebar?.querySelector('a[href="recursos.html#carreira"]');
 if (careerLink) { careerLink.classList.add('active'); careerLink.setAttribute('aria-current', 'page'); }
 const mobileQuery = matchMedia('(max-width: 620px)');
@@ -254,7 +263,16 @@ mobileQuery.addEventListener?.('change', adaptMoreFilters);
 matchMedia('(max-width: 760px)').addEventListener?.('change', event => { if (!event.matches) closeMenu(); });
 fetch('vagas-catalogo.json', { cache: 'no-store' })
   .then(response => { if (!response.ok) throw Error('Catálogo indisponível'); return response.json(); })
-  .then(data => { jobs = (Array.isArray(data) ? data : []).filter(isValidJob); loadState = 'ready'; render(); })
+  .then(data => {
+    if (!Array.isArray(data)) throw Error('Formato de catálogo inválido');
+    const seen = new Set();
+    jobs = data.filter(job => {
+      if (!isValidJob(job) || seen.has(job.id)) return false;
+      seen.add(job.id);
+      return true;
+    });
+    loadState = 'ready'; render();
+  })
   .catch(() => { loadState = 'error'; render(); });
 render();
 })();
