@@ -101,7 +101,10 @@
     }
     card.append(meta);
     if(job.description)card.append(node('p',String(job.description).slice(0,280),'jobs-card-description'));
-    card.append(node('div','Fonte: '+job.source+' · Atualizada em: '+dateBR(job.verified_at)+' · Até: '+dateBR(job.expires_at),'jobs-source'));
+    const source=node('div',undefined,'jobs-source');
+    source.append(node('span','Fonte: '+job.source+' · Registrada em: '+dateBR(job.verified_at)+' · Até: '+dateBR(job.expires_at)));
+    const sourceLink=node('a','Ver fonte ↗');sourceLink.href=job.source_url;sourceLink.target='_blank';sourceLink.rel='noopener noreferrer';
+    source.append(sourceLink);card.append(source);
     const actions=node('div',undefined,'jobs-card-actions');
     const apply=node('a','Ver vaga e candidatar-se ↗','jobs-btn jobs-btn-primary');
     apply.href=job.apply_url;apply.target='_blank';apply.rel='noopener noreferrer';
