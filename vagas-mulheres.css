@@ -80,3 +80,6 @@
 @media(max-width:590px){.jobs-hero{padding:24px 20px;min-height:234px}.jobs-hero:before{background:linear-gradient(90deg,#210c3df5 0%,#2d1048e8 72%,#361242a5 100%)}.jobs-hero-tags span{font-size:.68rem;padding:6px 10px}.jobs-quick-fields{grid-template-columns:minmax(0,1fr)}.jobs-search-submit{grid-column:auto;width:100%}.jobs-advanced-body{grid-template-columns:1fr}.jobs-side-column{grid-template-columns:1fr}.jobs-results-grid{grid-template-columns:1fr}.jobs-status-row{align-items:flex-start}.jobs-view-tabs{width:100%}.jobs-view-tabs button{flex:1}.jobs-empty{padding:29px 16px}.jobs-disclaimer{align-items:flex-start}.jobs-breadcrumb{font-size:.71rem}}
 @media(max-width:360px){.jobs-hero h1{font-size:1.7rem}.jobs-panel,.jobs-side-panel{padding:14px}.jobs-hero{padding:21px 17px}.jobs-view-tabs button{padding:8px 7px}}
 @media(prefers-reduced-motion:reduce){.jobs-page *{scroll-behavior:auto!important;transition:none!important}}
+
+/* No mobile, o backdrop deve ficar acima da topbar e abaixo do menu. */
+@media(max-width:760px){.jobs-screen .scrim:not([hidden]){position:fixed;inset:0;z-index:900;background:#1c0d285c}}
