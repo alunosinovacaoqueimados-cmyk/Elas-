@@ -50,7 +50,7 @@
 .jobs-page .jobs-button:hover{background:var(--primary-strong)}
 .jobs-page .jobs-button-secondary{border:1px solid #e3c9e6;background:#fff;color:var(--primary)!important}
 .jobs-page .jobs-button-secondary:hover{background:#faf0fc}
-.jobs-page .jobs-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;border:1px dashed #e2c8e5;border-radius:14px;background:linear-gradient(160deg,#fff,#fdf5fc);min-height:310px;padding:30px 24px}
+.jobs-page .jobs-empty{grid-column:1/-1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;border:1px dashed #e2c8e5;border-radius:14px;background:linear-gradient(160deg,#fff,#fdf5fc);min-height:310px;padding:30px 24px}
 .jobs-page .jobs-empty-symbol{width:58px;height:58px;border-radius:18px;background:#f7e5f2;color:#a12480;display:grid;place-items:center;font-size:1.7rem;margin-bottom:15px}
 .jobs-page .jobs-empty h3{margin:0 0 8px;font-size:1.24rem}
 .jobs-page .jobs-empty p{margin:0 0 16px;color:var(--jobs-muted);max-width:470px;font-size:.9rem;line-height:1.55}
