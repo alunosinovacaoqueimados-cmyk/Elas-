@@ -1,0 +1,15 @@
+'use strict';
+const categories=[
+{title:'Tecnologia para mulheres',terms:'programa mulheres tecnologia',description:'Programas de formação e contratação com foco em mulheres.'},
+{title:'Estágio e primeiro emprego',terms:'estágio trainee mulheres',description:'Oportunidades para começar a carreira.'},
+{title:'Liderança feminina',terms:'liderança feminina',description:'Buscas relacionadas a programas de liderança e desenvolvimento.'},
+{title:'Mulheres trans e inclusão',terms:'programa empregabilidade trans',description:'Buscas por iniciativas de empregabilidade e diversidade.'},
+{title:'Mulheres com deficiência',terms:'vagas afirmativas mulheres PCD',description:'Buscas por oportunidades com iniciativas de inclusão.'},
+{title:'Mães e flexibilidade',terms:'trabalho remoto flexível',description:'Buscas por modalidades de trabalho flexíveis.'}
+];
+const form=document.getElementById('jobsFilter'),grid=document.getElementById('jobsGrid'),count=document.getElementById('jobsCount');
+const focusTerms={all:'',women:'programa mulheres',trans:'inclusão trans',pcd:'mulheres PCD',mothers:'trabalho flexível mães'};
+function link(terms){const params=new URLSearchParams();params.set('keywords',terms);const loc=document.getElementById('jobLocation').value.trim();if(loc)params.set('location',loc);const remote=document.getElementById('jobRemote').value;if(remote)params.set('f_WT',remote);const level=document.getElementById('jobLevel').value;if(level)params.set('f_E',level);return 'https://www.linkedin.com/jobs/search/?'+params.toString();}
+function render(){grid.replaceChildren();const keyword=document.getElementById('jobKeyword').value.trim();const focus=document.getElementById('jobFocus').value;const selected=focus==='all'?categories:categories.filter((_,i)=>focus==='women'?i<3:focus==='trans'?i===3:focus==='pcd'?i===4:i===5);selected.forEach(item=>{const article=document.createElement('article');article.className='jobs-card';const h=document.createElement('h3');h.textContent=item.title;const p=document.createElement('p');p.textContent=item.description;const a=document.createElement('a');a.href=link([keyword,item.terms,focusTerms[focus]].filter(Boolean).join(' '));a.target='_blank';a.rel='noopener noreferrer';a.textContent='Ver oportunidades ↗';article.append(h,p,a);grid.append(article);});count.textContent=selected.length+' buscas disponíveis';}
+form.addEventListener('submit',e=>{e.preventDefault();const terms=[document.getElementById('jobKeyword').value.trim(),focusTerms[document.getElementById('jobFocus').value]].filter(Boolean).join(' ')||'vagas';window.open(link(terms),'_blank','noopener,noreferrer');render();});
+form.addEventListener('change',render);document.getElementById('jobKeyword').addEventListener('input',render);document.getElementById('jobLocation').addEventListener('input',render);render();
