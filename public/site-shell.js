@@ -13,6 +13,7 @@
     ['Unidades de saúde','Buscar UBS, hospitais e atendimento','mapa-seguro.html?f=health'],
     ['Creches por perto','Encontrar opções de educação infantil','mapa-seguro.html?f=childcare'],
     ['Carreira e Mães Solo','Currículo e capacitação','recursos.html#carreira'],
+    ['Vagas para Mulheres','Oportunidades de emprego e programas afirmativos','vagas-mulheres.html'],
     ['Saúde e Corpo','Cuidados por fase da vida','recursos.html#saude'],
     ['Comunidade','Registros locais publicados','recursos.html#comunidade'],
     ['Meu perfil e Configurações','Fonte, contraste e personalização','recursos.html#perfil']
@@ -38,6 +39,7 @@
       if(location.pathname.endsWith('recursos.html')){active=a.getAttribute('href')==='recursos.html#'+(location.hash.slice(1)||'servicos')}
       else if(location.pathname.endsWith('seguranca.html')){active=a.getAttribute('href')==='seguranca.html'}
       else if(location.pathname.endsWith('mapa-seguro.html')){active=a.getAttribute('href')==='mapa-seguro.html'}
+      else if(location.pathname.endsWith('vagas-mulheres.html')){active=a.getAttribute('href')==='recursos.html#carreira'}
       a.classList.toggle('active',active);if(active)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');
     });
   };
