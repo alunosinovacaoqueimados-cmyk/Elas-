@@ -20,7 +20,10 @@ function dateMs(value){const d=Date.parse(value||'');return Number.isFinite(d)?d
 function formatDate(value){const d=new Date(value);return !Number.isFinite(d.getTime())?'Data não informada':new Intl.DateTimeFormat('pt-BR',{day:'2-digit',month:'short',year:'numeric'}).format(d)}
 function normalizeRemote(x){
  if(!x||!x.id||!safe(x.title)||!safe(x.company)||!validUrls(x.url)||x.source!=='Remotive')return null;
- return {id:safe(x.id),title:safe(x.title).slice(0,160),company:safe(x.company).slice(0,120),description:safe(x.description).slice(0,1200),location:safe(x.location).slice(0,140)||'Consulte a fonte',modality:'remoto',level:'',category:'geral',source:'Remotive',sourceKey:'remotive',url:validUrls(x.url),sourceUrl:validUrls(x.source_url)||validUrls(x.url),publishedAt:dateMs(x.published_at),salary:safe(x.salary).slice(0,120),type:safe(x.type).slice(0,90),area:safe(x.area).slice(0,110),eligibilityUnverified:true};
+ const role=normalize(x.title);
+ // Nível somente quando o título o menciona explicitamente.
+ const level=/\b(internship|intern|estagio|estagiario|estagiaria)\b/.test(role)?'estagio':/\b(junior|jr)\b/.test(role)?'junior':/\b(senior|sr|lead|principal)\b/.test(role)?'senior':/\b(pleno|mid.level)\b/.test(role)?'pleno':'';
+ return {id:safe(x.id),title:safe(x.title).slice(0,160),company:safe(x.company).slice(0,120),description:safe(x.description).slice(0,1200),location:safe(x.location).slice(0,140)||'Consulte a fonte',modality:'remoto',level,category:'geral',source:'Remotive',sourceKey:'remotive',url:validUrls(x.url),sourceUrl:validUrls(x.source_url)||validUrls(x.url),publishedAt:dateMs(x.published_at),salary:safe(x.salary).slice(0,120),type:safe(x.type).slice(0,90),area:safe(x.area).slice(0,110),eligibilityUnverified:true};
 }
 function normalizeCurated(x){
  if(!x||!x.id||!safe(x.title)||!safe(x.company)||!safe(x.source)||!validUrls(x.apply_url)||!validUrls(x.source_url)||!safe(x.verified_at)||!safe(x.expires_at))return null;
@@ -146,6 +149,7 @@ function render(){
  syncLinkedInLink();
 }
 function reset(){
+ document.querySelector('.jobs-page').classList.remove('jobs-detail-open');
  $('filters').reset();$('level').value='';$('focus').value='';$('source').value='';$('sort').value='recent';
  document.querySelector('input[name=modality][value=""]').checked=true;view='all';setTabs();selected=null;document.querySelector('.jobs-page').classList.remove('jobs-detail-open');render();
 }
@@ -157,7 +161,7 @@ document.querySelectorAll('input[name=modality]').forEach(input=>input.addEventL
 for(const id of ['level','focus','source','sort'])$(id).addEventListener('change',()=>{selected=null;render()});
 $('clearFilters').addEventListener('click',reset);
 document.querySelectorAll('.jobs-tab').forEach(tab=>{
- tab.addEventListener('click',()=>{view=tab.dataset.view;selected=null;setTabs();render()});
+ tab.addEventListener('click',()=>{document.querySelector('.jobs-page').classList.remove('jobs-detail-open');view=tab.dataset.view;selected=null;setTabs();render()});
  tab.addEventListener('keydown',e=>{
   if(e.key!=='ArrowRight'&&e.key!=='ArrowLeft')return;
   e.preventDefault();view=view==='all'?'saved':'all';selected=null;setTabs();render();$(view==='all'?'tabAll':'tabSaved').focus();
