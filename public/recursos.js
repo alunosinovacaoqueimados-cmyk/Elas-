@@ -37,3 +37,44 @@ async function loadCommunity(){const root=$('#publicReports');root.textContent='
  const cats={lighting:'Iluminação pública',accessibility:'Acessibilidade',support:'Pontos de apoio',transport:'Transporte e circulação',correction:'Informações sobre serviços',lighting_ok:'Boa iluminação',movement:'Local movimentado',service_good:'Atendimento útil',harassment:'Assédio relatado',service_issue:'Dificuldade de atendimento'};for(const item of reports){const box=document.createElement('article');box.className='tool-tile report-public-card';const title=document.createElement('strong');title.textContent=(item.kind==='positive'?'✓ Experiência positiva · ':item.kind==='attention'?'! Ponto de atenção · ':'Registro · ')+(cats[item.category]||'Contribuição aprovada');const p=document.createElement('p');p.textContent=item.description;const small=document.createElement('small');small.textContent='Área aproximada · '+new Date(item.createdAt).toLocaleDateString('pt-BR')+' · Moderação manual';box.append(title,p,small);root.append(box);}
  }catch{root.textContent='Não foi possível obter contribuições públicas neste momento.';}}
 showView();
+
+
+/* Vagas verdadeiras na tela de carreira, sem inventar anúncios ou trocar a fonte. */
+(()=>{
+ 'use strict';
+ const host=document.getElementById('careerJobsPreview');
+ if(!host)return;
+ let started=false;
+ const make=(tag,text,cls)=>{const el=document.createElement(tag);if(text!==undefined)el.textContent=text;if(cls)el.className=cls;return el};
+ const link='https://www.linkedin.com/jobs/';
+ function fallback(){
+   host.replaceChildren();
+   const p=make('p','As vagas externas não puderam ser carregadas agora. Você pode usar o portal Elas+ ou pesquisar diretamente no LinkedIn.');
+   const a=make('a','Abrir LinkedIn ↗');a.href=link;a.target='_blank';a.rel='noopener noreferrer';p.append(document.createTextNode(' '),a);host.append(p);
+ }
+ async function load(){
+   if(started)return;
+   started=true;
+   try{
+     const r=await fetch('/api/jobs',{headers:{Accept:'application/json'}});
+     if(!r.ok)throw new Error('Fonte temporariamente indisponível');
+     const data=await r.json();
+     if(!Array.isArray(data.jobs))throw new Error('Formato inesperado');
+     const jobs=data.jobs.filter(x=>{
+       try{return x&&['Remotive','Jobicy'].includes(x.source)&&x.title&&x.company&&new URL(x.url).protocol==='https:'}
+       catch{return false}
+     }).slice(0,3);
+     if(!jobs.length){fallback();return}
+     host.replaceChildren();
+     for(const job of jobs){
+       const card=make('article',undefined,'career-live-card');
+       card.append(make('strong',String(job.title).slice(0,130)),make('p',String(job.company).slice(0,100),'career-live-company'));
+       card.append(make('p','Remoto · '+String(job.location||'Consulte o país aceito').slice(0,100),'career-live-loc'));
+       const a=make('a','Ver vaga na '+job.source+' ↗');a.href=job.url;a.target='_blank';a.rel='noopener noreferrer';card.append(a);host.append(card);
+     }
+   }catch{fallback()}
+ }
+ function whenVisible(){if(location.hash==='#carreira')load()}
+ window.addEventListener('hashchange',whenVisible);
+ whenVisible();
+})();
