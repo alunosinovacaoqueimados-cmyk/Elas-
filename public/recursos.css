@@ -13,3 +13,12 @@
 @media(max-width:1160px){.tile-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.health-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.career-grid{grid-template-columns:1fr}}
 @media(max-width:760px){.resource-main{padding:12px}.resource-hero{min-height:168px;padding:23px}.hero-icon{font-size:4rem}.tile-grid,.profile-layout{grid-template-columns:1fr}.split-title{align-items:flex-start;flex-direction:column}.form-columns{grid-template-columns:1fr}.resource-hero h1{font-size:1.65rem}.health-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.resource-card{padding:17px}}
 @media print{body *{visibility:hidden!important}#cvOutput,#cvOutput *{visibility:visible!important}#cvOutput{position:absolute;left:0;top:0;width:100%;height:auto;min-height:0;border:0;padding:0;box-shadow:none;font-size:11pt}@page{margin:20mm}}
+
+/* Bloco de entrada integrado entre currículo e oportunidades */
+.career-opportunities{margin:18px 0;display:grid;grid-template-columns:50px minmax(0,1fr) auto;gap:16px;align-items:center;padding:20px;background:linear-gradient(120deg,#fff1f9,#fcf5ff);border-color:#edd8ed}
+.career-opportunities-icon{height:50px;width:50px;display:grid;place-items:center;background:#f2dff7;border-radius:13px;font-size:1.55rem;color:#8532a1}
+.career-opportunities-copy span{display:block;letter-spacing:.1em;color:#a52e79;font-size:.67rem;font-weight:900;margin-bottom:5px}
+.career-opportunities-copy h3{margin:0 0 5px;font-size:1.1rem}.career-opportunities-copy p{margin:0;font-size:.84rem;color:var(--sub);line-height:1.5;max-width:600px}
+.career-opportunities .resource-primary{white-space:nowrap;align-self:center}
+@media(max-width:1050px){.career-opportunities{grid-template-columns:50px minmax(0,1fr)}.career-opportunities .resource-primary{grid-column:2;justify-self:start}}
+@media(max-width:540px){.career-opportunities{grid-template-columns:1fr;gap:12px;padding:17px}.career-opportunities .resource-primary{grid-column:1;width:100%}}
