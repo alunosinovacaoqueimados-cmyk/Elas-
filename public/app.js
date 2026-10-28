@@ -49,8 +49,8 @@ function openModule(key){
     curriculo:'recursos.html#carreira',creches:'mapa-seguro.html?f=childcare',pediatras:'mapa-seguro.html?f=health',
     comunidade:'recursos.html#comunidade',perfil:'recursos.html#perfil',menopausa:'recursos.html#saude',
     jovens:'recursos.html#saude',inclusao:'recursos.html#saude',maes:'recursos.html#carreira',
-    trabalho:'seguranca.html#assistente',cras:'mapa-seguro.html?f=social',ubs:'mapa-seguro.html?f=health',
-    contatos:'seguranca.html',destaques:'recursos.html#servicos',conteudos:'recursos.html#saude'
+    'direitos-trabalho':'recursos.html#direitos-trabalho',trabalho:'recursos.html#direitos-trabalho',cras:'mapa-seguro.html?f=social',ubs:'mapa-seguro.html?f=health',
+    contatos:'seguranca.html','destaques-home':'recursos.html#servicos',destaques:'recursos.html#servicos','guia-servicos':'recursos.html#servicos',conteudos:'recursos.html#saude'
   };
   if(destination[key]){window.location.href=destination[key];return;}
   closeMenu();
