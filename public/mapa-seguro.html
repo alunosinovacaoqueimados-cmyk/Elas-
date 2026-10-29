@@ -56,30 +56,29 @@
 </div>
 </header>
 <main class="main" id="main">
-<section aria-labelledby="heroTitle" class="hero">
-<div class="hero-text"><div class="overline">MAPA SEGURO</div><h1 id="heroTitle">Encontre apoio perto de você.</h1><p>Explore serviços públicos e experiências compartilhadas no mapa, com filtros e informações de cada região.</p><a class="hero-cta" href="#mapa">Explorar o mapa ↗</a></div>
-<img alt="Ilustração de uma mulher confiante" class="hero-illustration" src="assets/hero-seguranca.webp"/>
-<div aria-hidden="true" class="hero-message">Mais apoio<br/>para o seu<br/>dia a dia. ♥</div>
+<section class="map-product-intro" aria-labelledby="mapProductTitle">
+<div class="map-product-intro-copy">
+<nav aria-label="Você está aqui" class="map-breadcrumb"><a href="index.html">Início</a><span aria-hidden="true">/</span><strong>Mapa de serviços</strong></nav>
+<span class="map-kicker">ELAS+ · REDE DE APOIO</span>
+<h1 id="mapProductTitle">Encontre apoio perto de você<span>.</span></h1>
+<p>Localize delegacias, unidades de saúde, assistência social e outros serviços. Escolha sua cidade ou permita a localização somente se quiser.</p>
+</div>
+<div class="map-product-primary-actions">
+<a class="map-emergency-action" href="tel:190">Emergência <strong>190</strong></a>
+<a class="map-support-action" href="tel:180">Orientação <strong>180</strong></a>
+</div>
 </section>
-<h2 id="shortcutHeading">Acesso rápido</h2><section aria-labelledby="shortcutHeading" class="shortcuts">
-<a class="shortcut quick-card rose" href="seguranca.html#assistente"><svg aria-hidden="true"><use href="#i-heart"></use></svg><strong>Relacionamentos</strong><small>Converse e busque orientação</small></a>
-<button class="shortcut quick-card lavender" data-action="plan" type="button"><svg aria-hidden="true"><use href="#i-shield"></use></svg><strong>Minha proteção</strong><small>Seus contatos de confiança</small></button>
-<a class="shortcut quick-card blue" href="recursos.html#servicos"><svg aria-hidden="true"><use href="#i-landmark"></use></svg><strong>Serviços públicos</strong><small>Encontre atendimento</small></a>
-<a class="shortcut quick-card mint" href="#mapa"><svg aria-hidden="true"><use href="#i-pin"></use></svg><strong>Mapa Seguro</strong><small>Locais e contribuições</small></a>
-<button class="shortcut quick-card fuchsia" data-action="emergency" type="button"><svg aria-hidden="true"><use href="#i-alert"></use></svg><strong>Emergência</strong><small>Canais de ajuda</small></button>
-</section><div class="map-page-summary" role="note"><strong>Escolha o que precisa no mapa</strong><span>Pesquise serviços e locais de apoio, ou registre uma experiência na região. Os relatos são revisados antes da publicação.</span></div>
-
+<div class="map-trust-note" role="note"><span aria-hidden="true">ⓘ</span><span>Os locais são extraídos do <strong>OpenStreetMap</strong> e podem estar desatualizados. <strong>Este mapa não classifica regiões como seguras</strong> nem substitui atendimento de emergência.</span></div>
 <div class="page-grid map-layout">
 
 <section aria-labelledby="mapTitle" class="map-panel panel" id="mapa">
-<div class="panel-header"><div class="section-symbol">⌖</div><div><h2 id="mapTitle">Mapa Seguro</h2><p>Veja serviços reais e compartilhe experiências sobre espaços públicos — com privacidade e moderação.</p></div></div>
-<div aria-label="Contribuir com o mapa" class="map-contribute"><div><strong>Como é essa região para você?</strong><small>Marque uma experiência, sem identificar pessoas ou residências.</small></div><div class="map-contribute-actions"><button class="mark-btn mark-positive" data-map-kind="positive" type="button">✓ Marcar experiência positiva</button><button class="mark-btn mark-attention" data-map-kind="attention" type="button">! Sinalizar ponto de atenção</button></div></div>
+<div class="panel-header"><div class="section-symbol">⌖</div><div><h2 id="mapTitle">Mapa Seguro</h2><p>Consulte dados colaborativos de estabelecimentos e orientações de contato — confirme antes de sair.</p></div></div>
 <div class="map-tools">
-<form class="place-search" id="placeForm"><label class="sr-only" for="placeInput">Pesquisar cidade ou bairro</label><input id="placeInput" placeholder="Buscar cidade, bairro ou endereço" type="search" value="Queimados, RJ"/><button type="submit">Buscar</button></form>
-<button class="btn-outline" id="myLocation" title="Localização aproximada, com sua permissão" type="button">⌖ <span>Minha localização</span></button>
+<form class="place-search" id="placeForm"><label class="sr-only" for="placeInput">Pesquisar cidade ou bairro</label><input id="placeInput" placeholder="Cidade ou bairro (ex.: Queimados, RJ)" type="search" value="Queimados, RJ"/><button type="submit">Buscar região</button></form>
+<button class="btn-outline" id="myLocation" title="Somente com sua permissão: a localização é usada para consultar serviços, não publicada" type="button">⌖ <span>Minha localização</span></button>
 </div>
 <div class="map-discovery" aria-label="Encontrar estabelecimentos">
-  <div class="map-discovery-heading"><strong>O que você procura?</strong><small>Escolha um tipo ou pesquise pelo nome. Os resultados mais próximos aparecem primeiro.</small></div>
+  <div class="map-discovery-heading"><strong>Filtre os serviços da região</strong><small>Escolha um tipo ou pesquise pelo nome. Os resultados mais próximos aparecem primeiro. Pode haver informações incompletas.</small></div>
   <div aria-label="Filtrar por tipo de estabelecimento" class="map-filters">
     <button aria-pressed="true" class="filter is-active" data-filter="all" type="button">🗺 Todos os locais</button>
     <button aria-pressed="false" class="filter" data-filter="pharmacy" type="button">✚ Farmácias</button>
@@ -104,8 +103,11 @@
 <div class="service-detail-panel" id="offlineSupport" role="status" hidden>
 <strong>Não foi possível carregar os serviços agora.</strong>
 <p>Você ainda pode procurar orientação pelos canais oficiais. O mapa usa dados colaborativos e pode estar temporariamente indisponível.</p>
-<div class="support-actions"><a href="https://www.gov.br/pt-br/servicos" target="_blank" rel="noopener noreferrer">Catálogo de serviços públicos ↗</a><a href="https://www.defensoria.rj.def.br/" target="_blank" rel="noopener noreferrer">Defensoria RJ ↗</a><a href="tel:180">Ligue 180</a></div>
+<div class="support-actions"><a id="osmFallbackLink" href="https://www.openstreetmap.org/search?query=Queimados%2C%20RJ" target="_blank" rel="noopener noreferrer">Buscar diretamente no OpenStreetMap ↗</a><a href="https://www.gov.br/pt-br/servicos" target="_blank" rel="noopener noreferrer">Catálogo de serviços públicos ↗</a><a href="https://www.defensoria.rj.def.br/" target="_blank" rel="noopener noreferrer">Defensoria RJ ↗</a><a href="tel:180">Ligue 180</a></div>
 </div>
+<div class="map-contribution-state" id="mapContributionStatus" role="status" hidden></div>
+<div aria-label="Contribuir com o mapa" class="map-contribute"><div><strong>Contribuições comunitárias</strong><small>Relatos dependem de armazenamento seguro e revisão humana. Nunca informe pessoas ou residências.</small></div><div class="map-contribute-actions"><button class="mark-btn mark-positive" data-map-kind="positive" type="button">✓ Marcar experiência positiva</button><button class="mark-btn mark-attention" data-map-kind="attention" type="button">! Sinalizar ponto de atenção</button></div></div>
+
 <div class="map-footer"><span class="legend"><i class="spot spot-blue"></i> Serviços OSM <i class="spot spot-green"></i> Experiência positiva <i class="spot spot-orange"></i> Ponto de atenção</span><button class="register-btn" data-action="report" type="button">+ Fazer contribuição</button></div>
 <div class="listing"><div class="listing-title"><h3 id="placeListTitle">Locais perto de você</h3><span class="source-label">Os dados podem estar incompletos — confirme antes de visitar</span></div><div id="placeResultsSummary" class="map-results-summary" role="status" aria-live="polite"></div><div aria-live="polite" class="report-totals" id="reportTotals">Carregando contribuições aprovadas...</div><div class="place-list" id="placeList"><p class="muted">Aguardando a consulta dos pontos da região...</p></div><section class="service-detail-panel" id="serviceDetails" aria-label="Detalhes e opções para o serviço selecionado" aria-live="polite" hidden></section></div>
 </section>
