@@ -114,20 +114,37 @@ async function nearby(lat,lon,filter='all',radius=3000){
     const query=`[out:json][timeout:12];(${clauses});out center 220;`;
     // Duas instâncias públicas independentes. Corrida limita a latência em serverless;
     // a primeira resposta válida vence, sem depender de um servidor instável.
+    // Alguns provedores bloqueiam POST de datacenters (HTTP 403/429); GET funciona
+    // em outros espelhos. São instâncias públicas documentadas do OpenStreetMap.
     const endpoints=process.env.OVERPASS_URL
-      ?[process.env.OVERPASS_URL]
-      :['https://overpass.private.coffee/api/interpreter','https://overpass-api.de/api/interpreter'];
+      ?[{url:process.env.OVERPASS_URL,method:'POST'}]
+      :[
+        {url:'https://maps.mail.ru/osm/tools/overpass/api/interpreter',method:'GET'},
+        {url:'https://overpass.private.coffee/api/interpreter',method:'POST'},
+        {url:'https://lz4.overpass-api.de/api/interpreter',method:'GET'}
+      ];
     const controllers=endpoints.map(()=>new AbortController());
     let result;
     try{
-      result=await Promise.any(endpoints.map(async(endpoint,index)=>{
-        // A fonte que responder primeiro vence; cancelar requisições restantes.
-        const payload=await remoteJSON(endpoint,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'},body:new URLSearchParams({data:query}).toString(),signal:controllers[index].signal},10500);
-        if(!Array.isArray(payload?.elements))throw Error('Resposta Overpass inválida '+index);
+      result=await Promise.any(endpoints.map(async({url,method},index)=>{
+        const options={method,signal:controllers[index].signal};
+        let requestUrl=url;
+        if(method==='GET'){
+          const parsed=new URL(url);
+          parsed.searchParams.set('data',query);
+          requestUrl=parsed.toString();
+        }else{
+          options.headers={'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'};
+          options.body=new URLSearchParams({data:query}).toString();
+        }
+        const payload=await remoteJSON(requestUrl,options,14500);
+        if(!Array.isArray(payload?.elements))throw Error('JSON Overpass inválido em fonte '+(index+1));
         return payload;
       }));
     }catch(error){
-      console.warn('[Elas+] Overpass indisponível (sem coordenadas no log):', error?.errors?.map((e,i)=>'fonte '+(i+1)+': '+(e?.message||'falha')).join(' | ')||error?.message||'Falha externa');
+      const reasons=error?.errors?.map((item,index)=>'fonte '+(index+1)+': '+(item?.message||'falha')).join(' | ');
+      // Nunca registrar lat/lon, o corpo da query nem dados da usuária.
+      console.warn('[Elas+] Falha Overpass:',reasons||'Todas as fontes indisponíveis');
       throw Error('Fontes de locais indisponíveis');
     }finally{controllers.forEach(controller=>controller.abort());}
     const data=[],ids=new Set();
