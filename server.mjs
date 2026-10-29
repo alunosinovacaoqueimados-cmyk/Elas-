@@ -7,6 +7,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import {fileURLToPath} from 'node:url';
+import {queryOverpass} from './lib/overpass.mjs';
 
 const ROOT=path.dirname(fileURLToPath(import.meta.url));
 // A Vercel oferece um sistema de arquivos efêmero: relatos exigem armazenamento persistente externo.
@@ -114,22 +115,7 @@ async function nearby(lat,lon,filter='all',radius=3000){
     const query=`[out:json][timeout:12];(${clauses});out center 220;`;
     // Duas instâncias públicas independentes. Corrida limita a latência em serverless;
     // a primeira resposta válida vence, sem depender de um servidor instável.
-    const endpoints=process.env.OVERPASS_URL
-      ?[process.env.OVERPASS_URL]
-      :['https://overpass.private.coffee/api/interpreter','https://overpass-api.de/api/interpreter'];
-    const controllers=endpoints.map(()=>new AbortController());
-    let result;
-    try{
-      result=await Promise.any(endpoints.map(async(endpoint,index)=>{
-        // A fonte que responder primeiro vence; cancelar requisições restantes.
-        const payload=await remoteJSON(endpoint,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'},body:new URLSearchParams({data:query}).toString(),signal:controllers[index].signal},10500);
-        if(!Array.isArray(payload?.elements))throw Error('Resposta Overpass inválida '+index);
-        return payload;
-      }));
-    }catch(error){
-      console.warn('[Elas+] Overpass indisponível (sem coordenadas no log):', error?.errors?.map((e,i)=>'fonte '+(i+1)+': '+(e?.message||'falha')).join(' | ')||error?.message||'Falha externa');
-      throw Error('Fontes de locais indisponíveis');
-    }finally{controllers.forEach(controller=>controller.abort());}
+    const result=await queryOverpass(query,{endpointOverride:process.env.OVERPASS_URL,transport:remoteJSON});
     const data=[],ids=new Set();
     for(const p of result.elements||[]){
       const la=coord(p.lat??p.center?.lat,-90,90),lo=coord(p.lon??p.center?.lon,-180,180);
@@ -159,7 +145,7 @@ async function api(req,res,u){const p=u.pathname;
   if(p==='/api/jobs')return (await import('./api/jobs.js')).default(req,res);
   if(p==='/api/status'&&req.method==='GET')return send(res,200,{ok:true,aiEnabled:!!API_KEY,storage:CLOUD?'indisponivel-na-vercel':'arquivo-json',contributionsEnabled:!CLOUD,publicReportsRequireApproval:true});
   if(p==='/api/buscar'&&req.method==='GET'){if(!rate(req,'geocode',12,60000))return send(res,429,{error:'Aguarde um pouco antes de pesquisar novamente.'});const q=String(u.searchParams.get('q')||'').trim();if(q.length<3||q.length>110)return send(res,400,{error:'Informe um município ou bairro com 3 a 110 caracteres.'});try{return send(res,200,{results:await geocode(q)});}catch{return send(res,503,{error:'Busca indisponível. Tente mais tarde.'});}}
-  if(p==='/api/locais'&&req.method==='GET'){if(!rate(req,'places',18,60000))return send(res,429,{error:'Limite temporário de consultas.'});const lat=coord(u.searchParams.get('lat'),-90,90),lon=coord(u.searchParams.get('lon'),-180,180);const type=String(u.searchParams.get('type')||'all');const radius=Number(u.searchParams.get('radius')||3000);if(lat===null||lon===null||!ALLOWED_PLACE_TYPES.has(type)||![1000,3000,5000].includes(radius))return send(res,400,{error:'Informe uma localização, categoria e distância válidas.'});try{return send(res,200,{source:'OpenStreetMap (colaborativo, não verificado)',radius,type,places:await nearby(lat,lon,type,radius)});}catch{return send(res,503,{error:'Busca temporariamente indisponível. Tente outra categoria ou região.'});}}
+  if(p==='/api/locais'&&req.method==='GET'){if(!rate(req,'places',18,60000))return send(res,429,{error:'Limite temporário de consultas.'});const lat=coord(u.searchParams.get('lat'),-90,90),lon=coord(u.searchParams.get('lon'),-180,180);const type=String(u.searchParams.get('type')||'all');const radius=Number(u.searchParams.get('radius')||3000);if(lat===null||lon===null||!ALLOWED_PLACE_TYPES.has(type)||![1000,3000,5000].includes(radius))return send(res,400,{error:'Informe uma localização, categoria e distância válidas.'});try{return send(res,200,{source:'OpenStreetMap (colaborativo, não verificado)',radius,type,places:await nearby(lat,lon,type,radius)},{'Cache-Control':'public, max-age=0, s-maxage=300, stale-while-revalidate=600'});}catch{return send(res,503,{error:'Os servidores públicos de mapa estão ocupados no momento. Tente novamente ou utilize a busca externa.'},{'Retry-After':'30'});}}
   if(p==='/api/relatos'&&req.method==='GET'){if(CLOUD)return send(res,200,{reports:[],contributionsEnabled:false,message:'Registros compartilhados requerem armazenamento persistente.'});const all=await getReports();return send(res,200,{reports:all.filter(r=>r.status==='approved').map(publicReport)});}
   if(p==='/api/relatos'&&req.method==='POST'){if(CLOUD)return send(res,503,{error:'Contribuições temporariamente indisponíveis neste ambiente: armazenamento persistente ainda não configurado.'});if(!rate(req,'reports',4,86400000))return send(res,429,{error:'Limite de contribuições atingido neste dispositivo.'});const b=await bodyJSON(req,1500);const category=String(b.category||'');const kind=b.kind===undefined?'info':String(b.kind);const description=String(b.description||'').trim();const lat=coord(b.lat,-90,90),lon=coord(b.lon,-180,180);
     if(!KINDS.has(kind)||!CATEGORIES.has(category)||description.length<12||description.length>280||lat===null||lon===null)return send(res,400,{error:'Informe tipo, categoria, descrição entre 12 e 280 caracteres e região válida.'});
