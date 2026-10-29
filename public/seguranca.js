@@ -158,7 +158,7 @@ async function loadPOIs(){
     if(!r.ok)throw Error(data.error||'Consulta indisponível');
     state.poi=(data.places||[]).map(p=>({...p,coord:[p.lat,p.lon],tags:{'addr:street':p.address||''}}));state.lastSearchedCenter=center;$('#refreshArea').hidden=true;state.listLimit=20;
     if($('#offlineSupport'))$('#offlineSupport').hidden=true;
-    renderPlaces();status(data.partial?`${state.poi.length} local(is) indexado(s) nesta área. Fonte alternativa: Photon / OpenStreetMap (lista parcial). Confirme antes de visitar.`:`${state.poi.length} estabelecimentos encontrados na área consultada. Fonte: OpenStreetMap — confirme antes de visitar.`);
+    renderPlaces();status(data.stale?`${state.poi.length} local(is) encontrados em consulta anterior. A fonte está instável: confirme os dados antes de sair.`:data.partial?`${state.poi.length} local(is) indexado(s) nesta área. Fonte: ${data.source||'OpenStreetMap'} (lista parcial). Confirme antes de visitar.`:`${state.poi.length} estabelecimentos encontrados na área consultada. Fonte: OpenStreetMap — confirme antes de visitar.`);
   }catch(e){if(req!==state.loadToken)return;state.poi=[];renderPlaces();if($('#offlineSupport'))$('#offlineSupport').hidden=false;status('Serviços temporariamente indisponíveis nesta área. Use a busca externa no OpenStreetMap ou os contatos oficiais.');notify('A fonte de locais está indisponível agora.');}
 }
 function updateMapFallbackLink(){
