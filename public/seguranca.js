@@ -164,6 +164,8 @@ function updateMapFallbackLink(){
   const terms={police:'delegacia polícia',health:'hospital posto de saúde',pharmacy:'farmácia',social:'assistência social CRAS',childcare:'creche',shop:'mercado',food:'restaurante',services:'banco'}; 
   const q=([terms[state.filter]||'serviços públicos',$('#placeInput')?.value.trim()||'Queimados, RJ']).filter(Boolean).join(' ');
   anchor.href='https://www.openstreetmap.org/search?query='+encodeURIComponent(q);
+  const google=$('#googleFallbackLink');
+  if(google)google.href='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q);
 }
 function serviceLinks(place){
   const lat=Number(place.coord[0]), lon=Number(place.coord[1]);
@@ -299,6 +301,7 @@ function setPickingUI(active){$('#mapGuidance').classList.toggle('is-picking',ac
 $$('[data-map-kind]').forEach(b=>b.addEventListener('click',()=>{if(!contributionsEnabled){notify('A publicação de relatos precisa de armazenamento persistente.');return;}state.selectedReportCoord=null;openReportForm(b.dataset.mapKind);}));
 $$('input[name="reportKind"]').forEach(input=>input.addEventListener('change',()=>{if(input.checked)setReportKind(input.value);}));
 $('#selectMapArea')?.addEventListener('click',()=>{if(!state.map){notify('Mapa indisponível. Você precisa carregar o mapa antes de selecionar um local.');return;}state.picking=true;$('#reportModal').close();setPickingUI(true);$('#mapa').scrollIntoView({behavior:'smooth',block:'center'});notify('Toque no mapa para selecionar a região da contribuição.');});
+$('#retryPlaces')?.addEventListener('click',()=>loadPOIs());
 $('#refreshArea')?.addEventListener('click',()=>loadPOIs());if ($('#refreshArea')) $('#refreshArea').hidden=true;
 $('#reportForm')?.addEventListener('submit',async e=>{e.preventDefault();const c=state.selectedReportCoord||state.map?.getCenter();if(!c){notify('Carregue o mapa antes de contribuir.');return;}
  const kind=document.querySelector('input[name="reportKind"]:checked')?.value;const category=$('#reportCategory').value;const description=$('#reportDescription').value.trim();
