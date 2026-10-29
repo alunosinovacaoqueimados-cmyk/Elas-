@@ -150,7 +150,9 @@ async function loadPOIs(){
   const summary=$('#placeResultsSummary');if(summary)summary.textContent='Consultando estabelecimentos...';
   try{
     const type=Object.hasOwn(TYPES,state.filter)&&state.filter!=='community'?state.filter:'all';
-    const url=`/api/locais?lat=${encodeURIComponent(center.lat)}&lon=${encodeURIComponent(center.lng)}&type=${encodeURIComponent(type)}&radius=${state.radius}`;
+    // Reduzir precisão para ~100 m antes de a posição entrar na URL/na infraestrutura externa.
+    const approxLat=center.lat.toFixed(3),approxLon=center.lng.toFixed(3);
+    const url=`/api/locais?lat=${encodeURIComponent(approxLat)}&lon=${encodeURIComponent(approxLon)}&type=${encodeURIComponent(type)}&radius=${state.radius}`;
     const r=await fetch(url,{signal:AbortSignal.timeout(14500)});
     const data=await r.json();if(req!==state.loadToken)return;
     if(!r.ok)throw Error(data.error||'Consulta indisponível');
@@ -284,7 +286,7 @@ $$('[data-filter]').forEach(b=>b.addEventListener('click',()=>{
 $('#establishmentSearch')?.addEventListener('input',e=>{state.nameSearch=e.target.value;state.listLimit=20;renderPlaces();});
 $('#searchRadius')?.addEventListener('change',e=>{state.radius=Number(e.target.value);state.listLimit=20;if(['community','positive','attention'].includes(state.filter))renderPlaces();else loadPOIs();});
 $('#placeForm')?.addEventListener('submit',async e=>{e.preventDefault();const text=$('#placeInput').value.trim();if(text.length<3){notify('Informe uma cidade, bairro ou endereço.');return;}status('Procurando local...');updateMapFallbackLink();try{const res=await fetch('/api/buscar?q='+encodeURIComponent(text));const found=await res.json();if(!res.ok)throw Error(found.error||'Consulta indisponível');if(!found.results?.length){status('Local não encontrado. Tente incluir cidade e estado.');return;}const loc=[Number(found.results[0].lat),Number(found.results[0].lon)];state.map?.setView(loc,13);await loadPOIs();}catch{status('Busca indisponível. Tente novamente quando houver conexão.');}});
-$('#myLocation')?.addEventListener('click',()=>{if(!navigator.geolocation){notify('Este navegador não oferece geolocalização.');return;}status('Aguardando sua permissão de localização…');navigator.geolocation.getCurrentPosition(async p=>{const coords=[p.coords.latitude,p.coords.longitude];if(state.map){state.map.setView(coords,14);state.userLayer.clearLayers();L.circleMarker(coords,{radius:8,color:'#fff',fillColor:'#287fff',weight:3,fillOpacity:1}).addTo(state.userLayer).bindPopup('Posição autorizada por você. A região é enviada ao servidor para consultar serviços, mas não é publicada.');await loadPOIs();}},()=>{status('Localização negada ou indisponível. Você pode usar a busca por cidade.');},{enableHighAccuracy:false,maximumAge:60000,timeout:11000});});
+$('#myLocation')?.addEventListener('click',()=>{if(!navigator.geolocation){notify('Este navegador não oferece geolocalização.');return;}status('Aguardando sua permissão de localização…');navigator.geolocation.getCurrentPosition(async p=>{const coords=[p.coords.latitude,p.coords.longitude];if(state.map){state.map.setView(coords,14);state.userLayer.clearLayers();L.circleMarker(coords,{radius:8,color:'#fff',fillColor:'#287fff',weight:3,fillOpacity:1}).addTo(state.userLayer).bindPopup('Posição autorizada por você. Somente coordenadas aproximadas (~100 m) são consultadas no servidor. Sua posição exata não é publicada.');await loadPOIs();}},()=>{status('Localização negada ou indisponível. Você pode usar a busca por cidade.');},{enableHighAccuracy:false,maximumAge:60000,timeout:11000});});
 
 // Relatos enviados à moderação do servidor, que persiste em JSON local.
 function setReportKind(kind){state.reportKind=kind;const input=document.querySelector('input[name="reportKind"][value="'+kind+'"]');if(input)input.checked=true;
