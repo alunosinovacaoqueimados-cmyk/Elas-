@@ -37,9 +37,9 @@ test('Mapa: serviço em primeiro plano, saída para falhas e relatos bloqueados 
  assert.match(js,/function updateMapFallbackLink/);
  assert.match(js,/\/api\/locais\?/);
  const overpass=await read('lib/overpass.mjs');
- assert.match(server,/queryOverpass/);
- assert.match(overpass,/overpass\\.private\\.coffee/);
- assert.match(overpass,/Promise\\.any\\(sources/);
+ assert.ok(server.includes('queryOverpass'));
+ assert.ok(overpass.includes('overpass.private.coffee'));
+ assert.ok(overpass.includes('Promise.any(sources'));
  assert.match(css,/\.map-product-intro/);
  new vm.Script(js,{filename:'seguranca.js'});
  for(const f of ['mapa-seguro.html','mapa-seguro.css','seguranca.js','separado.css'])
