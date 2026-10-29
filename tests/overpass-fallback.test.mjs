@@ -2,6 +2,13 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {queryOverpass,PUBLIC_INSTANCES} from '../lib/overpass.mjs';
 
+test('Mapa: a terceira instância usa POST, evitando resposta HTTP 406 ao método GET',()=>{
+  const main=PUBLIC_INSTANCES.find(source=>source.url==='https://overpass-api.de/api/interpreter');
+  assert.ok(main);
+  assert.equal(main.method,'POST');
+  assert.ok(!PUBLIC_INSTANCES.some(source=>source.url.includes('lz4.overpass-api.de')&&source.method==='GET'));
+});
+
 const query='[out:json];node(around:1000,-22.718,-43.557)[amenity=police];out center 5;';
 
 test('Mapa: falha da primeira fonte e sucesso da segunda sem dados fictícios',async()=>{
