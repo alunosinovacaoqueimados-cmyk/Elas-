@@ -116,9 +116,10 @@ async function nearby(lat,lon,filter='all',radius=3000){
     const tags=filter==='all'?Object.keys(PLACE_FILTERS):[filter];
     const clauses=tags.flatMap(type=>[PLACE_FILTERS[type],EXTRA_FILTERS[type]].filter(Boolean).map(expression=>`nwr(around:${radius},${lat.toFixed(4)},${lon.toFixed(4)})${expression};`)).join('');
     const query=`[out:json][timeout:12];(${clauses});out center 220;`;
+    let data=[];
     try{
     const result=await queryOverpass(query,{endpointOverride:process.env.OVERPASS_URL,transport:remoteJSON});
-    const data=[],ids=new Set();
+    const ids=new Set();
     for(const p of result.elements||[]){
       const la=coord(p.lat??p.center?.lat,-90,90),lo=coord(p.lon??p.center?.lon,-180,180);
       const id=String(p.type)+':'+String(p.id);
