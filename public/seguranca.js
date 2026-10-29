@@ -254,7 +254,10 @@ function renderPlaces(){
   }
   if(!visible.length){
     const p=document.createElement('p');p.className='muted';p.textContent=state.nameSearch?'Nenhum nome corresponde à pesquisa nesta categoria. Tente outro termo ou selecione Todos os locais.':'Nenhum estabelecimento encontrado neste raio. Experimente ampliar a distância, mudar a categoria ou pesquisar outra cidade.';
-    list.append(p);return;
+    list.append(p);
+    const osm=$('#osmFallbackLink');
+    if(osm){const link=document.createElement('a');link.href=osm.href;link.target='_blank';link.rel='noopener noreferrer';link.className='map-empty-search';link.textContent='Consultar também no OpenStreetMap ↗';list.append(link);}
+    return;
   }
   for(const place of visible.slice(0,state.listLimit)){
     const item=document.createElement('div');item.className='place-result';
