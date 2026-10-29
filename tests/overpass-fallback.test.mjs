@@ -15,8 +15,9 @@ test('Mapa: falha da primeira fonte e sucesso da segunda sem dados fictícios',a
   };
   const result=await queryOverpass(query,{transport});
   assert.deepEqual(result,sample);
-  assert.ok(calls.some(x=>x.method==='GET'&&new URL(x.url).searchParams.get('data')===query));
-  assert.ok(calls.some(x=>x.method==='POST'&&new URLSearchParams(x.body).get('data')===query));
+  assert.ok(calls.length>=2);
+  assert.ok(calls.every(x=>x.method==='POST'));
+  assert.ok(calls.every(x=>new URLSearchParams(x.body).get('data')===query));
 });
 
 test('Mapa: substituição de fonte local continua funcionando em testes de backend',async()=>{
