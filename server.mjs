@@ -7,6 +7,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import {fileURLToPath} from 'node:url';
+import {queryOverpass} from './lib/overpass.mjs';
 
 const ROOT=path.dirname(fileURLToPath(import.meta.url));
 // A Vercel oferece um sistema de arquivos efêmero: relatos exigem armazenamento persistente externo.
@@ -114,39 +115,7 @@ async function nearby(lat,lon,filter='all',radius=3000){
     const query=`[out:json][timeout:12];(${clauses});out center 220;`;
     // Duas instâncias públicas independentes. Corrida limita a latência em serverless;
     // a primeira resposta válida vence, sem depender de um servidor instável.
-    // Alguns provedores bloqueiam POST de datacenters (HTTP 403/429); GET funciona
-    // em outros espelhos. São instâncias públicas documentadas do OpenStreetMap.
-    const endpoints=process.env.OVERPASS_URL
-      ?[{url:process.env.OVERPASS_URL,method:'POST'}]
-      :[
-        {url:'https://maps.mail.ru/osm/tools/overpass/api/interpreter',method:'GET'},
-        {url:'https://overpass.private.coffee/api/interpreter',method:'POST'},
-        {url:'https://lz4.overpass-api.de/api/interpreter',method:'GET'}
-      ];
-    const controllers=endpoints.map(()=>new AbortController());
-    let result;
-    try{
-      result=await Promise.any(endpoints.map(async({url,method},index)=>{
-        const options={method,signal:controllers[index].signal};
-        let requestUrl=url;
-        if(method==='GET'){
-          const parsed=new URL(url);
-          parsed.searchParams.set('data',query);
-          requestUrl=parsed.toString();
-        }else{
-          options.headers={'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'};
-          options.body=new URLSearchParams({data:query}).toString();
-        }
-        const payload=await remoteJSON(requestUrl,options,14500);
-        if(!Array.isArray(payload?.elements))throw Error('JSON Overpass inválido em fonte '+(index+1));
-        return payload;
-      }));
-    }catch(error){
-      const reasons=error?.errors?.map((item,index)=>'fonte '+(index+1)+': '+(item?.message||'falha')).join(' | ');
-      // Nunca registrar lat/lon, o corpo da query nem dados da usuária.
-      console.warn('[Elas+] Falha Overpass:',reasons||'Todas as fontes indisponíveis');
-      throw Error('Fontes de locais indisponíveis');
-    }finally{controllers.forEach(controller=>controller.abort());}
+    const result=await queryOverpass(query,{endpointOverride:process.env.OVERPASS_URL,transport:remoteJSON});
     const data=[],ids=new Set();
     for(const p of result.elements||[]){
       const la=coord(p.lat??p.center?.lat,-90,90),lo=coord(p.lon??p.center?.lon,-180,180);
