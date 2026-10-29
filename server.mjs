@@ -111,26 +111,12 @@ async function nearby(lat,lon,filter='all',radius=3000){
   const cached=placesCache.get(key);
   if(cached?.exp>Date.now())return cached.data;
   if(cached?.pending)return cached.pending;
+  const stale=cached?.data||null;
   const task=(async()=>{
-    // Photon oferece resultado parcial sem a consulta Overpass pesada.
-    // Não inventar locais: usar apenas elementos identificados e georreferenciados do OSM.
-    if(!process.env.OVERPASS_URL)try{
-      const results=await queryPhotonPlaces({
-        lat,lon,radius,type:filter,transport:remoteJSON,
-        endpoint:process.env.PHOTON_URL||'https://photon.komoot.io/reverse',
-        timeout:6800
-      });
-      if(results.length){
-        const data={places:results,source:'Photon / OpenStreetMap',partial:true};
-        placesCache.set(key,{data,exp:Date.now()+20*60000});
-        return data;
-      }
-    }catch(error){
-      console.warn('[Elas+] Photon indisponível: ',String(error?.message||'falha').slice(0,100));
-    }
     const tags=filter==='all'?Object.keys(PLACE_FILTERS):[filter];
     const clauses=tags.flatMap(type=>[PLACE_FILTERS[type],EXTRA_FILTERS[type]].filter(Boolean).map(expression=>`nwr(around:${radius},${lat.toFixed(4)},${lon.toFixed(4)})${expression};`)).join('');
     const query=`[out:json][timeout:12];(${clauses});out center 220;`;
+    try{
     const result=await queryOverpass(query,{endpointOverride:process.env.OVERPASS_URL,transport:remoteJSON});
     const data=[],ids=new Set();
     for(const p of result.elements||[]){
@@ -147,6 +133,15 @@ async function nearby(lat,lon,filter='all',radius=3000){
         website:(/^https?:\/\//i.test(t.website||'')?t.website:'').slice(0,240),
         distance:Math.round(distanceMeters(lat,lon,la,lo)),source:'OpenStreetMap'});
     }
+    }catch(overpassError){
+      // Uma falha temporária do Overpass não deve esconder dados reais em cache.
+      if(stale)return {...stale,stale:true};
+      try{
+        const results=await queryPhotonPlaces({lat,lon,radius,type:filter,transport:remoteJSON,endpoint:process.env.PHOTON_URL||'https://photon.komoot.io/reverse',timeout:6800});
+        if(results.length){const fallback={places:results,source:'Photon / OpenStreetMap',partial:true};placesCache.set(key,{data:fallback,exp:Date.now()+5*60000});return fallback;}
+      }catch(photonError){console.warn('[Elas+] Busca alternativa indisponível:',String(photonError?.message||'falha').slice(0,90));}
+      throw overpassError;
+    }
     data.sort((a,b)=>a.distance-b.distance||a.name.localeCompare(b.name,'pt-BR'));
     const output={places:data.slice(0,400),source:'OpenStreetMap / Overpass',partial:false};
     placesCache.set(key,{data:output,exp:Date.now()+15*60000});
@@ -154,7 +149,7 @@ async function nearby(lat,lon,filter='all',radius=3000){
   })();
   placesCache.set(key,{pending:task,exp:0});
   try{return await task;}
-  catch(error){placesCache.delete(key);throw error;}
+  catch(error){if(stale){placesCache.set(key,{data:stale,exp:Date.now()+60000});return {...stale,stale:true};}placesCache.delete(key);throw error;}
 }
 async function getReports(){try{const obj=JSON.parse(await fs.readFile(REPORT_FILE,'utf8'));return Array.isArray(obj.submissions)?obj.submissions:[];}catch(e){if(e.code==='ENOENT')return [];throw e;}}
 async function mutateReports(mutator){const task=reportQueue.then(async()=>{const reports=await getReports();const result=mutator(reports);await fs.mkdir(path.dirname(REPORT_FILE),{recursive:true});const tmp=REPORT_FILE+'.tmp';await fs.writeFile(tmp,JSON.stringify({submissions:reports},null,2),{mode:0o600});await fs.rename(tmp,REPORT_FILE);return result;});reportQueue=task.catch(()=>{});return task;}
