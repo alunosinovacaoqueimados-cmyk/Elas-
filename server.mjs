@@ -48,8 +48,18 @@ const SYSTEM='Você é a assistente informativa Elas+ para mulheres brasileiras.
 function send(res,code,data,extra={}){res.writeHead(code,{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff',...extra});res.end(JSON.stringify(data));}
 function rate(req,scope,max,period){const ip=req.socket.remoteAddress||'anon';const k=ip+':'+scope,now=Date.now();const times=(limiter.get(k)||[]).filter(t=>now-t<period);if(times.length>=max)return false;times.push(now);limiter.set(k,times);if(limiter.size>2000){for(const [key,t] of limiter)if(t.every(x=>now-x>period))limiter.delete(key);}return true;}
 async function bodyJSON(req,limit=2000){if(req.body!==undefined&&req.body!==null){const raw=typeof req.body==='string'?req.body:JSON.stringify(req.body);if(Buffer.byteLength(raw)>limit){const e=new Error('Corpo muito grande');e.status=413;throw e;}try{return typeof req.body==='string'?JSON.parse(raw):req.body;}catch{const e=new Error('JSON inválido');e.status=400;throw e;}}const chunks=[];let len=0;for await(const chunk of req){len+=chunk.length;if(len>limit){const e=new Error('Corpo muito grande');e.status=413;throw e;}chunks.push(chunk);}try{return JSON.parse(Buffer.concat(chunks).toString('utf8'));}catch{const e=new Error('JSON inválido');e.status=400;throw e;}}
-const remoteHeaders={'User-Agent':'ElasPlus/1.0 (prototipo de apoio; contato: administrador-local)','Accept':'application/json'};
-async function remoteJSON(url,opts={},timeout=12000){const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),timeout);try{const response=await fetch(url,{...opts,headers:{...remoteHeaders,...opts.headers},signal:controller.signal});if(!response.ok)throw Error('Fonte externa retornou '+response.status);const text=await response.text();if(text.length>4_000_000)throw Error('Resultado excessivo');return JSON.parse(text);}finally{clearTimeout(timer);}}
+const remoteHeaders={'User-Agent':'ElasPlus/2.0 (+https://elas-casa-da-inovacao.vercel.app; dados OSM com atribuição)','Accept':'application/json'};
+async function remoteJSON(url,opts={},timeout=12000){
+  const controller=new AbortController();
+  const onAbort=()=>controller.abort();
+  if(opts.signal?.aborted)controller.abort();
+  else opts.signal?.addEventListener('abort',onAbort,{once:true});
+  const timer=setTimeout(()=>controller.abort(),timeout);
+  try{const response=await fetch(url,{...opts,headers:{...remoteHeaders,...opts.headers},signal:controller.signal});
+    if(!response.ok)throw Error('Fonte externa retornou '+response.status);
+    const text=await response.text();if(text.length>4_000_000)throw Error('Resultado excessivo');return JSON.parse(text);
+  }finally{clearTimeout(timer);opts.signal?.removeEventListener('abort',onAbort);}
+}
 function coord(value,min,max){if(value===null||value===undefined||value==='')return null;const n=Number(value);return Number.isFinite(n)&&n>=min&&n<=max?n:null;}
 async function geocode(q){const key=q.toLocaleLowerCase('pt-BR');const cached=geocodeCache.get(key);if(cached&&cached.exp>Date.now())return cached.data;
   const task=geocodeQueue.then(async()=>{const fresh=geocodeCache.get(key);if(fresh&&fresh.exp>Date.now())return fresh.data;const wait=Math.max(0,geocodeNext-Date.now());if(wait)await new Promise(r=>setTimeout(r,wait));geocodeNext=Date.now()+1200;
@@ -101,8 +111,25 @@ async function nearby(lat,lon,filter='all',radius=3000){
   const task=(async()=>{
     const tags=filter==='all'?Object.keys(PLACE_FILTERS):[filter];
     const clauses=tags.flatMap(type=>[PLACE_FILTERS[type],EXTRA_FILTERS[type]].filter(Boolean).map(expression=>`nwr(around:${radius},${lat.toFixed(4)},${lon.toFixed(4)})${expression};`)).join('');
-    const query=`[out:json][timeout:22];(${clauses});out center 300;`;
-    let result,lastError;for(const endpoint of [process.env.OVERPASS_URL,'https://overpass.kumi.systems/api/interpreter','https://overpass-api.de/api/interpreter'].filter(Boolean)){try{result=await remoteJSON(endpoint,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'},body:new URLSearchParams({data:query}).toString()},8500);break;}catch(e){lastError=e;}}if(!result)throw lastError||Error('Consulta indisponível');
+    const query=`[out:json][timeout:12];(${clauses});out center 220;`;
+    // Duas instâncias públicas independentes. Corrida limita a latência em serverless;
+    // a primeira resposta válida vence, sem depender de um servidor instável.
+    const endpoints=process.env.OVERPASS_URL
+      ?[process.env.OVERPASS_URL]
+      :['https://overpass.private.coffee/api/interpreter','https://overpass-api.de/api/interpreter'];
+    const controllers=endpoints.map(()=>new AbortController());
+    let result;
+    try{
+      result=await Promise.any(endpoints.map(async(endpoint,index)=>{
+        // A fonte que responder primeiro vence; cancelar requisições restantes.
+        const payload=await remoteJSON(endpoint,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'},body:new URLSearchParams({data:query}).toString(),signal:controllers[index].signal},10500);
+        if(!Array.isArray(payload?.elements))throw Error('Resposta Overpass inválida '+index);
+        return payload;
+      }));
+    }catch(error){
+      console.warn('[Elas+] Overpass indisponível (sem coordenadas no log):', error?.errors?.map((e,i)=>'fonte '+(i+1)+': '+(e?.message||'falha')).join(' | ')||error?.message||'Falha externa');
+      throw Error('Fontes de locais indisponíveis');
+    }finally{controllers.forEach(controller=>controller.abort());}
     const data=[],ids=new Set();
     for(const p of result.elements||[]){
       const la=coord(p.lat??p.center?.lat,-90,90),lo=coord(p.lon??p.center?.lon,-180,180);

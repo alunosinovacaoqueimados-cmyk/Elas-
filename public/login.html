@@ -1,4 +1,61 @@
 <!doctype html>
-<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#fff8fd"><title>Entrar ou criar conta | Elas+</title><link rel="stylesheet" href="auth.css"><script defer src="auth.js?v=20261028-3"></script></head>
-<body><a class="skip" href="#principal">Pular para o conteúdo</a><main id="principal" class="layout"><section class="intro"><a class="logo" href="index.html" aria-label="Elas+ — início">Elas<span>+</span></a><p class="eyebrow">SEU ESPAÇO, SUAS ESCOLHAS</p><h1>Seu lugar de apoio, informação e oportunidades.</h1><p>Entre para acessar sua conta. Você pode continuar explorando os conteúdos e serviços do Elas+ sem se cadastrar.</p><a href="index.html" class="back">← Continuar sem entrar</a><p class="privacy">Sua senha não é armazenada pelo site. A autenticação é realizada pelo Supabase.</p></section>
-<section class="panel" aria-labelledby="formTitle"><div id="signedIn" hidden><h2>Você já está conectada!</h2><p id="accountEmail"></p><a class="primary-link" href="index.html">Ir para o Elas+</a><button id="logout" type="button" class="secondary">Sair da conta</button></div><div id="authArea"><div class="tabs" role="group" aria-label="Tipo de acesso"><button id="tabLogin" class="selected" type="button" aria-pressed="true">Entrar</button><button id="tabSignup" type="button" aria-pressed="false">Criar conta</button></div><h2 id="formTitle">Boas-vindas de volta</h2><p id="formHelp">Entre com seu e-mail e senha.</p><form id="authForm"><label for="email">E-mail</label><input id="email" type="email" name="email" autocomplete="email" required maxlength="254" placeholder="voce@exemplo.com"><label for="password">Senha</label><input id="password" type="password" name="password" autocomplete="current-password" required minlength="6" placeholder="Sua senha"><div class="show-row"><label><input type="checkbox" id="showPassword"> Mostrar senha</label></div><button class="primary" id="submitBtn" type="submit">Entrar</button></form><button class="text-button" id="resetPassword" type="button">Esqueci minha senha</button><p id="feedback" role="status" aria-live="polite"></p><p class="disclaimer">Se estiver em risco, use a <a href="index.html">página inicial</a> e a opção de saída rápida.</p></div></section></main></body></html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#fffafd">
+<meta name="description" content="Entre no Elas+ para acessar sua conta, criar cadastro ou recuperar sua senha com privacidade.">
+<title>Entrar ou criar conta | Elas+</title>
+<link rel="stylesheet" href="auth.css">
+<script defer src="auth.js"></script>
+</head>
+<body>
+<a class="auth-skip" href="#authMain">Pular para o formulário</a>
+<div class="auth-topbar">
+ <a href="index.html" class="auth-brand" aria-label="Elas+ — página inicial"><span class="auth-brand-flower" aria-hidden="true"><span></span><span></span><span></span></span><span>Elas<span>+</span></span></a>
+ <div class="auth-top-actions"><a href="index.html" class="auth-visit">Continuar sem entrar</a><a class="auth-exit" href="https://www.google.com/" rel="noreferrer" id="quickExit" title="Sair rapidamente desta página (não apaga o histórico)">Saída rápida ↗</a></div>
+</div>
+<main id="authMain" class="auth-layout">
+ <section class="auth-intro" aria-labelledby="authIntroTitle">
+ <span class="auth-eyebrow"><span class="auth-dot" aria-hidden="true"></span> CONEXÃO · APOIO · OPORTUNIDADES</span>
+ <h1 id="authIntroTitle">Um espaço seu para construir <em>novas possibilidades.</em></h1>
+ <p class="auth-lead">Acesse sua conta para acompanhar sua experiência no Elas+. Orientações, serviços e o Mapa Seguro continuam disponíveis sem cadastro.</p>
+ <div class="auth-benefits">
+  <div class="auth-benefit"><span class="auth-benefit-icon" aria-hidden="true">✦</span><div><strong>Seu espaço, seu ritmo</strong><p>Você escolhe quando entrar. O acesso não é obrigatório para consultar serviços.</p></div></div>
+  <div class="auth-benefit"><span class="auth-benefit-icon" aria-hidden="true">⌖</span><div><strong>Apoio e informação acessíveis</strong><p>Encontre recursos, oportunidades profissionais e locais de atendimento.</p></div></div>
+  <div class="auth-benefit"><span class="auth-benefit-icon" aria-hidden="true">♡</span><div><strong>Respeito à sua privacidade</strong><p>Sua senha não é armazenada pelo Elas+; a autenticação é realizada pelo Supabase.</p></div></div>
+ </div>
+ </section>
+ <section class="auth-card" aria-labelledby="formTitle">
+  <div id="authArea">
+   <div class="auth-card-header"><span class="auth-card-eyebrow">SUA CONTA ELAS+</span><h2 id="formTitle">Que bom ter você aqui!</h2><p id="formHelp">Entre com seu e-mail e senha para continuar.</p></div>
+   <div class="auth-tabs" role="group" aria-label="Acesso à conta">
+    <button id="tabLogin" class="selected" type="button" aria-pressed="true">Entrar</button>
+    <button id="tabSignup" type="button" aria-pressed="false">Criar conta</button>
+   </div>
+   <form id="authForm" novalidate>
+    <div class="auth-field" id="emailField"><label for="email">E-mail</label><input id="email" name="email" type="email" autocomplete="email" inputmode="email" maxlength="254" required placeholder="seuemail@exemplo.com"></div>
+    <div class="auth-field" id="passwordField"><div class="auth-field-title"><label for="password">Senha</label><button id="resetPassword" class="auth-text-link" type="button">Esqueceu a senha?</button></div><div class="auth-password"><input id="password" name="password" type="password" autocomplete="current-password" minlength="8" maxlength="128" required placeholder="Digite sua senha"><button id="togglePassword" class="auth-password-toggle" type="button" aria-pressed="false" aria-label="Mostrar senha">Mostrar</button></div></div>
+    <div class="auth-field" id="confirmField" hidden><label for="confirmPassword">Confirme sua senha</label><input id="confirmPassword" name="confirmPassword" type="password" autocomplete="new-password" minlength="8" maxlength="128" placeholder="Digite a senha novamente"></div>
+    <p class="auth-password-hint" id="passwordHint" hidden>Use pelo menos 8 caracteres. Evite senhas usadas em outros serviços.</p>
+    <label class="auth-remember" id="rememberRow"><input type="checkbox" id="remember"> Permanecer conectada neste navegador</label>
+    <button class="auth-submit" id="submitBtn" type="submit"><span id="submitLabel">Entrar na minha conta</span><span aria-hidden="true">→</span></button>
+   </form>
+   <button type="button" id="backToLogin" class="auth-back" hidden>← Voltar para entrar</button>
+   <p id="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+   <p class="auth-card-bottom">Novo por aqui? O cadastro é gratuito. <strong>Nenhuma conta é necessária para acessar os canais de ajuda.</strong></p>
+  </div>
+  <div id="signedIn" hidden>
+   <span class="auth-success-icon" aria-hidden="true">✓</span>
+   <h2>Você está conectada!</h2>
+   <p>Sua sessão foi confirmada com o serviço de autenticação.</p>
+   <p class="auth-account-email" id="accountEmail"></p>
+   <a class="auth-submit auth-success-link" id="continueLink" href="index.html">Continuar no Elas+ →</a>
+   <button id="logout" type="button" class="auth-logout">Sair desta conta</button>
+  </div>
+  <div class="auth-privacy-note"><strong>Importante:</strong> a saída rápida não apaga o histórico do navegador. Se estiver em risco imediato, ligue <a href="tel:190">190</a>; para orientação, <a href="tel:180">180</a>.</div>
+ </section>
+</main>
+<footer class="auth-footer">Elas+ · Conexão, apoio e oportunidades · <a href="index.html">Voltar ao início</a></footer>
+</body>
+</html>

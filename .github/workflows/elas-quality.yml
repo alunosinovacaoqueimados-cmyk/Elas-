@@ -1,0 +1,33 @@
+name: Elas+ · Testes de produto
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: Testes Node e validações de produto
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Baixar repositório
+        uses: actions/checkout@v4
+      - name: Preparar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validar JavaScript do navegador
+        run: |
+          node --check auth.js
+          node --check auth-shell.js
+          node --check seguranca.js
+          node --check recursos.js
+          node --check app.js
+      - name: Executar testes automatizados
+        run: npm test

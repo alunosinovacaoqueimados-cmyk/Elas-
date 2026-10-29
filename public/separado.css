@@ -17,3 +17,10 @@
 @media(max-width:1140px){.layout .shell .page-grid.assistant-layout,.layout .shell .page-grid.map-layout{grid-template-columns:1fr}
 .layout .shell .page-grid.assistant-layout>.right-panel,.layout .shell .page-grid.map-layout>.right-panel{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:680px){.layout .shell .page-grid.assistant-layout>.right-panel,.layout .shell .page-grid.map-layout>.right-panel{display:grid;grid-template-columns:1fr}.map-page-summary{display:block}.map-page-summary strong{display:block;margin-bottom:5px}.layout .shell .page-grid.map-layout #map{min-height:380px}}
+
+
+/* Mapa Seguro: mais espaço útil para a ferramenta e menos área de cartões laterais. */
+.layout .shell .page-grid.map-layout{grid-template-columns:minmax(0,1fr) minmax(245px,290px);gap:14px}
+.layout .shell .page-grid.map-layout>.map-panel{min-width:0;min-height:0}
+@media(max-width:1190px){.layout .shell .page-grid.map-layout{grid-template-columns:1fr}.layout .shell .page-grid.map-layout>.right-panel{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}}
+@media(max-width:680px){.layout .shell .page-grid.map-layout>.right-panel{grid-template-columns:1fr}}

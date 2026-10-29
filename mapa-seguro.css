@@ -39,3 +39,58 @@
 html[data-contrast="high"] .map-discovery,html[data-contrast="high"] .place-result{background:#0d0d0d!important;color:#fff!important;border-color:#fff!important}
 html[data-contrast="high"] .map-refine-field,html[data-contrast="high"] .place-distance,html[data-contrast="high"] .map-results-summary{color:#fff!important}
 .poi-pin.shop{background:#8e50b4}.poi-pin.food{background:#d98537}.poi-pin.services{background:#497e9f}.poi-pin.childcare{background:#bd5e9f}
+
+
+/* 2026 Product: mapa é a ferramenta principal, não um atalho secundário. */
+.layout .shell .map-product-intro{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin:3px 0 12px;padding:3px 0 8px}
+.layout .shell .map-product-intro-copy{max-width:820px;min-width:0}
+.layout .shell .map-breadcrumb{display:flex;gap:8px;align-items:center;font-size:.76rem;color:var(--muted);margin:0 0 10px}
+.layout .shell .map-breadcrumb a{color:var(--sub);text-decoration:none}
+.layout .shell .map-breadcrumb strong{color:var(--ink)}
+.layout .shell .map-kicker{font-size:.69rem;letter-spacing:.11em;font-weight:850;color:#a32980}
+.layout .shell .map-product-intro h1{font-size:clamp(1.8rem,2.7vw,2.35rem);line-height:1.13;letter-spacing:-.05em;margin:5px 0 8px;font-weight:900}
+.layout .shell .map-product-intro h1 span{color:var(--pink)}
+.layout .shell .map-product-intro p{margin:0;color:var(--sub);font-size:.88rem;line-height:1.5}
+.layout .shell .map-product-primary-actions{display:flex;align-items:center;flex-shrink:0;gap:8px}
+.layout .shell .map-product-primary-actions a{display:flex;gap:8px;align-items:center;justify-content:center;text-decoration:none;font-size:.8rem;font-weight:700;padding:11px 13px;border-radius:10px;border:1px solid #e5d4e7;background:#fff;color:#5423a4;white-space:nowrap}
+.layout .shell .map-product-primary-actions .map-emergency-action{color:#8d1a35;background:#fff0f4;border-color:#f0c6d1}
+.layout .shell .map-product-primary-actions strong{font-size:1.08rem}
+.layout .shell .map-trust-note{display:flex;align-items:center;gap:11px;padding:12px 15px;margin:0 0 14px;background:#f8effa;border:1px solid #ebdfef;border-radius:11px;color:#5a4768;font-size:.79rem;line-height:1.55}
+.layout .shell .map-trust-note>span:first-child{font-weight:800;font-size:1.35rem;color:#77458d;flex-shrink:0}
+.layout .shell .map-trust-note strong{color:#392348}
+.layout .shell .map-page-summary{display:none}
+.layout .shell .page-grid.map-layout>.map-panel{min-width:0;background:#fff}
+.layout .shell .page-grid.map-layout>.map-panel>.panel-header{padding-bottom:12px}
+.layout .shell .page-grid.map-layout .map-tools{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:9px;align-items:center;padding:0 0 9px}
+.layout .shell .page-grid.map-layout .place-search{width:100%;min-width:0}
+.layout .shell .page-grid.map-layout .place-search input{min-width:0}
+.layout .shell .page-grid.map-layout .map-discovery{padding:11px 12px 7px;margin:3px 0 10px;background:#fdfaff;border-radius:12px}
+.layout .shell .page-grid.map-layout .map-discovery-heading{margin-bottom:7px}
+.layout .shell .page-grid.map-layout .map-filters{display:flex;gap:7px;overflow-x:auto;flex-wrap:nowrap;scrollbar-width:thin;padding:3px 0 10px;scroll-snap-type:x proximity}
+.layout .shell .page-grid.map-layout .map-filters .filter{flex:0 0 auto;scroll-snap-align:start;min-height:37px}
+.layout .shell .page-grid.map-layout .map-refinements{margin:0}
+.layout .shell .page-grid.map-layout .map-view{overflow:hidden;border-radius:12px}
+.layout .shell .page-grid.map-layout #map{min-height:480px}
+.layout .shell .page-grid.map-layout .map-guidance{padding:12px 3px}
+.layout .shell .page-grid.map-layout .map-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.layout .shell .page-grid.map-layout .map-contribute{margin:13px 0 9px}
+.layout .shell .page-grid.map-layout .map-contribution-state:not([hidden]){display:flex;align-items:flex-start;gap:10px;padding:14px;background:#fff8ed;border:1px solid #f5dbaa;border-radius:11px;color:#704d20;font-size:.82rem;line-height:1.55;margin:13px 0 9px}
+.layout .shell .page-grid.map-layout .map-contribution-state strong{color:#6c4217}
+.layout .shell .page-grid.map-layout .listing{margin-top:12px}
+.layout .shell .page-grid.map-layout .source-label{line-height:1.4}
+.layout .shell .page-grid.map-layout .right-panel .action-stack .right-action[href="#mapa"]{display:none}
+.layout .shell .page-grid.map-layout .right-panel .plan-item.disabled{display:none}
+@media(max-width:1190px){.layout .shell .map-product-intro{align-items:flex-start}}
+@media(max-width:750px){.layout .shell .map-product-intro{flex-direction:column;align-items:stretch}.layout .shell .map-product-primary-actions{align-self:flex-start}.layout .shell .map-product-intro h1{font-size:1.83rem}.layout .shell .map-trust-note{font-size:.74rem}}
+@media(max-width:680px){.layout .shell .page-grid.map-layout .map-tools{grid-template-columns:1fr}.layout .shell .page-grid.map-layout #myLocation{justify-self:stretch}.layout .shell .page-grid.map-layout .map-contribute-actions{grid-template-columns:1fr}.layout .shell .page-grid.map-layout .map-refinements{grid-template-columns:1fr}.layout .shell .page-grid.map-layout #map{min-height:360px}.layout .shell .map-product-primary-actions a{padding:10px 12px}.layout .shell .page-grid.map-layout .map-footer{align-items:flex-start}}
+@media(max-width:380px){.layout .shell .map-product-primary-actions{width:100%}.layout .shell .map-product-primary-actions a{flex:1}}
+
+
+/* O atributo hidden sempre prevalece sobre o layout: não mostrar ações inativas. */
+.layout .shell .map-contribute[hidden],
+.layout .shell .map-contribution-state[hidden],
+.layout .shell [data-action="report"][hidden],
+.layout .shell [data-map-kind][hidden]{display:none!important}
+.layout .shell .map-retry{border:1px solid #e5d0ed;border-radius:9px;padding:10px 13px;color:var(--primary);background:#fff;font-weight:800;min-height:40px;margin:9px 0}
+
+.layout .shell .map-empty-search{display:inline-flex;align-items:center;margin:9px 0;padding:9px 12px;background:#f5eaf9;color:var(--primary);border-radius:9px;font-size:.78rem;font-weight:800;text-decoration:none}
