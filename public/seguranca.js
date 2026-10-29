@@ -49,12 +49,33 @@ const guidance=[
 function guideReply(message){const norm=message.normalize('NFD').replace(/[\u0300-\u036f]/g,'');const found=guidance.find(g=>g.match.test(norm));return found?.answer || 'Obrigada por contar. Posso ajudar com orientações iniciais sobre relações, limites no trabalho, direitos, serviços públicos e formas de buscar apoio. Você pode me dizer, sem dados que identifiquem pessoas, se sua dúvida é sobre segurança, trabalho, saúde ou algum serviço? Em emergência, ligue 190.';}
 function addBubble(text,type){const d=document.createElement('div');d.className='bubble '+type;d.textContent=text;$('#chatLog').append(d);$('#chatLog').scrollTop=$('#chatLog').scrollHeight;}
 let remoteAIEnabled=false;
-let contributionsEnabled=true;
-function disableContributions(){
-  contributionsEnabled=false;
-  document.querySelectorAll('[data-action="report"],[data-map-kind]').forEach(btn=>{btn.disabled=true;btn.setAttribute('aria-disabled','true');btn.title='Publicação de relatos indisponível até configurar armazenamento persistente';});
-  const msg=$('#reportTotals');if(msg)msg.textContent='Marcações públicas indisponíveis nesta versão online. Busque os serviços no mapa normalmente.';
+let contributionsEnabled=false;
+function setContributionAvailability(enabled){
+  contributionsEnabled=Boolean(enabled);
+  // Não ofereça cadastro de relatos se não há persistência e moderação disponíveis.
+  const block=$('.map-contribute'),statusPanel=$('#mapContributionStatus');
+  if(block)block.hidden=!contributionsEnabled;
+  document.querySelectorAll('[data-action="report"],[data-map-kind]').forEach(btn=>{
+    btn.disabled=!contributionsEnabled;
+    btn.hidden=!contributionsEnabled;
+    btn.setAttribute('aria-disabled',String(!contributionsEnabled));
+    btn.title=contributionsEnabled?'Registrar uma experiência para avaliação':'Relatos indisponíveis enquanto não há armazenamento moderado';
+  });
+  if(statusPanel){
+    statusPanel.hidden=contributionsEnabled;
+    if(!contributionsEnabled){
+      statusPanel.replaceChildren();
+      const strong=document.createElement('strong');
+      strong.textContent='Relatos comunitários temporariamente desativados.';
+      const description=document.createElement('span');
+      description.textContent=' A busca por serviços continua disponível. Para publicar experiências com privacidade, precisamos de armazenamento persistente e aprovação humana.';
+      statusPanel.append(strong,description);
+    }
+  }
+  const totals=$('#reportTotals');
+  if(totals&&!contributionsEnabled)totals.textContent='Sem relatos publicados nesta versão; use os filtros de serviços.';
 }
+function disableContributions(){setContributionAvailability(false);}
 
 async function detectAI(){
   if(location.protocol==='file:')return;
@@ -91,7 +112,14 @@ async function sendChat(message){const val=message.trim();if(!val)return;addBubb
 $('#chatForm')?.addEventListener('submit',e=>{e.preventDefault();sendChat($('#chatInput').value);});
 $$('[data-prompt]').forEach(btn=>btn.addEventListener('click',()=>{const message=btn.dataset.prompt;document.querySelector('#assistente').scrollIntoView({block:'start',behavior:'smooth'});sendChat(message);}));
 if ($('#chatForm')) detectAI();
-if ($('#map')) fetch('/api/status',{signal:AbortSignal.timeout(4000)}).then(r=>r.ok?r.json():null).then(data=>{if(data?.contributionsEnabled===false)disableContributions();}).catch(()=>{});
+if ($('#map')){
+  // O estado seguro é DESATIVADO até confirmação explícita do servidor.
+  disableContributions();
+  fetch('/api/status',{signal:AbortSignal.timeout(4500)})
+    .then(r=>r.ok?r.json():null)
+    .then(data=>{if(data?.contributionsEnabled===true)setContributionAvailability(true);})
+    .catch(()=>disableContributions());
+}
 
 // Mapa Leaflet: dados reais e pontuais via OSM/Overpass; nenhum serviço é inventado.
 function markerIcon(type){const value=TYPES[type]||TYPES.social;return L.divIcon({className:'',iconSize:[27,27],iconAnchor:[14,25],popupAnchor:[0,-23],html:`<div class="poi-pin ${type}"><span>${value.icon}</span></div>`});}
@@ -118,17 +146,24 @@ async function loadPOIs(){
   const req=++state.loadToken;const center=state.map.getCenter();
   if($('#serviceDetails')){$('#serviceDetails').replaceChildren();$('#serviceDetails').hidden=true;}
   status('Buscando estabelecimentos próximos...');$('#placeList').innerHTML='<p class="muted">Carregando locais próximos do OpenStreetMap...</p>';
+  updateMapFallbackLink();
   const summary=$('#placeResultsSummary');if(summary)summary.textContent='Consultando estabelecimentos...';
   try{
     const type=Object.hasOwn(TYPES,state.filter)&&state.filter!=='community'?state.filter:'all';
     const url=`/api/locais?lat=${encodeURIComponent(center.lat)}&lon=${encodeURIComponent(center.lng)}&type=${encodeURIComponent(type)}&radius=${state.radius}`;
-    const r=await fetch(url,{signal:AbortSignal.timeout(29000)});
+    const r=await fetch(url,{signal:AbortSignal.timeout(14500)});
     const data=await r.json();if(req!==state.loadToken)return;
     if(!r.ok)throw Error(data.error||'Consulta indisponível');
     state.poi=(data.places||[]).map(p=>({...p,coord:[p.lat,p.lon],tags:{'addr:street':p.address||''}}));state.lastSearchedCenter=center;$('#refreshArea').hidden=true;state.listLimit=20;
     if($('#offlineSupport'))$('#offlineSupport').hidden=true;
     renderPlaces();status(`${state.poi.length} estabelecimentos encontrados na área consultada. Fonte: OpenStreetMap — confirme antes de visitar.`);
-  }catch(e){if(req!==state.loadToken)return;state.poi=[];renderPlaces();if($('#offlineSupport'))$('#offlineSupport').hidden=false;status('Não foi possível consultar serviços neste momento. Use os canais oficiais abaixo ou tente novamente.');notify(e.message||'Consulta indisponível.');}
+  }catch(e){if(req!==state.loadToken)return;state.poi=[];renderPlaces();if($('#offlineSupport'))$('#offlineSupport').hidden=false;status('Serviços temporariamente indisponíveis nesta área. Use a busca externa no OpenStreetMap ou os contatos oficiais.');notify('A fonte de locais está indisponível agora.');}
+}
+function updateMapFallbackLink(){
+  const anchor=$('#osmFallbackLink');if(!anchor)return;
+  const terms={police:'delegacia polícia',health:'hospital posto de saúde',pharmacy:'farmácia',social:'assistência social CRAS',childcare:'creche',shop:'mercado',food:'restaurante',services:'banco'}; 
+  const q=([terms[state.filter]||'serviços públicos',$('#placeInput')?.value.trim()||'Queimados, RJ']).filter(Boolean).join(' ');
+  anchor.href='https://www.openstreetmap.org/search?query='+encodeURIComponent(q);
 }
 function serviceLinks(place){
   const lat=Number(place.coord[0]), lon=Number(place.coord[1]);
@@ -240,13 +275,13 @@ function renderPlaces(){
 function renderReportPlace(list,r){const kind=reportKind(r);const b=document.createElement('button');b.type='button';b.className='place community-place '+kind;
  const sym=document.createElement('span');sym.className='place-icon '+kind;sym.textContent=KIND_ICON[kind];const detail=document.createElement('span');detail.className='place-body';const strong=document.createElement('strong');strong.textContent=KIND_LABEL[kind]+' · '+(CATEGORY[r.category]||r.category);const small=document.createElement('small');small.textContent=r.description+' · Região aproximada · Relato aprovado';detail.append(strong,small);const arrow=document.createElement('span');arrow.className='place-chevron';arrow.textContent='›';b.append(sym,detail,arrow);b.addEventListener('click',()=>{state.map.setView([r.lat,r.lon],Math.min(state.map.getZoom(),13));r.marker?.openPopup();});list.append(b);}
 $$('[data-filter]').forEach(b=>b.addEventListener('click',()=>{
-  state.filter=b.dataset.filter;state.listLimit=20;
+  state.filter=b.dataset.filter;state.listLimit=20;updateMapFallbackLink();
   $$('[data-filter]').forEach(el=>{const active=el===b;el.classList.toggle('is-active',active);el.setAttribute('aria-pressed',String(active));});
   if(['community','positive','attention'].includes(state.filter))renderPlaces();else loadPOIs();
 }));
 $('#establishmentSearch')?.addEventListener('input',e=>{state.nameSearch=e.target.value;state.listLimit=20;renderPlaces();});
 $('#searchRadius')?.addEventListener('change',e=>{state.radius=Number(e.target.value);state.listLimit=20;if(['community','positive','attention'].includes(state.filter))renderPlaces();else loadPOIs();});
-$('#placeForm')?.addEventListener('submit',async e=>{e.preventDefault();const text=$('#placeInput').value.trim();if(text.length<3){notify('Informe uma cidade, bairro ou endereço.');return;}status('Procurando local...');try{const res=await fetch('/api/buscar?q='+encodeURIComponent(text));const found=await res.json();if(!res.ok)throw Error(found.error||'Consulta indisponível');if(!found.results?.length){status('Local não encontrado. Tente incluir cidade e estado.');return;}const loc=[Number(found.results[0].lat),Number(found.results[0].lon)];state.map?.setView(loc,13);await loadPOIs();}catch{status('Busca indisponível. Tente novamente quando houver conexão.');}});
+$('#placeForm')?.addEventListener('submit',async e=>{e.preventDefault();const text=$('#placeInput').value.trim();if(text.length<3){notify('Informe uma cidade, bairro ou endereço.');return;}status('Procurando local...');updateMapFallbackLink();try{const res=await fetch('/api/buscar?q='+encodeURIComponent(text));const found=await res.json();if(!res.ok)throw Error(found.error||'Consulta indisponível');if(!found.results?.length){status('Local não encontrado. Tente incluir cidade e estado.');return;}const loc=[Number(found.results[0].lat),Number(found.results[0].lon)];state.map?.setView(loc,13);await loadPOIs();}catch{status('Busca indisponível. Tente novamente quando houver conexão.');}});
 $('#myLocation')?.addEventListener('click',()=>{if(!navigator.geolocation){notify('Este navegador não oferece geolocalização.');return;}status('Aguardando sua permissão de localização…');navigator.geolocation.getCurrentPosition(async p=>{const coords=[p.coords.latitude,p.coords.longitude];if(state.map){state.map.setView(coords,14);state.userLayer.clearLayers();L.circleMarker(coords,{radius:8,color:'#fff',fillColor:'#287fff',weight:3,fillOpacity:1}).addTo(state.userLayer).bindPopup('Posição autorizada por você. A região é enviada ao servidor para consultar serviços, mas não é publicada.');await loadPOIs();}},()=>{status('Localização negada ou indisponível. Você pode usar a busca por cidade.');},{enableHighAccuracy:false,maximumAge:60000,timeout:11000});});
 
 // Relatos enviados à moderação do servidor, que persiste em JSON local.
@@ -280,4 +315,4 @@ function renderReports(){const wrap=$('#reportList');wrap.replaceChildren();cons
 $('#contactForm')?.addEventListener('submit',e=>{e.preventDefault();const name=$('#contactName').value.trim();const phone=$('#contactPhone').value.replace(/\D/g,'');if(phone.length<10||phone.length>13){notify('Informe um telefone válido com DDD.');return;}if(state.contacts.length>=5){notify('Limite de cinco contatos nesta demonstração.');return;}state.contacts.push({name,phone});$('#contactName').value='';$('#contactPhone').value='';renderContacts();notify('Contato adicionado apenas nesta sessão.');});
 function renderContacts(){const wrap=$('#savedContacts');wrap.replaceChildren();$('#contactsStatus').textContent=state.contacts.length?`${state.contacts.length} contato(s) configurado(s) nesta sessão`:'Configurar nesta sessão';state.contacts.forEach(c=>{const row=document.createElement('div');row.className='contact-row';const n=document.createElement('strong');n.textContent=c.name;const link=document.createElement('a');link.textContent='Preparar SMS ↗';link.href=`sms:${c.phone}?body=${encodeURIComponent('Preciso de ajuda. Por favor, entre em contato comigo. Mensagem preparada manualmente pelo Elas+; o envio depende da sua confirmação.')}`;row.append(n,link);wrap.append(row);});}
 
-window.addEventListener('load',()=>{if ($('#map')) {initMap();loadPublished();}const queryFilter=new URLSearchParams(location.search).get('f');if(queryFilter&&TYPES[queryFilter]){const b=document.querySelector(`[data-filter="${queryFilter}"]`);if(b)b.click();}const nickname=localStorage.getItem('elasplus_nickname');if(nickname){const el=document.querySelector('.account-sidebar strong');if(el)el.textContent=nickname;}});
+window.addEventListener('load',()=>{if ($('#map')) {initMap();loadPublished();}const queryFilter=new URLSearchParams(location.search).get('f');if(queryFilter&&TYPES[queryFilter]){const b=document.querySelector(`[data-filter="${queryFilter}"]`);if(b)b.click();}updateMapFallbackLink();const nickname=localStorage.getItem('elasplus_nickname');if(nickname){const el=document.querySelector('.account-sidebar strong');if(el)el.textContent=nickname;}});
