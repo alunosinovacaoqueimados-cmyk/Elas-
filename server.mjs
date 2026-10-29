@@ -147,7 +147,7 @@ async function nearby(lat,lon,filter='all',radius=3000){
       if(!data.length)throw new Error('Fonte Overpass sem locais desta categoria');
       return {places:data.slice(0,180),source:'OpenStreetMap / Overpass',partial:false};
     });
-    const photon=queryPhotonPlaces({
+    const photon=process.env.OVERPASS_URL?Promise.reject(new Error('Photon ignorado: fonte de teste configurada')):queryPhotonPlaces({
       lat,lon,radius,type:filter,transport:remoteJSON,
       endpoint:process.env.PHOTON_URL||'https://photon.komoot.io/reverse',
       timeout:8500
