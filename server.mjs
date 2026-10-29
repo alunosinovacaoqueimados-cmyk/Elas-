@@ -157,15 +157,21 @@ async function nearby(lat,lon,filter='all',radius=3000){
       return {places:data,source:'Photon / OpenStreetMap',partial:true};
     });
     try{
-      const output=await Promise.any([overpass,photon]);
+      const output={...(await Promise.any([overpass,photon])),fetchedAt:new Date().toISOString()};
       placesCache.set(key,{data:output,exp:Date.now()+30*60000});
       return output;
     }catch(error){
-      if(reachedSource)return {places:[],source:'OpenStreetMap (consulta sem resultados)',partial:true};
-      // Uma fonte já consultada com sucesso pode servir como resultado defasado por
-      // até 24h. Nunca fingir que está atualizada: a resposta indica stale=true.
-      if(cached?.data?.places?.length&&cached.exp>Date.now()-24*60*60000){
-        return {...cached.data,stale:true};
+      if(reachedSource){
+        const empty={places:[],source:'OpenStreetMap (consulta sem resultados)',partial:true,fetchedAt:new Date().toISOString()};
+        placesCache.set(key,{data:empty,exp:Date.now()+2*60000});
+        return empty;
+      }
+      // Cache anterior só pode ser reutilizado por até 24 horas a partir da
+      // consulta REAL, sem renovar artificialmente sua idade a cada falha.
+      if(cached?.data?.places?.length&&Date.parse(cached.data.fetchedAt)>Date.now()-24*60*60000){
+        const staleResult={...cached.data,stale:true};
+        placesCache.set(key,{data:staleResult,exp:Date.now()+2*60000});
+        return staleResult;
       }
       console.warn('[Elas+] Serviços OSM indisponíveis; nenhuma coordenada registrada.',
         error?.errors?.map((reason,index)=>'fonte '+(index+1)+': '+String(reason?.message||'falha').slice(0,90)).join(' | ')||'falha externa');
