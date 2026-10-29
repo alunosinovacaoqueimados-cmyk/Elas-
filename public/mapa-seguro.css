@@ -84,3 +84,11 @@ html[data-contrast="high"] .map-refine-field,html[data-contrast="high"] .place-d
 @media(max-width:750px){.layout .shell .map-product-intro{flex-direction:column;align-items:stretch}.layout .shell .map-product-primary-actions{align-self:flex-start}.layout .shell .map-product-intro h1{font-size:1.83rem}.layout .shell .map-trust-note{font-size:.74rem}}
 @media(max-width:680px){.layout .shell .page-grid.map-layout .map-tools{grid-template-columns:1fr}.layout .shell .page-grid.map-layout #myLocation{justify-self:stretch}.layout .shell .page-grid.map-layout .map-contribute-actions{grid-template-columns:1fr}.layout .shell .page-grid.map-layout .map-refinements{grid-template-columns:1fr}.layout .shell .page-grid.map-layout #map{min-height:360px}.layout .shell .map-product-primary-actions a{padding:10px 12px}.layout .shell .page-grid.map-layout .map-footer{align-items:flex-start}}
 @media(max-width:380px){.layout .shell .map-product-primary-actions{width:100%}.layout .shell .map-product-primary-actions a{flex:1}}
+
+
+/* O atributo hidden sempre prevalece sobre o layout: não mostrar ações inativas. */
+.layout .shell .map-contribute[hidden],
+.layout .shell .map-contribution-state[hidden],
+.layout .shell [data-action="report"][hidden],
+.layout .shell [data-map-kind][hidden]{display:none!important}
+.layout .shell .map-retry{border:1px solid #e5d0ed;border-radius:9px;padding:10px 13px;color:var(--primary);background:#fff;font-weight:800;min-height:40px;margin:9px 0}
