@@ -261,7 +261,12 @@ async function restoreSession(){
     }
     saveSession(tokens,Boolean(saved.persistent));
     showSignedIn(user.email);
-  }catch{
+  }catch(error){
+    if(String(error?.message)==='network_error'){
+      showForm();
+      feedback('Sem conexão, não foi possível confirmar sua sessão. Sua sessão salva foi mantida; tente novamente com internet.',true);
+      return;
+    }
     clearSaved();session=null;showForm();
     feedback('Sua sessão anterior expirou. Entre novamente para continuar.',false);
   }
