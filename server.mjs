@@ -112,49 +112,79 @@ async function nearby(lat,lon,filter='all',radius=3000){
   if(cached?.exp>Date.now())return cached.data;
   if(cached?.pending)return cached.pending;
   const task=(async()=>{
-    // Photon oferece resultado parcial sem a consulta Overpass pesada.
-    // Não inventar locais: usar apenas elementos identificados e georreferenciados do OSM.
-    if(!process.env.OVERPASS_URL)try{
-      const results=await queryPhotonPlaces({
-        lat,lon,radius,type:filter,transport:remoteJSON,
-        endpoint:process.env.PHOTON_URL||'https://photon.komoot.io/reverse',
-        timeout:6800
-      });
-      if(results.length){
-        const data={places:results,source:'Photon / OpenStreetMap',partial:true};
-        placesCache.set(key,{data,exp:Date.now()+20*60000});
-        return data;
-      }
-    }catch(error){
-      console.warn('[Elas+] Photon indisponível: ',String(error?.message||'falha').slice(0,100));
-    }
+    // A busca não pode esperar uma fonte falhar para começar a outra:
+    // no servidor anterior os tempos máximos somavam ~21s, mais que o timeout do cliente.
+    // As duas fontes usam dados reais do OpenStreetMap, com atribuição explícita.
     const tags=filter==='all'?Object.keys(PLACE_FILTERS):[filter];
-    const clauses=tags.flatMap(type=>[PLACE_FILTERS[type],EXTRA_FILTERS[type]].filter(Boolean).map(expression=>`nwr(around:${radius},${lat.toFixed(4)},${lon.toFixed(4)})${expression};`)).join('');
-    const query=`[out:json][timeout:12];(${clauses});out center 220;`;
-    const result=await queryOverpass(query,{endpointOverride:process.env.OVERPASS_URL,transport:remoteJSON});
-    const data=[],ids=new Set();
-    for(const p of result.elements||[]){
-      const la=coord(p.lat??p.center?.lat,-90,90),lo=coord(p.lon??p.center?.lon,-180,180);
-      const id=String(p.type)+':'+String(p.id);
-      if(la===null||lo===null||ids.has(id))continue;
-      const t=p.tags||{},type=placeType(t);
-      if(!type||(filter!=='all'&&type!==filter))continue;
-      ids.add(id);
-      data.push({id,lat:la,lon:lo,type,
-        name:String(t.name||t['name:pt']||'Estabelecimento sem nome informado').slice(0,110),
-        address:[t['addr:street'],t['addr:housenumber']].filter(Boolean).join(', ').slice(0,150),
-        phone:String(t.phone||t['contact:phone']||'').slice(0,80),
-        website:(/^https?:\/\//i.test(t.website||'')?t.website:'').slice(0,240),
-        distance:Math.round(distanceMeters(lat,lon,la,lo)),source:'OpenStreetMap'});
+    const clauses=tags.flatMap(type=>[PLACE_FILTERS[type],EXTRA_FILTERS[type]]
+      .filter(Boolean)
+      .map(expression=>`nwr(around:${radius},${lat.toFixed(4)},${lon.toFixed(4)})${expression};`)).join('');
+    const query=`[out:json][timeout:9];(${clauses});out center 180;`;
+    let reachedSource=false;
+    const overpass=queryOverpass(query,{
+      endpointOverride:process.env.OVERPASS_URL,
+      transport:remoteJSON,
+      timeout:10500
+    }).then(result=>{
+      reachedSource=true;
+      const data=[],ids=new Set();
+      for(const place of result.elements||[]){
+        const la=coord(place.lat??place.center?.lat,-90,90);
+        const lo=coord(place.lon??place.center?.lon,-180,180);
+        const id=String(place.type)+':'+String(place.id);
+        if(la===null||lo===null||ids.has(id))continue;
+        const tags=place.tags||{},type=placeType(tags);
+        if(!type||(filter!=='all'&&type!==filter))continue;
+        ids.add(id);
+        data.push({id,lat:la,lon:lo,type,
+          name:String(tags.name||tags['name:pt']||'Estabelecimento sem nome informado').slice(0,110),
+          address:[tags['addr:street'],tags['addr:housenumber']].filter(Boolean).join(', ').slice(0,150),
+          phone:String(tags.phone||tags['contact:phone']||'').slice(0,80),
+          website:(/^https?:\/\//i.test(tags.website||'')?tags.website:'').slice(0,240),
+          distance:Math.round(distanceMeters(lat,lon,la,lo)),source:'OpenStreetMap'});
+      }
+      data.sort((a,b)=>a.distance-b.distance||a.name.localeCompare(b.name,'pt-BR'));
+      if(!data.length)throw new Error('Fonte Overpass sem locais desta categoria');
+      return {places:data.slice(0,180),source:'OpenStreetMap / Overpass',partial:false};
+    });
+    const photon=process.env.OVERPASS_URL?Promise.reject(new Error('Photon ignorado: fonte de teste configurada')):queryPhotonPlaces({
+      lat,lon,radius,type:filter,transport:remoteJSON,
+      endpoint:process.env.PHOTON_URL||'https://photon.komoot.io/reverse',
+      timeout:8500
+    }).then(data=>{
+      reachedSource=true;
+      if(!data.length)throw new Error('Photon sem locais desta categoria');
+      return {places:data,source:'Photon / OpenStreetMap',partial:true};
+    });
+    try{
+      const output={...(await Promise.any([overpass,photon])),fetchedAt:new Date().toISOString()};
+      placesCache.set(key,{data:output,exp:Date.now()+30*60000});
+      return output;
+    }catch(error){
+      if(reachedSource){
+        const empty={places:[],source:'OpenStreetMap (consulta sem resultados)',partial:true,fetchedAt:new Date().toISOString()};
+        placesCache.set(key,{data:empty,exp:Date.now()+2*60000});
+        return empty;
+      }
+      // Cache anterior só pode ser reutilizado por até 24 horas a partir da
+      // consulta REAL, sem renovar artificialmente sua idade a cada falha.
+      if(cached?.data?.places?.length&&Date.parse(cached.data.fetchedAt)>Date.now()-24*60*60000){
+        const staleResult={...cached.data,stale:true};
+        placesCache.set(key,{data:staleResult,exp:Date.now()+2*60000});
+        return staleResult;
+      }
+      console.warn('[Elas+] Serviços OSM indisponíveis; nenhuma coordenada registrada.',
+        error?.errors?.map((reason,index)=>'fonte '+(index+1)+': '+String(reason?.message||'falha').slice(0,90)).join(' | ')||'falha externa');
+      throw new Error('Fontes de locais indisponíveis');
     }
-    data.sort((a,b)=>a.distance-b.distance||a.name.localeCompare(b.name,'pt-BR'));
-    const output={places:data.slice(0,400),source:'OpenStreetMap / Overpass',partial:false};
-    placesCache.set(key,{data:output,exp:Date.now()+15*60000});
-    return output;
   })();
-  placesCache.set(key,{pending:task,exp:0});
+  placesCache.set(key,{...cached,pending:task,exp:0});
   try{return await task;}
-  catch(error){placesCache.delete(key);throw error;}
+  catch(error){
+    if(cached?.data)placesCache.set(key,cached);
+    else placesCache.delete(key);
+    throw error;
+  }
 }
 async function getReports(){try{const obj=JSON.parse(await fs.readFile(REPORT_FILE,'utf8'));return Array.isArray(obj.submissions)?obj.submissions:[];}catch(e){if(e.code==='ENOENT')return [];throw e;}}
 async function mutateReports(mutator){const task=reportQueue.then(async()=>{const reports=await getReports();const result=mutator(reports);await fs.mkdir(path.dirname(REPORT_FILE),{recursive:true});const tmp=REPORT_FILE+'.tmp';await fs.writeFile(tmp,JSON.stringify({submissions:reports},null,2),{mode:0o600});await fs.rename(tmp,REPORT_FILE);return result;});reportQueue=task.catch(()=>{});return task;}
