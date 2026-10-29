@@ -114,7 +114,7 @@ async function nearby(lat,lon,filter='all',radius=3000){
   const task=(async()=>{
     // Photon oferece resultado parcial sem a consulta Overpass pesada.
     // Não inventar locais: usar apenas elementos identificados e georreferenciados do OSM.
-    try{
+    if(!process.env.OVERPASS_URL)try{
       const results=await queryPhotonPlaces({
         lat,lon,radius,type:filter,transport:remoteJSON,
         endpoint:process.env.PHOTON_URL||'https://photon.komoot.io/reverse',
@@ -144,7 +144,7 @@ async function nearby(lat,lon,filter='all',radius=3000){
         name:String(t.name||t['name:pt']||'Estabelecimento sem nome informado').slice(0,110),
         address:[t['addr:street'],t['addr:housenumber']].filter(Boolean).join(', ').slice(0,150),
         phone:String(t.phone||t['contact:phone']||'').slice(0,80),
-        website:(/^https?:\\/\\//i.test(t.website||'')?t.website:'').slice(0,240),
+        website:(/^https?:\/\//i.test(t.website||'')?t.website:'').slice(0,240),
         distance:Math.round(distanceMeters(lat,lon,la,lo)),source:'OpenStreetMap'});
     }
     data.sort((a,b)=>a.distance-b.distance||a.name.localeCompare(b.name,'pt-BR'));
