@@ -115,7 +115,7 @@ async function nearby(lat,lon,filter='all',radius=3000){
         return payload;
       }));
     }catch(error){
-      console.warn('[Elas+] Overpass indisponível; nenhuma localização de usuário foi registrada.',error?.message||'Falha externa');
+      console.warn('[Elas+] Overpass indisponível (sem coordenadas no log):', error?.errors?.map((e,i)=>'fonte '+(i+1)+': '+(e?.message||'falha')).join(' | ')||error?.message||'Falha externa');
       throw Error('Fontes de locais indisponíveis');
     }
     const data=[],ids=new Set();
