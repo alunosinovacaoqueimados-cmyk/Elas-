@@ -27,5 +27,13 @@
         }
       ]
     }
-  ]
+  ],
+  "functions": {
+    "api/locais.js": {
+      "regions": [
+        "gru1"
+      ],
+      "maxDuration": 30
+    }
+  }
 }
