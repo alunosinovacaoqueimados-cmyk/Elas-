@@ -27,7 +27,7 @@ function saveSession(result,persistent){
   const access=String(result?.access_token||''),refresh=String(result?.refresh_token||'');
   if(!access||!refresh)throw Error('missing_tokens');
   const data={access_token:access,refresh_token:refresh,
-    expires_at:Math.floor(Date.now()/1000)+(Number(result.expires_in)||3600)};
+    expires_at:Number(result.expires_at)>Date.now()/1000?Number(result.expires_at):Math.floor(Date.now()/1000)+(Number(result.expires_in)||3600)};
   clearSaved();
   try{(persistent?localStorage:sessionStorage).setItem(STORAGE,JSON.stringify(data))}
   catch{if(persistent){try{sessionStorage.setItem(STORAGE,JSON.stringify(data))}catch{}}}
