@@ -8,6 +8,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import {fileURLToPath} from 'node:url';
 import {queryOverpass} from './lib/overpass.mjs';
+import {queryPhotonPlaces} from './lib/photon.mjs';
 
 const ROOT=path.dirname(fileURLToPath(import.meta.url));
 // A Vercel oferece um sistema de arquivos efêmero: relatos exigem armazenamento persistente externo.
@@ -107,14 +108,29 @@ function distanceMeters(lat1,lon1,lat2,lon2){
 }
 async function nearby(lat,lon,filter='all',radius=3000){
   const key=[lat.toFixed(3),lon.toFixed(3),filter,radius].join(':');
-  const cached=placesCache.get(key);if(cached?.exp>Date.now())return cached.data;
+  const cached=placesCache.get(key);
+  if(cached?.exp>Date.now())return cached.data;
   if(cached?.pending)return cached.pending;
   const task=(async()=>{
+    // Photon oferece resultado parcial sem a consulta Overpass pesada.
+    // Não inventar locais: usar apenas elementos identificados e georreferenciados do OSM.
+    try{
+      const results=await queryPhotonPlaces({
+        lat,lon,radius,type:filter,transport:remoteJSON,
+        endpoint:process.env.PHOTON_URL||'https://photon.komoot.io/reverse',
+        timeout:6800
+      });
+      if(results.length){
+        const data={places:results,source:'Photon / OpenStreetMap',partial:true};
+        placesCache.set(key,{data,exp:Date.now()+20*60000});
+        return data;
+      }
+    }catch(error){
+      console.warn('[Elas+] Photon indisponível: ',String(error?.message||'falha').slice(0,100));
+    }
     const tags=filter==='all'?Object.keys(PLACE_FILTERS):[filter];
     const clauses=tags.flatMap(type=>[PLACE_FILTERS[type],EXTRA_FILTERS[type]].filter(Boolean).map(expression=>`nwr(around:${radius},${lat.toFixed(4)},${lon.toFixed(4)})${expression};`)).join('');
     const query=`[out:json][timeout:12];(${clauses});out center 220;`;
-    // Duas instâncias públicas independentes. Corrida limita a latência em serverless;
-    // a primeira resposta válida vence, sem depender de um servidor instável.
     const result=await queryOverpass(query,{endpointOverride:process.env.OVERPASS_URL,transport:remoteJSON});
     const data=[],ids=new Set();
     for(const p of result.elements||[]){
@@ -128,14 +144,17 @@ async function nearby(lat,lon,filter='all',radius=3000){
         name:String(t.name||t['name:pt']||'Estabelecimento sem nome informado').slice(0,110),
         address:[t['addr:street'],t['addr:housenumber']].filter(Boolean).join(', ').slice(0,150),
         phone:String(t.phone||t['contact:phone']||'').slice(0,80),
-        website:(/^https?:\/\//i.test(t.website||'')?t.website:'').slice(0,240),
+        website:(/^https?:\\/\\//i.test(t.website||'')?t.website:'').slice(0,240),
         distance:Math.round(distanceMeters(lat,lon,la,lo)),source:'OpenStreetMap'});
     }
     data.sort((a,b)=>a.distance-b.distance||a.name.localeCompare(b.name,'pt-BR'));
-    const limited=data.slice(0,400);
-    placesCache.set(key,{data:limited,exp:Date.now()+15*60000});return limited;
+    const output={places:data.slice(0,400),source:'OpenStreetMap / Overpass',partial:false};
+    placesCache.set(key,{data:output,exp:Date.now()+15*60000});
+    return output;
   })();
-  placesCache.set(key,{pending:task,exp:0});try{return await task;}catch(e){placesCache.delete(key);throw e;}
+  placesCache.set(key,{pending:task,exp:0});
+  try{return await task;}
+  catch(error){placesCache.delete(key);throw error;}
 }
 async function getReports(){try{const obj=JSON.parse(await fs.readFile(REPORT_FILE,'utf8'));return Array.isArray(obj.submissions)?obj.submissions:[];}catch(e){if(e.code==='ENOENT')return [];throw e;}}
 async function mutateReports(mutator){const task=reportQueue.then(async()=>{const reports=await getReports();const result=mutator(reports);await fs.mkdir(path.dirname(REPORT_FILE),{recursive:true});const tmp=REPORT_FILE+'.tmp';await fs.writeFile(tmp,JSON.stringify({submissions:reports},null,2),{mode:0o600});await fs.rename(tmp,REPORT_FILE);return result;});reportQueue=task.catch(()=>{});return task;}
@@ -145,7 +164,7 @@ async function api(req,res,u){const p=u.pathname;
   if(p==='/api/jobs')return (await import('./api/jobs.js')).default(req,res);
   if(p==='/api/status'&&req.method==='GET')return send(res,200,{ok:true,aiEnabled:!!API_KEY,storage:CLOUD?'indisponivel-na-vercel':'arquivo-json',contributionsEnabled:!CLOUD,publicReportsRequireApproval:true});
   if(p==='/api/buscar'&&req.method==='GET'){if(!rate(req,'geocode',12,60000))return send(res,429,{error:'Aguarde um pouco antes de pesquisar novamente.'});const q=String(u.searchParams.get('q')||'').trim();if(q.length<3||q.length>110)return send(res,400,{error:'Informe um município ou bairro com 3 a 110 caracteres.'});try{return send(res,200,{results:await geocode(q)});}catch{return send(res,503,{error:'Busca indisponível. Tente mais tarde.'});}}
-  if(p==='/api/locais'&&req.method==='GET'){if(!rate(req,'places',18,60000))return send(res,429,{error:'Limite temporário de consultas.'});const lat=coord(u.searchParams.get('lat'),-90,90),lon=coord(u.searchParams.get('lon'),-180,180);const type=String(u.searchParams.get('type')||'all');const radius=Number(u.searchParams.get('radius')||3000);if(lat===null||lon===null||!ALLOWED_PLACE_TYPES.has(type)||![1000,3000,5000].includes(radius))return send(res,400,{error:'Informe uma localização, categoria e distância válidas.'});try{return send(res,200,{source:'OpenStreetMap (colaborativo, não verificado)',radius,type,places:await nearby(lat,lon,type,radius)},{'Cache-Control':'public, max-age=0, s-maxage=300, stale-while-revalidate=600'});}catch{return send(res,503,{error:'Os servidores públicos de mapa estão ocupados no momento. Tente novamente ou utilize a busca externa.'},{'Retry-After':'30'});}}
+  if(p==='/api/locais'&&req.method==='GET'){if(!rate(req,'places',18,60000))return send(res,429,{error:'Limite temporário de consultas.'});const lat=coord(u.searchParams.get('lat'),-90,90),lon=coord(u.searchParams.get('lon'),-180,180);const type=String(u.searchParams.get('type')||'all');const radius=Number(u.searchParams.get('radius')||3000);if(lat===null||lon===null||!ALLOWED_PLACE_TYPES.has(type)||![1000,3000,5000].includes(radius))return send(res,400,{error:'Informe uma localização, categoria e distância válidas.'});try{return send(res,200,{radius,type,...(await nearby(lat,lon,type,radius))},{'Cache-Control':'public, max-age=0, s-maxage=300, stale-while-revalidate=600'});}catch{return send(res,503,{error:'Os servidores públicos de mapa estão ocupados no momento. Tente novamente ou utilize a busca externa.'},{'Retry-After':'30'});}}
   if(p==='/api/relatos'&&req.method==='GET'){if(CLOUD)return send(res,200,{reports:[],contributionsEnabled:false,message:'Registros compartilhados requerem armazenamento persistente.'});const all=await getReports();return send(res,200,{reports:all.filter(r=>r.status==='approved').map(publicReport)});}
   if(p==='/api/relatos'&&req.method==='POST'){if(CLOUD)return send(res,503,{error:'Contribuições temporariamente indisponíveis neste ambiente: armazenamento persistente ainda não configurado.'});if(!rate(req,'reports',4,86400000))return send(res,429,{error:'Limite de contribuições atingido neste dispositivo.'});const b=await bodyJSON(req,1500);const category=String(b.category||'');const kind=b.kind===undefined?'info':String(b.kind);const description=String(b.description||'').trim();const lat=coord(b.lat,-90,90),lon=coord(b.lon,-180,180);
     if(!KINDS.has(kind)||!CATEGORIES.has(category)||description.length<12||description.length>280||lat===null||lon===null)return send(res,400,{error:'Informe tipo, categoria, descrição entre 12 e 280 caracteres e região válida.'});
