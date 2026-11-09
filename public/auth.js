@@ -44,7 +44,8 @@ function errorText(error){
   if(/email not confirmed|email_not_confirmed/.test(value))return 'Confirme o e-mail antes de entrar. Confira também a caixa de spam.';
   if(/signup.*disabled|signups not allowed/.test(value))return 'O cadastro não está habilitado no serviço de autenticação.';
   if(/already registered|user_already_exists/.test(value))return 'Este e-mail pode já ter uma conta. Tente entrar ou recuperar a senha.';
-  if(error?.status===429||/rate limit|over_email_send_rate_limit|too many|over_request_rate_limit/.test(value))return error?.retryAfter?'Muitas tentativas em pouco tempo. Aguarde o tempo indicado antes de tentar novamente.':'Muitas tentativas em pouco tempo. O serviço não informou o tempo exato de espera; aguarde alguns minutos antes de tentar novamente.';
+  if(/over_email_send_rate_limit|email rate limit exceeded/.test(value))return 'O serviço de e-mail atingiu o limite de envios. Não é um erro de senha: o cadastro não conseguiu enviar a confirmação por e-mail. Evite repetir o cadastro. Se você já tem uma conta, selecione “Entrar”. Para liberar novos cadastros, é necessário aguardar a renovação da cota ou configurar um servidor SMTP próprio.';
+  if(error?.status===429||/rate limit|too many|over_request_rate_limit/.test(value))return error?.retryAfter?'Muitas tentativas em pouco tempo. Aguarde o tempo indicado antes de tentar novamente.':'O serviço limitou temporariamente esta operação e não informou o tempo de espera. Evite repetir a tentativa várias vezes.';
   if(/weak_password|password.*short|password should/.test(value))return 'Crie uma senha mais forte, de preferência com 12 ou mais caracteres.';
   if(/otp_expired|invalid.*token|token.*expired/.test(value))return 'O link expirou ou é inválido. Solicite uma nova recuperação.';
   if(/redirect/.test(value))return 'O endereço de retorno do e-mail precisa ser autorizado nas configurações do Supabase.';
