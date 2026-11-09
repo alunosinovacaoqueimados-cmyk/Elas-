@@ -1,8 +1,8 @@
 /* Elas+ — estado de conta compartilhado. Nunca confiar apenas em um token armazenado. */
 'use strict';
 (()=>{
-const BASE='https://lfaawihslefpimqxfowa.supabase.co/auth/v1';
-const PUBLIC_KEY='sb_publishable__35BqWQGTqvI-W6gaxerNw_RvJW3KnL';
+const BASE='https://tkawiuynettxhnkkgaxn.supabase.co/auth/v1';
+const PUBLIC_KEY='sb_publishable_rrI8IU09VGGAmECXv5OUUQ_DTL8Ex9t';
 const STORAGE='elas-auth-session-v2';
 const account=document.querySelector('.topbar .account');
 const entry=document.querySelector('.topbar .elas-login-link');
@@ -64,7 +64,6 @@ async function update(){
   }
   setUi(Boolean(user?.id));
  }catch(error){
-  // Sem conexão não apagamos sessão válida; falha de credenciais remove token.
   if(/^auth-(400|401|403)$/.test(error.message)){clear()}
   setUi(false);
  }
