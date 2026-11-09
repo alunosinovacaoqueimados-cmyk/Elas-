@@ -33,6 +33,7 @@
     <button id="tabLogin" class="selected" type="button" aria-pressed="true">Entrar</button>
     <button id="tabSignup" type="button" aria-pressed="false">Criar conta</button>
    </div>
+   <div class="auth-email-notice" id="emailConfirmNotice" hidden role="note"><strong>Importante: confirme seu e-mail para ativar a conta.</strong><p>Depois de criar a conta, abra a mensagem enviada para seu endereço de e-mail e clique em <strong>Confirmar e-mail</strong>. Confira também a caixa de spam. Só depois volte a esta página e entre com seu e-mail e senha.</p></div>
    <form id="authForm" novalidate>
     <div class="auth-field" id="emailField"><label for="email">E-mail</label><input id="email" name="email" type="email" autocomplete="email" inputmode="email" maxlength="254" required placeholder="seuemail@exemplo.com"></div>
     <div class="auth-field" id="passwordField"><div class="auth-field-title"><label for="password">Senha</label><button id="resetPassword" class="auth-text-link" type="button">Esqueceu a senha?</button></div><div class="auth-password"><input id="password" name="password" type="password" autocomplete="current-password" minlength="8" maxlength="128" required placeholder="Digite sua senha"><button id="togglePassword" class="auth-password-toggle" type="button" aria-pressed="false" aria-label="Mostrar senha">Mostrar</button></div></div>
