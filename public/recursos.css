@@ -42,3 +42,25 @@
 .layout .shell .career-cv-title{margin-top:23px}
 @media(max-width:1000px){.layout .shell .career-live-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:650px){.layout .shell .career-live-board{padding:15px}.layout .shell .career-live-grid{grid-template-columns:1fr}.layout .shell .career-live-card{padding:14px}.layout .shell .career-live-head{align-items:flex-start}}
+
+/* Mães Solo: componente integrado ao visual Elas+ */
+.solo-services{margin:18px 0 24px;background:linear-gradient(145deg,#fff,#fff9fd)}
+.solo-services-head h3{font-size:1.3rem;color:#4c286e;margin:8px 0}
+.solo-services-head p,.solo-disclaimer{font-size:.85rem;color:#6e5a7d;line-height:1.65}
+.solo-search{display:grid;gap:8px;margin:20px 0 14px}
+.solo-search>label{font-weight:800;color:#543c65;font-size:.83rem}
+.solo-search-row{display:flex;gap:10px}
+.solo-search-row input{flex:1;min-width:0;border:1px solid #e5d7ee;border-radius:12px;padding:12px 14px;background:#fff;color:#2c1948;font:inherit}
+.solo-filter-row{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+.solo-filter-row .resource-outline{border:1px solid #e6d4f0}
+.solo-filter-row .is-active{background:#6e36a8;color:white}
+.solo-status{font-size:.85rem;color:#614a75;line-height:1.5}
+.solo-results{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:14px 0}
+.solo-result-card{border:1px solid #ecdef0;border-radius:13px;padding:15px;background:#fff;display:flex;flex-direction:column;gap:8px;min-width:0}
+.solo-result-card strong{font-size:.9rem;color:#39234c;overflow-wrap:anywhere}
+.solo-result-card p{margin:0;font-size:.79rem;color:#6e5a7d}
+.solo-result-card small{color:#766585}
+.solo-result-card a,.solo-map-link{color:#7835aa;font-size:.83rem;font-weight:800}
+.solo-disclaimer{border-top:1px solid #efdfed;padding-top:12px}
+@media(max-width:850px){.solo-results{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:580px){.solo-search-row{flex-direction:column}.solo-results{grid-template-columns:1fr}.solo-search-row button{width:100%}}

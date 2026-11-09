@@ -78,3 +78,41 @@ showView();
  window.addEventListener('hashchange',whenVisible);
  whenVisible();
 })();
+
+/* Serviços para mães solo: usa a API geográfica já existente, sem localização automática. */
+(()=>{
+ const form=document.getElementById('soloSearchForm'),results=document.getElementById('soloResults'),status=document.getElementById('soloStatus');
+ if(!form||!results||!status)return;
+ let kind='childcare',request=0;
+ const buttons=[...document.querySelectorAll('[data-solo-type]')],mapLink=document.getElementById('soloMapLink');
+ const say=t=>{status.textContent=t};
+ const card=(tag,cls,content)=>{const el=document.createElement(tag);if(cls)el.className=cls;if(content!==undefined)el.textContent=content;return el};
+ buttons.forEach(button=>button.addEventListener('click',()=>{kind=button.dataset.soloType;buttons.forEach(b=>{b.classList.toggle('is-active',b===button);b.setAttribute('aria-pressed',String(b===button))});mapLink.href='mapa-seguro.html?f='+kind;results.replaceChildren();say('Categoria alterada. Clique em Buscar serviços para atualizar a lista.')}));
+ form.addEventListener('submit',async event=>{
+   event.preventDefault();const q=document.getElementById('soloSearchCity').value.trim();if(q.length<3){say('Informe uma cidade ou bairro.');return}
+   const token=++request;results.replaceChildren();say('Procurando a região...');
+   try{
+     const geo=await fetch('/api/buscar?q='+encodeURIComponent(q),{headers:{Accept:'application/json'}});
+     if(!geo.ok)throw Error('Não foi possível localizar a região.');
+     const locations=(await geo.json()).results;
+     if(token!==request)return;
+     if(!Array.isArray(locations)||!locations.length){say('Região não encontrada. Tente informar cidade e estado.');return}
+     const {lat,lon}=locations[0];say('Procurando serviços próximos...');
+     const url='/api/locais?'+new URLSearchParams({lat:String(lat),lon:String(lon),radius:'5000',type:kind});
+     const response=await fetch(url,{headers:{Accept:'application/json'}});
+     if(!response.ok)throw Error('A consulta aos serviços está temporariamente indisponível.');
+     const data=await response.json();if(token!==request)return;
+     const places=Array.isArray(data.places)?data.places.slice(0,12):[];
+     if(!places.length){say('Nenhum local cadastrado foi encontrado em até 5 km. Isso não significa que não existam serviços na região.');return}
+     for(const place of places){
+       if(!Number.isFinite(Number(place.lat))||!Number.isFinite(Number(place.lon)))continue;
+       const item=card('article','solo-result-card');
+       item.append(card('strong','',String(place.name||'Local sem nome').slice(0,110)));
+       item.append(card('p','',String(place.address||'Endereço não informado').slice(0,150)));
+       const distance=Number(place.distance);if(Number.isFinite(distance))item.append(card('small','',Math.round(distance)+' m do centro pesquisado'));
+       const link=card('a','','Ver no mapa ↗');link.href='https://www.openstreetmap.org/?mlat='+encodeURIComponent(place.lat)+'&mlon='+encodeURIComponent(place.lon)+'#map=17/'+encodeURIComponent(place.lat)+'/'+encodeURIComponent(place.lon);link.target='_blank';link.rel='noopener noreferrer';item.append(link);results.append(item);
+     }
+     say(results.children.length+' locais cadastrados encontrados'+(data.partial?' (cobertura parcial)':'')+(data.stale?' (dados em cache)':'')+'. Confirme informações diretamente com a instituição.');
+   }catch(error){if(token!==request)return;say(error.message||'Não foi possível consultar agora.');}
+ });
+})();
