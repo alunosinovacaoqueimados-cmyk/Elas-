@@ -9,7 +9,7 @@ const BASE='https://tkawiuynettxhnkkgaxn.supabase.co/auth/v1';
 const PUBLIC_KEY='sb_publishable_rrI8IU09VGGAmECXv5OUUQ_DTL8Ex9t';
 const STORAGE='elas-auth-session-v2';
 const $=id=>document.getElementById(id);
-let mode='login',session=null,recoverySession=null,working=false;
+let mode='login',session=null,recoverySession=null,working=false,lockTimer=null,lockUntil=0;
 const inputEmail=$('email'),inputPassword=$('password'),inputConfirm=$('confirmPassword');
 const form=$('authForm'),submit=$('submitBtn'),remember=$('remember');
 function getSaved(){
@@ -44,7 +44,7 @@ function errorText(error){
   if(/email not confirmed|email_not_confirmed/.test(value))return 'Confirme o e-mail antes de entrar. Confira também a caixa de spam.';
   if(/signup.*disabled|signups not allowed/.test(value))return 'O cadastro não está habilitado no serviço de autenticação.';
   if(/already registered|user_already_exists/.test(value))return 'Este e-mail pode já ter uma conta. Tente entrar ou recuperar a senha.';
-  if(/rate limit|over_email_send_rate_limit|too many/.test(value))return 'Muitas tentativas em pouco tempo. Aguarde alguns minutos e tente novamente.';
+  if(error?.status===429||/rate limit|over_email_send_rate_limit|too many|over_request_rate_limit/.test(value))return error?.retryAfter?'Muitas tentativas em pouco tempo. Aguarde o tempo indicado antes de tentar novamente.':'Muitas tentativas em pouco tempo. O serviço não informou o tempo exato de espera; aguarde alguns minutos antes de tentar novamente.';
   if(/weak_password|password.*short|password should/.test(value))return 'Crie uma senha mais forte, de preferência com 12 ou mais caracteres.';
   if(/otp_expired|invalid.*token|token.*expired/.test(value))return 'O link expirou ou é inválido. Solicite uma nova recuperação.';
   if(/redirect/.test(value))return 'O endereço de retorno do e-mail precisa ser autorizado nas configurações do Supabase.';
@@ -61,7 +61,14 @@ async function authRequest(path,body,token,method='POST'){
     },...(body===undefined?{}:{body:JSON.stringify(body)}),signal:AbortSignal.timeout(12000)});
   }catch{throw Error('network_error')}
   const data=await response.json().catch(()=>({}));
-  if(!response.ok)throw Error(String(data.error_code||'')+' '+String(data.msg||data.message||data.error_description||data.error||response.status));
+  if(!response.ok){
+    const error=new Error(String(data.error_code||'')+' '+String(data.msg||data.message||data.error_description||data.error||response.status));
+    error.status=response.status;
+    const retryHeader=response.headers.get('Retry-After');
+    const retryBody=Number(data.retry_after||data.retry_after_seconds||data.retryAfter);
+    error.retryAfter=retryHeader?(Number(retryHeader)||Math.max(0,Math.ceil((Date.parse(retryHeader)-Date.now())/1000))):(Number.isFinite(retryBody)&&retryBody>0?retryBody:0);
+    throw error;
+  }
   return data;
 }
 function nextPage(){
@@ -82,10 +89,25 @@ function showForm(){
   $('signedIn').hidden=true;$('authArea').hidden=false;
 }
 function busy(value,label){
-  working=value;submit.disabled=value;
+  working=value||lockUntil>Date.now();submit.disabled=working;
   submit.setAttribute('aria-busy',String(value));
   if(value)$('submitLabel').textContent=label||'Aguarde…';
-  else setSubmitLabel();
+  else if(lockUntil<=Date.now())setSubmitLabel();
+}
+function startLockCountdown(seconds){
+  if(lockTimer)clearInterval(lockTimer);
+  const duration=Math.max(1,Math.min(Number(seconds)||0,3600));
+  lockUntil=Date.now()+duration*1000;
+  const update=()=>{
+    const remaining=Math.max(0,Math.ceil((lockUntil-Date.now())/1000));
+    const minutes=Math.floor(remaining/60),secs=remaining%60;
+    const time=minutes?minutes+' min '+String(secs).padStart(2,'0')+' s':secs+' s';
+    feedback('Muitas tentativas. Aguarde '+time+' para tentar novamente.',true);
+    submit.disabled=working||remaining>0;
+    $('submitLabel').textContent=remaining>0?'Aguarde '+time:'Tentar novamente';
+    if(!remaining){clearInterval(lockTimer);lockTimer=null;lockUntil=0;submit.disabled=working;setSubmitLabel();}
+  };
+  update();lockTimer=setInterval(update,1000);
 }
 function setSubmitLabel(){
   $('submitLabel').textContent={
@@ -201,7 +223,10 @@ form.addEventListener('submit',async event=>{
     else if(current==='signup')await signUp(email,password);
     else if(current==='recover')await recoverPassword(email);
     else if(current==='recovery')await changePassword(password);
-  }catch(error){feedback(errorText(error),true)}
+  }catch(error){
+    feedback(errorText(error),true);
+    if(error?.status===429&&error.retryAfter>0)startLockCountdown(error.retryAfter);
+  }
   finally{busy(false)}
 });
 $('logout').addEventListener('click',async()=>{
