@@ -95,7 +95,19 @@
    }
    status('Conta conectada. Nome e preferências estão sincronizados entre dispositivos. O currículo só será enviado se você ativar a opção abaixo.');
   }catch(error){
-   setAccount(false);status('Não foi possível carregar o perfil da conta: '+error.message,true);
+   const saved=readSession();
+   if(saved?.refresh_token){
+    $('profileAccountAvatar').textContent='…';
+    $('profileAccountTitle').textContent='Sessão encontrada';
+    $('profileAccountDescription').textContent='Não foi possível confirmar sua conta agora. Verifique a conexão e atualize a página.';
+    $('profileLoginLink').hidden=true;
+    $('profileLogout').hidden=false;
+    $('resumeSyncConsent').disabled=true;
+    status('Sua sessão foi encontrada, mas a autenticação não respondeu. O botão de entrar foi ocultado para evitar um novo cadastro desnecessário. '+error.message,true);
+   }else{
+    setAccount(false);
+    status('Não foi possível carregar o perfil da conta: '+error.message,true);
+   }
   }
  }
  $('profileForm').addEventListener('submit',async()=>{
