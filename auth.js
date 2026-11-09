@@ -119,11 +119,12 @@ function setMode(next,{preserveFeedback=false}={}){
   const title={login:'Que bom ter você aqui!',signup:'Vamos criar sua conta',recover:'Recuperar acesso',recovery:'Defina sua nova senha'};
   const detail={
     login:'Entre com seu e-mail e senha para continuar.',
-    signup:'Use seu e-mail e crie uma senha forte. Talvez seja necessário confirmar seu e-mail.',
+    signup:'Atenção: após o cadastro, você PRECISA confirmar seu e-mail pelo link enviado para conseguir entrar.',
     recover:'Informe seu e-mail para receber as instruções de recuperação.',
     recovery:'Escolha uma nova senha e confirme antes de salvar.'
   };
   $('formTitle').textContent=title[mode];$('formHelp').textContent=detail[mode];
+  $('emailConfirmNotice').hidden=!signup;
   if(!preserveFeedback)feedback('');
   setSubmitLabel();
 }
@@ -170,7 +171,7 @@ async function signUp(email,password){
     showSignedIn(user.email);
   }else if(data?.user){
     setMode('login',{preserveFeedback:true});
-    feedback('Solicitação recebida. Se necessário, confirme seu e-mail pelo link enviado antes de entrar.',false,true);
+    feedback('Cadastro recebido! Agora abra seu e-mail e clique em “Confirmar e-mail”. A confirmação é obrigatória. Depois volte aqui para entrar. Confira também o spam.',false,true);
   }else throw Error('signup_not_confirmed');
 }
 async function recoverPassword(email){
