@@ -84,3 +84,7 @@ button,a,input:focus-visible{outline-offset:3px}
 @media(max-width:760px){.auth-layout{grid-template-columns:1fr;align-items:start;gap:15px;max-width:600px;padding:10px 15px 22px;min-height:0}.auth-intro{min-height:0;padding:23px;border-radius:15px}.auth-intro h1{font-size:2rem;margin:10px 0}.auth-intro .auth-lead{margin:0;color:#f8ebf5;font-size:.89rem}.auth-benefits{display:none}.auth-card{padding:23px;border-radius:15px}.auth-topbar{height:70px;padding:7px 15px}.auth-brand{font-size:2.32rem}.auth-brand-flower{transform:scale(.84);transform-origin:left center;margin-right:-7px}.auth-top-actions{gap:6px}.auth-exit{font-size:.76rem;padding:9px 10px}.auth-visit{font-size:.77rem}.auth-footer{padding-bottom:15px}}
 @media(max-width:410px){.auth-topbar{padding:6px 10px}.auth-visit{display:none}.auth-card{padding:18px}.auth-intro{padding:18px}.auth-intro h1{font-size:1.76rem}.auth-brand{font-size:2.1rem}.auth-exit{font-size:.72rem}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
+
+.auth-email-notice{margin:-8px 0 17px;padding:14px 15px;border:1px solid #e8b7d1;border-left:4px solid #c83d87;border-radius:11px;background:#fff2f8;color:#57314d;font-size:.82rem;line-height:1.55}
+.auth-email-notice strong{color:#8d245f;font-weight:900}
+.auth-email-notice p{margin:5px 0 0}
