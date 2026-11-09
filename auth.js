@@ -4,6 +4,7 @@
  */
 'use strict';
 (() => {
+// Projeto Supabase oficial do Elas+ — manter alinhado com a CSP do vercel.json.
 const BASE='https://tkawiuynettxhnkkgaxn.supabase.co/auth/v1';
 const PUBLIC_KEY='sb_publishable_rrI8IU09VGGAmECXv5OUUQ_DTL8Ex9t';
 const STORAGE='elas-auth-session-v2';
