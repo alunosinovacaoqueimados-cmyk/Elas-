@@ -4,8 +4,8 @@
  */
 'use strict';
 (() => {
-const BASE='https://lfaawihslefpimqxfowa.supabase.co/auth/v1';
-const PUBLIC_KEY='sb_publishable__35BqWQGTqvI-W6gaxerNw_RvJW3KnL';
+const BASE='https://tkawiuynettxhnkkgaxn.supabase.co/auth/v1';
+const PUBLIC_KEY='sb_publishable_rrI8IU09VGGAmECXv5OUUQ_DTL8Ex9t';
 const STORAGE='elas-auth-session-v2';
 const $=id=>document.getElementById(id);
 let mode='login',session=null,recoverySession=null,working=false;
