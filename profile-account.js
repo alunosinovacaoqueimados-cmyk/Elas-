@@ -8,7 +8,7 @@
  const STORAGE='elas-auth-session-v2';
  const $=id=>document.getElementById(id);
  const local=(key,fallback)=>{try{return JSON.parse(localStorage.getItem(key))??fallback}catch{return fallback}};
- let session=null,user=null,profile=null,busy=false;
+ let session=null,user=null,profile=null,busy=false,applyingRemote=false;
  const status=(message,error=false)=>{const el=$('profileSyncStatus');if(el){el.textContent=message;el.dataset.error=String(error)}};
  function readSession(){try{return JSON.parse(sessionStorage.getItem(STORAGE)||'null')||JSON.parse(localStorage.getItem(STORAGE)||'null')}catch{return null}}
  function saveSession(data){const current=readSession();const persistent=!!(current&&localStorage.getItem(STORAGE));session={access_token:data.access_token,refresh_token:data.refresh_token,expires_at:Math.floor(Date.now()/1000)+(Number(data.expires_in)||3600)};try{(persistent?localStorage:sessionStorage).setItem(STORAGE,JSON.stringify(session))}catch{}}
@@ -53,6 +53,7 @@
  function getResume(){return local('elasplus_cv',{})}
  function localProfile(){return {display_name:localStorage.getItem('elasplus_nickname')||'',interests:local('elasplus_interests',[]),preferences:getPreferences()}}
  function applyRemote(data){
+  applyingRemote=true;
   if(data.display_name){localStorage.setItem('elasplus_nickname',data.display_name);$('nickname').value=data.display_name}
   const interests=Array.isArray(data.interests)?data.interests:[];
   localStorage.setItem('elasplus_interests',JSON.stringify(interests));
@@ -62,7 +63,7 @@
    for(const [id,key] of [['prefFont','fontSize'],['prefTheme','theme'],['prefContrast','contrast'],['prefDyslexia','dyslexia']]){
     const el=$(id);if(el&&data.preferences[key]!==undefined){if(el.type==='checkbox')el.checked=!!data.preferences[key];else el.value=data.preferences[key]}
    }
-   const pref=data.preferences;document.documentElement.dataset.font=pref.fontSize||'normal';document.documentElement.dataset.theme=pref.theme||'purple';document.documentElement.dataset.contrast=pref.contrast?'high':'normal';document.documentElement.dataset.dyslexia=pref.dyslexia?'yes':'no';
+   const pref=data.preferences;document.documentElement.dataset.font=pref.fontSize||'normal';document.documentElement.dataset.theme=pref.theme||'purple';document.documentElement.dataset.contrast=pref.contrast?'high':'normal';document.documentElement.dataset.dyslexia=pref.dyslexia?'yes':'no';document.documentElement.style.setProperty('--font-size',({'normal':16,'large':18,'larger':20}[pref.fontSize]||16)+'px');
   }
   $('resumeSyncConsent').checked=!!data.resume_sync_enabled;
   if(data.resume_sync_enabled&&data.resume&&typeof data.resume==='object'){
@@ -70,7 +71,8 @@
    for(const [key,value] of Object.entries(data.resume)){const field=document.querySelector('#cvForm [name="'+CSS.escape(key)+'"]');if(field)field.value=String(value??'')}
    $('cvSaveStatus').textContent='Currículo recuperado da sua conta Elas+.';document.querySelectorAll('#cvForm input,#cvForm textarea').forEach(el=>el.dispatchEvent(new Event('input',{bubbles:true})));
   }else $('cvSaveStatus').textContent='Seu currículo está salvo somente neste navegador.';
-  if(typeof window.elasRefreshProfileName==='function')window.elasRefreshProfileName();
+  const nickname=data.display_name||'Visitante';const side=document.getElementById('sideName');if(side)side.textContent=nickname;const header=document.querySelector('.topbar .account>span:nth-child(2)');if(header)header.textContent=nickname==='Visitante'?'Olá, visitante':'Olá, '+nickname;
+  applyingRemote=false;
  }
  async function saveRemote(){
   if(!user||!session)return;
@@ -104,6 +106,7 @@
   if(!user)return;
   setTimeout(async()=>{if(!$('resumeSyncConsent').checked){status('Currículo salvo somente neste navegador. Ative a opção de sincronização se quiser acessá-lo em outros dispositivos.');return}try{await saveRemote()}catch(e){status('O currículo ficou salvo neste navegador, mas não sincronizou: '+e.message,true)}},0);
  });
+ ['prefFont','prefTheme','prefContrast','prefDyslexia'].forEach(id=>$(id).addEventListener('change',async()=>{if(!user||applyingRemote)return;try{await saveRemote()}catch(e){status('Preferência alterada neste navegador, mas não sincronizada: '+e.message,true)}}));
  $('resumeSyncConsent').addEventListener('change',async()=>{
   if(!user){$('resumeSyncConsent').checked=false;return}
   try{await saveRemote();if(!$('resumeSyncConsent').checked)status('Sincronização do currículo desativada. A cópia salva na conta foi removida; a cópia local permanece neste navegador.')}
