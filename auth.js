@@ -44,10 +44,10 @@ function errorText(error){
   if(/email not confirmed|email_not_confirmed/.test(value))return 'O acesso ainda não foi liberado pelo serviço de autenticação. Verifique as configurações da conta.';
   if(/signup.*disabled|signups not allowed/.test(value))return 'O cadastro não está habilitado no serviço de autenticação.';
   if(/already registered|user_already_exists/.test(value))return 'Este e-mail pode já ter uma conta. Tente entrar ou recuperar a senha.';
-  if(/rate limit|over_email_send_rate_limit|too many/.test(value))return 'Muitas tentativas em pouco tempo. Aguarde alguns minutos e tente novamente.';
+  if(/over_email_send_rate_limit|email rate limit exceeded|rate limit|too many/.test(value))return 'O Supabase bloqueou temporariamente novos cadastros por limite de envio de e-mails. Aguarde o limite liberar e confira se a confirmação de e-mail está desativada no provedor Email.';
   if(/weak_password|password.*short|password should/.test(value))return 'Crie uma senha mais forte, de preferência com 12 ou mais caracteres.';
   if(/otp_expired|invalid.*token|token.*expired/.test(value))return 'O link expirou ou é inválido. Solicite uma nova recuperação.';
-  if(/redirect/.test(value))return 'O endereço de retorno do e-mail precisa ser autorizado nas configurações do Supabase.';
+  if(/signup_requires_confirmation|signup_confirmation_enabled/.test(value))return 'O Supabase ainda está exigindo confirmação por e-mail. Desative “Confirm email” em Authentication → Providers → Email no projeto Elas+ e tente novamente.';\n  if(/redirect/.test(value))return 'O endereço de retorno do e-mail precisa ser autorizado nas configurações do Supabase.';
   if(/network|fetch|failed to fetch|conex/.test(value))return 'Não foi possível conectar ao serviço de autenticação. Verifique a internet e tente novamente.';
   return 'Não foi possível concluir a solicitação. Tente novamente em instantes.';
 }
