@@ -170,7 +170,7 @@ async function signUp(email,password){
     showSignedIn(user.email);
   }else if(data?.user){
     setMode('login',{preserveFeedback:true});
-    feedback('Cadastro criado! Agora entre com seu e-mail e senha.',false,true);
+    feedback('Conta criada com sucesso! Entre com seu e-mail e senha para acessar o Elas+.',false,true);
   }else throw Error('signup_not_confirmed');
 }
 async function recoverPassword(email){
