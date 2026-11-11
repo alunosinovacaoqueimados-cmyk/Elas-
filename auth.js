@@ -41,7 +41,7 @@ function feedback(message,error=false,success=false){
 function errorText(error){
   const value=String(error?.message||error||'').toLowerCase();
   if(/invalid login credentials|invalid_grant|invalid_credentials/.test(value))return 'E-mail ou senha incorretos. Confira e tente novamente.';
-  if(/email not confirmed|email_not_confirmed/.test(value))return 'Confirme o e-mail antes de entrar. Confira também a caixa de spam.';
+  if(/email not confirmed|email_not_confirmed/.test(value))return 'O acesso ainda não foi liberado pelo serviço de autenticação. Verifique as configurações da conta.';
   if(/signup.*disabled|signups not allowed/.test(value))return 'O cadastro não está habilitado no serviço de autenticação.';
   if(/already registered|user_already_exists/.test(value))return 'Este e-mail pode já ter uma conta. Tente entrar ou recuperar a senha.';
   if(/rate limit|over_email_send_rate_limit|too many/.test(value))return 'Muitas tentativas em pouco tempo. Aguarde alguns minutos e tente novamente.';
@@ -119,12 +119,11 @@ function setMode(next,{preserveFeedback=false}={}){
   const title={login:'Que bom ter você aqui!',signup:'Vamos criar sua conta',recover:'Recuperar acesso',recovery:'Defina sua nova senha'};
   const detail={
     login:'Entre com seu e-mail e senha para continuar.',
-    signup:'Atenção: após o cadastro, você PRECISA confirmar seu e-mail pelo link enviado para conseguir entrar.',
+    signup:'Preencha seus dados para criar sua conta no Elas+.',
     recover:'Informe seu e-mail para receber as instruções de recuperação.',
     recovery:'Escolha uma nova senha e confirme antes de salvar.'
   };
   $('formTitle').textContent=title[mode];$('formHelp').textContent=detail[mode];
-  $('emailConfirmNotice').hidden=!signup;
   if(!preserveFeedback)feedback('');
   setSubmitLabel();
 }
@@ -171,7 +170,7 @@ async function signUp(email,password){
     showSignedIn(user.email);
   }else if(data?.user){
     setMode('login',{preserveFeedback:true});
-    feedback('Cadastro recebido! Agora abra seu e-mail e clique em “Confirmar e-mail”. A confirmação é obrigatória. Depois volte aqui para entrar. Confira também o spam.',false,true);
+    feedback('Cadastro criado! Agora entre com seu e-mail e senha.',false,true);
   }else throw Error('signup_not_confirmed');
 }
 async function recoverPassword(email){
