@@ -27,7 +27,7 @@ function store(value,persistent){
 }
 function setUi(authenticated){
  document.documentElement.dataset.auth=authenticated?'signed-in':'guest';
- if(entry)entry.hidden=authenticated;
+ if(entry){entry.hidden=authenticated;entry.style.setProperty('display',authenticated?'none':'inline-flex','important');}
  if(account){
   const display=account.querySelector('span:nth-child(2)');
   if(display)display.textContent=authenticated?'Minha conta':'Olá, visitante';
