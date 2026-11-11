@@ -47,7 +47,8 @@ function errorText(error){
   if(/over_email_send_rate_limit|email rate limit exceeded|rate limit|too many/.test(value))return 'O Supabase bloqueou temporariamente novos cadastros por limite de envio de e-mails. Aguarde o limite liberar e confira se a confirmação de e-mail está desativada no provedor Email.';
   if(/weak_password|password.*short|password should/.test(value))return 'Crie uma senha mais forte, de preferência com 12 ou mais caracteres.';
   if(/otp_expired|invalid.*token|token.*expired/.test(value))return 'O link expirou ou é inválido. Solicite uma nova recuperação.';
-  if(/signup_requires_confirmation|signup_confirmation_enabled/.test(value))return 'O Supabase ainda está exigindo confirmação por e-mail. Desative “Confirm email” em Authentication → Providers → Email no projeto Elas+ e tente novamente.';\n  if(/redirect/.test(value))return 'O endereço de retorno do e-mail precisa ser autorizado nas configurações do Supabase.';
+  if(/signup_requires_confirmation|signup_confirmation_enabled/.test(value))return 'O Supabase ainda está exigindo confirmação por e-mail. Desative “Confirm email” em Authentication → Providers → Email no projeto Elas+ e tente novamente.';
+  if(/redirect/.test(value))return 'O endereço de retorno do e-mail precisa ser autorizado nas configurações do Supabase.';
   if(/network|fetch|failed to fetch|conex/.test(value))return 'Não foi possível conectar ao serviço de autenticação. Verifique a internet e tente novamente.';
   return 'Não foi possível concluir a solicitação. Tente novamente em instantes.';
 }
@@ -169,8 +170,7 @@ async function signUp(email,password){
     saveSession(data,remember.checked);
     showSignedIn(user.email);
   }else if(data?.user){
-    setMode('login',{preserveFeedback:true});
-    feedback('Conta criada com sucesso! Entre com seu e-mail e senha para acessar o Elas+.',false,true);
+    throw Error('signup_requires_confirmation');
   }else throw Error('signup_not_confirmed');
 }
 async function recoverPassword(email){
