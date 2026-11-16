@@ -4,7 +4,21 @@
 const BASE='https://tkawiuynettxhnkkgaxn.supabase.co/auth/v1';
 const PUBLIC_KEY='sb_publishable_rrI8IU09VGGAmECXv5OUUQ_DTL8Ex9t';
 const STORAGE='elas-auth-session-v2';
-const account=document.querySelector('.topbar .account');
+/* Carrega a assistente única em todas as páginas que usam a camada de conta. */
+(function loadGlobalElasAssistant(){
+ const head=document.head;
+ if(!head.querySelector('link[data-elas-assistant-style]')){
+  const style=document.createElement('link');
+  style.rel='stylesheet';style.href='/elas-assistente.css?v=20261116';style.dataset.elasAssistantStyle='true';
+  head.append(style);
+ }
+ if(!document.querySelector('script[data-elas-assistant-script]')){
+  const script=document.createElement('script');
+  script.src='/elas-assistente.js?v=20261116';script.defer=true;script.dataset.elasAssistantScript='true';
+  (document.body||head).append(script);
+ }
+})();
+\nconst account=document.querySelector('.topbar .account');
 const entry=document.querySelector('.topbar .elas-login-link');
 if(!account&&!entry)return;
 function read(storage){
