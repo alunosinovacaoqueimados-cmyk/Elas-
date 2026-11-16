@@ -172,3 +172,30 @@ body{background:var(--elas-bg);color:var(--elas-ink)}
 .sidebar .brand-flower span:nth-child(3){
   background:linear-gradient(145deg,#d9b66b 0%,#a87932 100%)!important;
 }
+
+
+/* Troca do dourado por pink vibrante para harmonizar com bordô e roxo */
+:root{
+  --elas-gold:#ed4b9b;
+  --elas-gold-deep:#a91e68;
+  --elas-gold-soft:#fde8f3;
+}
+.brand-word > span{
+  color:#f04b9d!important;
+}
+.brand-flower span,
+.sidebar .brand-flower span{
+  background:linear-gradient(155deg,#ff9dcc 0%,#f04b9d 58%,#b92778 100%)!important;
+}
+.brand-flower span:nth-child(2),
+.sidebar .brand-flower span:nth-child(2){
+  background:linear-gradient(155deg,#ffc0df 0%,#f46caf 60%,#c83283 100%)!important;
+}
+.brand-flower span:nth-child(3),
+.sidebar .brand-flower span:nth-child(3){
+  background:linear-gradient(145deg,#f47ab7 0%,#b92778 100%)!important;
+}
+:where(.hero-eyebrow,.eyebrow,.section-kicker){color:#ffb5d8!important}
+:where(.hero h1 span,.highlight,.gold-accent){color:#ff79b9!important}
+:where(button,a,input,select,textarea):focus-visible{outline-color:#ed4b9b!important}
+:where(.notification .notify-dot,.unread-dot){background:#ed4b9b!important}
