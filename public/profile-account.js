@@ -42,9 +42,11 @@
   return d;
  }
  function setAccount(authed){
-  $('profileAccountAvatar').textContent=authed?(user?.email||'E').trim().charAt(0).toUpperCase():'E';
+  const displayName=localStorage.getItem('elasplus_nickname')||''; $('profileAccountAvatar').textContent=authed?(displayName||user?.email||'E').trim().charAt(0).toUpperCase():'E';
   $('profileAccountTitle').textContent=authed?'Conta conectada':'Acesse seu perfil em qualquer dispositivo';
   $('profileAccountDescription').textContent=authed?(user?.email||'Conta autenticada'):'Entre ou crie uma conta gratuita para sincronizar seus dados.';
+  const emailField=$('profileAccountEmail');if(emailField)emailField.textContent=authed?(user?.email||'E-mail não disponível'):'Entre para visualizar';
+  const syncLabel=$('profileSyncLabel');if(syncLabel)syncLabel.textContent=authed?'Conta conectada':'Somente neste navegador';
   $('profileLoginLink').hidden=authed;
   $('profileLogout').hidden=!authed;
   $('resumeSyncConsent').disabled=!authed;
@@ -81,6 +83,7 @@
   await rest('POST',payload);
   profile=payload;
   status('Perfil e preferências sincronizados com sua conta. '+(resumeEnabled?'Seu currículo também está sincronizado.':'Seu currículo continua somente neste navegador.'));
+  const syncLabel=$('profileSyncLabel');if(syncLabel)syncLabel.textContent=resumeEnabled?'Perfil e currículo sincronizados':'Perfil sincronizado';
  }
  async function initialize(){
   try{
