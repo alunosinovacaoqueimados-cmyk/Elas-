@@ -66,3 +66,12 @@
  #elas-assistente-launcher .elas-launcher-status{animation:elas-pulse 2s ease-in-out infinite}
  @keyframes elas-pulse{0%,100%{box-shadow:0 0 0 3px #8cf0bd22}50%{box-shadow:0 0 0 7px #8cf0bd08}}
 }
+
+
+/* Categorias de perguntas dentro da assistente flutuante */
+.elas-ai-tabs{display:flex;gap:6px;padding:0 14px 10px;overflow-x:auto;scrollbar-width:thin;scrollbar-color:#d9bfd5 transparent}
+.elas-ai-tabs button{flex:0 0 auto;border:1px solid #e7d4e4;background:#fff;color:#76516f;border-radius:999px;padding:7px 11px;font-size:10px;font-weight:800;cursor:pointer;white-space:nowrap}
+.elas-ai-tabs button.active{background:#853775;border-color:#853775;color:#fff;box-shadow:0 3px 9px #85377530}
+.elas-ai-suggestions{max-height:220px!important}
+.elas-ai-suggestions [hidden]{display:none!important}
+@media(max-width:520px){.elas-ai-tabs{padding-inline:10px}.elas-ai-tabs button{font-size:10px;padding:7px 10px}.elas-ai-suggestions{max-height:205px!important}}
