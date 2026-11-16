@@ -88,7 +88,14 @@
   </div>
 
   <div class="profile-account-card" id="profileAccountCard" aria-live="polite">
-    <div class="profile-account-avatar" id="profileAccountAvatar">E</div>
+    <div class="profile-avatar-wrap">
+      <div class="profile-account-avatar" id="profileAccountAvatar"><span id="profileAvatarInitial">E</span><img id="profileAvatarImage" alt="Foto de perfil" hidden/></div>
+      <div class="profile-avatar-tools">
+        <div class="profile-avatar-buttons"><button class="resource-primary" id="profileAvatarChoose" type="button" disabled>Adicionar foto</button><button class="resource-danger" id="profileAvatarRemove" type="button" hidden>Remover foto</button></div>
+        <input id="profileAvatarFile" type="file" accept="image/jpeg,image/png,image/webp,image/gif" hidden/>
+        <small id="profileAvatarStatus" role="status">Entre na sua conta para adicionar uma foto.</small>
+      </div>
+    </div>
     <div class="profile-account-copy"><span class="profile-overline">SUA CONTA ELAS+</span><strong id="profileAccountTitle">Verificando sua conta…</strong><p id="profileAccountDescription">Aguarde enquanto confirmamos sua sessão.</p></div>
     <div class="profile-account-actions">
       <a class="resource-primary" id="profileLoginLink" href="login.html?next=recursos.html%23perfil" hidden>Entrar ou criar conta</a>
