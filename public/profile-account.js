@@ -35,7 +35,7 @@
  }
  async function rest(method,body){
   const headers={apikey:KEY,Authorization:'Bearer '+session.access_token,Accept:'application/json'};
-  if(body){headers['Content-Type']='application/json';headers.Prefer='resolution=merge-duplicates,return=representation'}
+  if(body){headers['Content-Type']='application/json';headers.Prefer=method==='POST'?'resolution=merge-duplicates,return=representation':'return=representation'}
   const url=REST+'?select=user_id,display_name,interests,resume,resume_sync_enabled,preferences,avatar_path,updated_at&user_id=eq.'+encodeURIComponent(user.id);
   const r=await fetch(url,{method,headers,...(body?{body:JSON.stringify(body)}:{})});
   const d=await r.json().catch(()=>[]);
