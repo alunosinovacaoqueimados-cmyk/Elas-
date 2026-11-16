@@ -3,7 +3,7 @@
 
 const MODULES = {
   inicio: { title:'Início', description:'Seu ponto de partida para explorar apoio, informação e oportunidades.', items:['Use os atalhos para conhecer os temas.','Encontre conteúdo pela barra de pesquisa.','Personalize a aparência em Configurações.'] },
-  seguranca: {title:'Relações e Segurança',description:'Um espaço de informação e acolhimento para relações saudáveis, proteção e respeito.',items:['Orientações sobre relacionamentos e sinais de abuso.','Mulheres PcD e atípicas: direitos e redes de apoio.','Mulheres trans: respeito, acesso a direitos e acolhimento.','Limites, assédio e discriminação no trabalho.','Saída rápida, canais de denúncia e Mapa Seguro.']},
+  seguranca: {title:'Relações e Segurança',description:'Um espaço de informação e acolhimento para relações saudáveis, proteção e respeito.',items:['Orientações sobre relacionamentos e sinais de abuso.','Mulheres PcD e atípicas: direitos e redes de apoio.','Mulheres trans: respeito, acesso a direitos e acolhimento.','Limites, assédio e discriminação no trabalho.','Canais de denúncia e Mapa Seguro.']},
   saude:{title:'Saúde e Corpo',description:'Conteúdos de bem-estar e mudanças corporais ao longo da vida.',items:['Espaço Jovem, dos 10 aos 18 anos, com linguagem e proteção adequadas.','Menopausa e climatério.','Saúde mental, autocuidado e orientações de profissionais.']},
   carreira:{title:'Carreira e Mães Solo',description:'Recursos para ampliar a autonomia financeira e conciliar a vida profissional com a maternidade.',items:['Gerador de currículo detalhado.','Vagas, cursos e capacitações.','Creches por perto com informações sobre valores, quando disponíveis.','Busca por pediatras e serviços de saúde infantil.']},
   vagas:{title:'Vagas e Carreira',description:'Área planejada para facilitar o acesso a oportunidades profissionais.',items:['Filtros por área, modalidade e horário.','Oportunidades inclusivas e trabalho remoto.','Cursos gratuitos e orientação para entrevistas.']},
@@ -78,15 +78,9 @@ function toggleMenu(){
 function closeMenu(){
   sidebar.classList.remove('open');backdrop.hidden=true;menuButton.setAttribute('aria-expanded','false');
 }
-function quickExit(){
-  // replace() evita adicionar a página atual à pilha de navegação durante a saída.
-  // Não apaga entradas anteriores do histórico ou rastros do dispositivo.
-  window.location.replace('https://www.google.com/');
-}
 function handleAction(action){
   switch(action){
     case 'sos': closeMenu();showDialog(sosDialog);break;
-    case 'quick-exit': quickExit();break;
     case 'accessibility': closeMenu();showDialog(accessDialog);break;
     case 'close-dialog': closeAllDialogs();break;
   }
@@ -105,9 +99,6 @@ $$('dialog').forEach(dialog=>dialog.addEventListener('click',event=>{
   if(event.target===dialog)dialog.close();
 }));
 document.addEventListener('keydown',event=>{
-  if(event.altKey && event.key.toLowerCase()==='x'){
-    event.preventDefault();quickExit();return;
-  }
   if(event.key==='Escape'){
     hideSearch();closeMenu();
   }
