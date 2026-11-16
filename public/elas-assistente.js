@@ -34,4 +34,15 @@ if(/^(sim|não|nao|e agora|como assim|me explica|pode explicar|quero|continue|ma
 return 'Posso orientar sobre segurança, violência digital, relacionamentos, saúde, saúde mental, emprego, cursos, maternidade, direitos, mulheres trans, deficiência, serviços públicos, benefícios, finanças e uso do Elas+.\\n\\nEscolha um assunto ou escreva sua dúvida com suas próprias palavras. Sou um guia informativo e não substituo atendimento profissional. Não envie senhas, documentos ou dados pessoais sensíveis.';}
 async function ask(q){if(busy||!q.trim())return;busy=true;send.disabled=true;input.value='';add(q,'user');let answer='';if($('#elas-ai-consent').checked){try{const r=await fetch('/api/assistente',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:q,consent:true,history:history.slice(-6)})});const d=await r.json();if(!r.ok)throw Error(d.error||'IA indisponível');answer=d.answer||local(q);status.textContent='Resposta da IA externa. Verifique informações importantes nos canais oficiais.';}catch(e){answer=local(q);status.textContent='IA externa indisponível; respondendo pelo guia local.';}}else{answer=local(q);status.textContent='Resposta do guia local. Nenhuma mensagem foi enviada à IA externa.';}add(answer,'bot');history.push({role:'user',text:q.slice(0,700)},{role:'model',text:answer.slice(0,700)});history=history.slice(-8);busy=false;send.disabled=false;input.focus();}
 function toggle(open){panel.hidden=!open;launch.setAttribute('aria-expanded',String(open));if(open)input.focus();}
+function openWithPrompt(prompt){toggle(true);if(prompt){ask(prompt);}}
+window.ElasAssistant={open:()=>toggle(true),ask:prompt=>openWithPrompt(String(prompt||''))};
+document.addEventListener('click',event=>{
+ const promptButton=event.target.closest('[data-assistant-prompt]');
+ const assistantLink=event.target.closest('a[href="#assistente"],a[href$="#assistente"]');
+ if(!promptButton&&!assistantLink)return;
+ event.preventDefault();
+ if(promptButton)openWithPrompt(promptButton.dataset.assistantPrompt);
+ else toggle(true);
+});
+if(location.hash==='#assistente')toggle(true);
 launch.addEventListener('click',()=>toggle(panel.hidden));$('#elas-ai-close').addEventListener('click',()=>toggle(false));$('#elas-ai-form').addEventListener('submit',e=>{e.preventDefault();ask(input.value.trim());});root.querySelectorAll('[data-q]').forEach(b=>b.addEventListener('click',()=>ask(b.dataset.q)));$('#elas-ai-clear').addEventListener('click',()=>{history=[];log.textContent='';add('Conversa limpa. Escolha um assunto acima ou escreva sua pergunta.','bot');});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!panel.hidden)toggle(false);});})();
