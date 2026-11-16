@@ -321,3 +321,67 @@ body:has(.main-column) .hero-quote svg{color:#d94b8e!important}
  body:has(.main-column) .hero-copy>p{max-width:300px!important;font-size:.93rem!important}
  body:has(.main-column) .hero-quote{max-width:90%;font-size:.76rem!important}
 }
+
+
+/* RESTAURAÇÃO — banner original de boas-vindas */
+body:has(.main-column) .hero{
+  min-height:232px!important;
+  position:relative!important;
+  overflow:hidden!important;
+  isolation:auto!important;
+  border:0!important;
+  border-radius:13px!important;
+  background:radial-gradient(ellipse at 88% 40%,#c34a82 0,#7a225f 37%,transparent 67%),linear-gradient(100deg,#200c3d 0%,#421750 65%,#b82a81 100%)!important;
+  color:#fff!important;
+  margin-bottom:18px!important;
+  box-shadow:none!important;
+}
+body:has(.main-column) .hero:before{content:none!important;display:none!important}
+body:has(.main-column) .hero:after{
+  content:""!important;pointer-events:none!important;position:absolute!important;
+  inset:0!important;width:auto!important;height:auto!important;right:auto!important;bottom:auto!important;
+  border-radius:0!important;
+  background:linear-gradient(90deg,#1e0d38 0%,#260c39e8 33%,#31123a55 62%,transparent 85%)!important;
+}
+body:has(.main-column) .hero-art{
+  position:absolute!important;inset:0 0 0 auto!important;
+  width:58%!important;height:auto!important;right:0!important;left:auto!important;top:0!important;bottom:0!important;
+  clip-path:none!important;
+  background-image:linear-gradient(90deg,#321442 0%,#32144200 23%),url('assets/hero-women.webp')!important;
+  background-size:cover!important;background-position:52% 45%!important;opacity:.98!important;
+}
+body:has(.main-column) .hero-copy{
+  position:relative!important;z-index:1!important;
+  padding:31px 30px 23px!important;max-width:66%!important;
+}
+body:has(.main-column) .hero-eyebrow{
+  display:block!important;border:0!important;background:transparent!important;
+  border-radius:0!important;padding:0!important;
+  font-size:.66rem!important;letter-spacing:.13em!important;color:#ffe3ed!important;
+  font-weight:800!important;margin-bottom:10px!important;
+}
+body:has(.main-column) .hero h1{
+  color:#fff!important;font-size:2.4rem!important;line-height:1.05!important;
+  letter-spacing:-.045em!important;margin:0 0 12px!important;font-weight:900!important;
+}
+body:has(.main-column) .hero h1 span{color:#f64bba!important;font-size:.82em!important}
+body:has(.main-column) .hero-copy>p{
+  color:#fff!important;font-size:1.09rem!important;line-height:1.36!important;
+  max-width:515px!important;margin-bottom:15px!important;
+}
+body:has(.main-column) .hero-quote{
+  display:flex!important;background:#ffffff18!important;backdrop-filter:blur(4px)!important;
+  border:0!important;border-radius:14px!important;width:max-content!important;max-width:100%!important;
+  gap:11px!important;align-items:center!important;padding:12px 17px!important;
+  color:#fff!important;font-size:.95rem!important;line-height:1.42!important;margin-top:0!important;
+}
+body:has(.main-column) .hero-quote svg{
+  width:27px!important;height:27px!important;color:#f550a2!important;transform:rotate(180deg)!important;
+}
+@media(max-width:760px){
+ body:has(.main-column) .hero{min-height:232px!important;border-radius:13px!important}
+ body:has(.main-column) .hero-art{width:58%!important;height:auto!important;top:0!important;bottom:0!important;opacity:.98!important}
+ body:has(.main-column) .hero-copy{max-width:66%!important;padding:31px 30px 23px!important}
+ body:has(.main-column) .hero h1{font-size:2.4rem!important;max-width:none!important}
+ body:has(.main-column) .hero-copy>p{max-width:515px!important;font-size:1.09rem!important}
+}
