@@ -144,3 +144,31 @@ body{background:var(--elas-bg);color:var(--elas-ink)}
 @media(prefers-reduced-motion:no-preference){
   :where(.btn-main,.primary-btn,.register-btn,.resource-primary,.send,.community-button){transition:background .18s ease,transform .18s ease,box-shadow .18s ease}
 }
+
+
+/* Correção da marca: o sinal + não deve herdar o fundo roxo dos avatares */
+.brand-word > span{
+  display:inline!important;
+  background:transparent!important;
+  background-color:transparent!important;
+  color:var(--elas-gold,#c6a15b)!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  padding:0!important;
+  margin:0!important;
+  line-height:inherit!important;
+}
+/* Pétalas em dourado, com contraste bordô */
+.brand-flower span,
+.sidebar .brand-flower span{
+  background:linear-gradient(155deg,#f0d99b 0%,#c6a15b 58%,#896725 100%)!important;
+}
+.brand-flower span:nth-child(2),
+.sidebar .brand-flower span:nth-child(2){
+  background:linear-gradient(155deg,#f7e8bd 0%,#d8b66d 60%,#a77b35 100%)!important;
+}
+.brand-flower span:nth-child(3),
+.sidebar .brand-flower span:nth-child(3){
+  background:linear-gradient(145deg,#d9b66b 0%,#a87932 100%)!important;
+}
