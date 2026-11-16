@@ -10,7 +10,7 @@
 <link href="unificado.css" rel="stylesheet"/>
 
 <script defer="" src="seguranca.js"></script>
-<link href="apoio-fluxos.css" rel="stylesheet"/><link href="site-shell.css" rel="stylesheet"/><script defer="" src="site-shell.js"></script><link href="design-system.css" rel="stylesheet"/><link href="separado.css" rel="stylesheet"/><link rel="stylesheet" href="elas-assistente.css"><script defer src="auth-shell.js"></script></head>
+<link href="apoio-fluxos.css" rel="stylesheet"/><link href="site-shell.css" rel="stylesheet"/><script defer="" src="site-shell.js"></script><link href="design-system.css" rel="stylesheet"/><link href="separado.css" rel="stylesheet"/><script defer src="auth-shell.js"></script></head>
 <body>
 <a class="skip-link" href="#main">Pular para conteúdo</a>
 <div class="scrim backdrop" hidden="" id="scrim"></div>
@@ -56,7 +56,7 @@
 </header>
 <main class="main" id="main">
 <section aria-labelledby="heroTitle" class="hero">
-<div class="hero-text"><div class="overline">RELAÇÕES E SEGURANÇA</div><h1 id="heroTitle">Você não está sozinha.</h1><p>Um espaço pessoal para conversar com o Assistente Elas+, entender seus direitos e acessar apoio. O Mapa Seguro está em uma página separada.</p><a class="hero-cta" href="#assistente">Conversar com o assistente <span aria-hidden="true">↗</span></a></div>
+<div class="hero-text"><div class="overline">RELAÇÕES E SEGURANÇA</div><h1 id="heroTitle">Você não está sozinha.</h1><p>Um espaço para entender seus direitos, conhecer recursos de proteção e acessar canais de apoio. O Mapa Seguro está em uma página separada.</p><a class="hero-cta" href="#assistente">Falar com a assistente Elas+ <span aria-hidden="true">↗</span></a></div>
 <img alt="Ilustração de uma mulher confiante" class="hero-illustration" src="assets/hero-seguranca.webp"/>
 <div aria-hidden="true" class="hero-message">Mais apoio<br/>para o seu<br/>dia a dia. ♥</div>
 </section>
@@ -67,37 +67,8 @@
 <a class="shortcut quick-card mint" href="mapa-seguro.html"><svg aria-hidden="true"><use href="#i-pin"></use></svg><strong>Mapa Seguro</strong><small>Locais e contribuições</small></a>
 <button class="shortcut quick-card fuchsia" data-action="emergency" type="button"><svg aria-hidden="true"><use href="#i-alert"></use></svg><strong>Emergência</strong><small>Canais de ajuda</small></button>
 </section>
-<div aria-label="Apoio inclusivo" class="identity-chips"><span>Acolhimento para todas:</span><button data-prompt="Quero informações e apoio para mulheres trans" type="button">Mulheres trans</button><button data-prompt="Quais serviços atendem mulheres PcD?" type="button">Mulheres PcD</button><button data-prompt="Quais direitos e serviços atendem mães atípicas?" type="button">Mães atípicas</button><button data-prompt="Como estabelecer limites e reconhecer assédio no trabalho?" type="button">Limites no trabalho</button></div>
-<div class="page-grid assistant-layout">
-<section aria-labelledby="assistantTitle" class="assistant-panel panel" id="assistente">
-<div class="assistant-title-row"><div><span class="eyebrow light">SEU ESPAÇO DE CONVERSA</span><h2 id="assistantTitle">Assistente Elas+ <span class="beta">GUIA LOCAL</span></h2></div><span aria-hidden="true" class="robot">✦</span></div>
-<p>Conte o que aconteceu e receba orientações iniciais sobre direitos, serviços e próximos passos possíveis.</p>
-<p class="privacy-advice">Este guia oferece orientações locais por padrão. Uma IA externa pode ser conectada ao servidor, somente com seu consentimento.</p>
-<div class="assistant-topic-heading"><strong>Escolha um assunto para começar</strong><span>Toque em uma opção ou escreva sua própria pergunta.</span></div>
-<div aria-label="Assuntos para conversar" class="suggestions">
-<button data-prompt="Estou em perigo ou sofrendo violência. Como posso me proteger agora?" type="button">Segurança e proteção</button>
-<button data-prompt="Como identificar sinais de relacionamento abusivo e buscar apoio?" type="button">Relacionamento saudável</button>
-<button data-prompt="Estou sofrendo violência ou perseguição pela internet. O que fazer?" type="button">Violência digital</button>
-<button data-prompt="Sofri assédio ou discriminação no trabalho. Quais são meus direitos?" type="button">Direitos no trabalho</button>
-<button data-prompt="Como pedir medida protetiva e denunciar violência?" type="button">Denúncias e justiça</button>
-<button data-prompt="Preciso conversar sobre ansiedade, tristeza ou saúde mental." type="button">Saúde mental</button>
-<button data-prompt="Como encontrar atendimento de saúde e serviços da UBS?" type="button">Saúde e bem-estar</button>
-<button data-prompt="Sou mãe e preciso de apoio, creche ou orientação sobre maternidade." type="button">Maternidade e apoio</button>
-<button data-prompt="Quero estudar e encontrar cursos gratuitos ou profissionalizantes." type="button">Estudos e cursos</button>
-<button data-prompt="Como montar currículo e procurar emprego?" type="button">Emprego e carreira</button>
-<button data-prompt="Como acessar CRAS, CREAS, benefícios e assistência social?" type="button">Serviços e benefícios</button>
-<button data-prompt="Sou uma mulher trans e preciso de orientação sobre acolhimento e direitos." type="button">Mulheres trans</button>
-<button data-prompt="Sou uma mulher com deficiência e preciso de atendimento acessível." type="button">Acessibilidade e inclusão</button>
-<button data-prompt="Como organizar minhas finanças e buscar independência financeira?" type="button">Autonomia financeira</button>
-<button data-prompt="Como usar o Mapa Seguro para localizar serviços?" type="button">Mapa Seguro</button>
-<button data-prompt="Como proteger meus dados e minha privacidade no Elas+?" type="button">Privacidade e conta</button>
-</div>
-<div aria-label="Respostas do assistente" aria-live="polite" class="chat-log" id="chatLog" role="log"><div class="bubble bot">Olá! Sou o guia de orientação do Elas+. Como posso ajudar? Se houver perigo imediato, ligue <strong>190</strong>.</div></div>
-<form class="chat-form" id="chatForm"><label class="sr-only" for="chatInput">Descreva a situação</label><textarea id="chatInput" maxlength="1200" placeholder="Conte, de forma resumida, o que está acontecendo..." required="" rows="3"></textarea><label class="ai-consent" hidden="" id="aiConsentLabel"><input id="aiConsent" type="checkbox"/> Autorizo enviar esta mensagem ao provedor externo de IA configurado. Sem nomes ou endereços.</label><div class="compose-bottom"><span>Não inclua nomes, endereços ou outros dados sensíveis.</span><button aria-label="Enviar mensagem" class="send" type="submit">➤</button></div></form>
-<section class="support-steps" id="nextSteps" aria-label="Próximos passos sugeridos" aria-live="polite" hidden></section>
-<a class="chat-notice" href="https://www.gov.br/mulheres/pt-br/ligue180" rel="noopener noreferrer" target="_blank">Informações oficiais: Ligue 180 ↗</a>
-</section>
-
+<div aria-label="Apoio inclusivo" class="identity-chips"><span>Acolhimento para todas:</span><button data-assistant-prompt="Quero informações e apoio para mulheres trans" type="button">Mulheres trans</button><button data-assistant-prompt="Quais serviços atendem mulheres PcD?" type="button">Mulheres PcD</button><button data-assistant-prompt="Quais direitos e serviços atendem mães atípicas?" type="button">Mães atípicas</button><button data-assistant-prompt="Como estabelecer limites e reconhecer assédio no trabalho?" type="button">Limites no trabalho</button></div>
+<div class="support-tools-layout">
 <aside aria-label="Ferramentas de proteção" class="right-panel">
 <div class="action-stack panel"><h3>Ajuda rápida</h3><a class="right-action primary" href="#assistente"><span>♧</span><span><strong>Falar com o assistente</strong><small>Descreva o que aconteceu</small></span>↗</a><a class="right-action" href="mapa-seguro.html"><span>⌖</span><span><strong>Mapa Seguro</strong><small>Buscar locais e registrar informações</small></span>↗</a><button class="right-action" data-action="emergency" type="button"><span>✹</span><span><strong>Emergência</strong><small>Ligações e orientações oficiais</small></span>↗</button></div>
 <div class="safety-plan panel"><div class="panel-line"><h3>Meu plano de segurança</h3><button class="tiny-link" data-action="plan" type="button">Configurar</button></div><button class="plan-item" data-action="plan" type="button"><span>☏</span><span><strong>Contatos de confiança</strong><small id="contactsStatus">Configurar nesta sessão</small></span>›</button><div class="plan-item disabled"><span>♫</span><span><strong>Palavra-chave por voz</strong><small>Recurso planejado — inativo</small></span></div><button class="plan-item" data-action="plan" type="button"><span>⌖</span><span><strong>Localização</strong><small>Compartilhar somente com consentimento</small></span>›</button></div>
@@ -134,5 +105,5 @@
 <symbol id="i-phone" viewbox="0 0 24 24"><path d="m6 2 4 5-2.5 2.6a18 18 0 0 0 7 7L17 14l5 4c-1 3.4-3.2 4.4-6 4C9 22 2 15 2 8c0-2.8 1-5 4-6Z"></path></symbol>
 <symbol id="i-alert" viewbox="0 0 24 24"><path d="M12 2 1 21h22Z"></path><path d="M12 8v6m0 3v.4" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="2.5"></path></symbol>
 <symbol id="i-accessibility" viewbox="0 0 24 24"><circle cx="12" cy="3" r="2"></circle><path d="M3 7h18M12 7v14m-7-1 7-8 7 8" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"></path></symbol>
-</svg><script defer src="elas-assistente.js"></script></body>
+</svg></body>
 </html>
