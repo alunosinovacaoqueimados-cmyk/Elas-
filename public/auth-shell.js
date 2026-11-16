@@ -18,7 +18,8 @@ const STORAGE='elas-auth-session-v2';
   (document.body||head).append(script);
  }
 })();
-\nconst account=document.querySelector('.topbar .account');
+
+const account=document.querySelector('.topbar .account');
 const entry=document.querySelector('.topbar .elas-login-link');
 if(!account&&!entry)return;
 function read(storage){
