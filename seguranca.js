@@ -7,7 +7,6 @@ const TYPES = {police:{label:'Delegacia ou polícia',icon:'✹'},health:{label:'
 const state = {map:null, layers:null, userLayer:null, communityLayer:null, poi:[], filter:'all', radius:3000, nameSearch:'', listLimit:20, currentCenter:DEFAULT_CENTER, reports:[], published:[], contacts:[], selectedReportCoord:null,reportDraftMarker:null, reportKind:'positive', picking:false, lastSearchedCenter:null, toastTimeout:null, loadToken:0};
 function notify(message){const t=$('#toast');t.textContent=message;t.classList.add('is-visible');clearTimeout(state.toastTimeout);state.toastTimeout=setTimeout(()=>t.classList.remove('is-visible'),4300);}
 function escapeHtml(x){return String(x).replace(/[&<>"']/g,v=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[v]));}
-function quickExit(){window.location.replace('https://www.google.com/');}
 function show(id){const el=$('#'+id);if(el && !el.open)el.showModal();}
 function closeMenu(){const s=$('#sidebar');s.classList.remove('open');$('#scrim').hidden=true;$('#menu').setAttribute('aria-expanded','false');}
 $('#menu').addEventListener('click',()=>{const isOpen=$('#sidebar').classList.toggle('open');$('#menu').setAttribute('aria-expanded',String(isOpen));$('#scrim').hidden=!isOpen;});
@@ -16,7 +15,6 @@ $$('.sidebar a').forEach(a=>a.addEventListener('click',closeMenu));
 document.addEventListener('click',e=>{
   const btn=e.target.closest('[data-action]');
   if(btn){const action=btn.dataset.action;
-    if(action==='exit')quickExit();
     if(action==='emergency')show('emergencyModal');
     if(action==='report'){if(!contributionsEnabled){notify('Novas marcações exigem armazenamento persistente. Por enquanto, use a busca de serviços.');return;}openReportForm(state.reportKind||'positive');}
     if(action==='plan')show('planModal');
@@ -24,7 +22,7 @@ document.addEventListener('click',e=>{
   if(e.target.matches('[data-close]'))e.target.closest('dialog').close();
 });
 $$('dialog').forEach(d=>d.addEventListener('click',e=>{if(e.target===d)d.close();}));
-document.addEventListener('keydown',e=>{if(e.altKey&&e.key.toLowerCase()==='x'){e.preventDefault();quickExit();}if(e.key==='Escape')closeMenu();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu();});
 // Acessibilidade: ajustes persistentes só da aparência.
 const savedPref=(()=>{try{return JSON.parse(localStorage.getItem('elasplus_preferences'))||{}}catch{return {}}})();
 const settings={font:({normal:16,large:18,larger:20}[savedPref.fontSize]||16),contrast:Boolean(savedPref.contrast),theme:savedPref.theme||'purple',dyslexia:Boolean(savedPref.dyslexia)};
