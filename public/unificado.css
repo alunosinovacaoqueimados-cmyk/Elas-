@@ -220,3 +220,104 @@ body:has(.main-column) .service-icon{border-radius:10px}
 body:has(.main-column) .footer{color:#8a788c}
 @media(max-width:1100px){body:has(.main-column) .content{grid-template-columns:minmax(0,1fr) 260px;padding:8px 16px}body:has(.main-column) .quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:760px){body:has(.main-column) .topbar{padding:0 12px}body:has(.main-column) .content{display:block;padding:8px 12px 20px}body:has(.main-column) .hero{min-height:230px!important}body:has(.main-column) .hero-copy{max-width:96%;padding:27px 21px}body:has(.main-column) .hero h1{font-size:1.85rem}body:has(.main-column) .hero-art{width:68%;opacity:.55}body:has(.main-column) .feature-grid{grid-template-columns:1fr}body:has(.main-column) .feature-card{min-height:180px!important}body:has(.main-column) .article-grid{grid-template-columns:repeat(2,minmax(0,1fr))}body:has(.main-column) .right-column{margin-top:22px}body:has(.main-column) .community-banner{flex-wrap:wrap}}
+
+
+/* HOME — novo destaque de boas-vindas, com composição orgânica */
+body:has(.main-column) .hero{
+  position:relative!important;
+  min-height:270px!important;
+  overflow:hidden!important;
+  isolation:isolate;
+  border:1px solid #f1d5e3!important;
+  border-radius:30px 92px 30px 30px!important;
+  background:linear-gradient(112deg,#fff0f5 0%,#f9e4ef 48%,#eadcf7 100%)!important;
+  box-shadow:0 16px 36px rgba(111,48,91,.12)!important;
+}
+body:has(.main-column) .hero:before{
+  content:"";
+  position:absolute;z-index:-1;
+  width:330px;height:330px;right:20%;top:-205px;
+  border-radius:50%;
+  background:rgba(255,255,255,.48);
+}
+body:has(.main-column) .hero:after{
+  content:"";
+  position:absolute;z-index:-1;
+  width:210px;height:210px;right:34%;bottom:-155px;
+  border-radius:50%;
+  background:rgba(255,255,255,.34)!important;
+}
+body:has(.main-column) .hero-art{
+  z-index:0!important;
+  right:0!important;left:auto!important;
+  width:46%!important;height:100%!important;
+  opacity:1!important;
+  clip-path:ellipse(78% 92% at 72% 50%)!important;
+  background-image:linear-gradient(90deg,rgba(249,228,239,.05),rgba(249,228,239,0)),url('assets/community-women.webp')!important;
+  background-size:cover!important;
+  background-position:center 38%!important;
+}
+body:has(.main-column) .hero-copy{
+  position:relative;z-index:2;
+  max-width:65%!important;
+  padding:38px 42px!important;
+}
+body:has(.main-column) .hero-eyebrow{
+  display:inline-flex!important;
+  align-items:center;
+  border:1px solid #e8bfd3!important;
+  background:#fff9fc!important;
+  color:#a43d75!important;
+  border-radius:30px!important;
+  padding:7px 13px!important;
+  font-size:.66rem!important;
+  letter-spacing:.11em!important;
+  margin-bottom:14px!important;
+}
+body:has(.main-column) .hero h1{
+  color:#48263f!important;
+  font-size:clamp(2rem,3vw,2.8rem)!important;
+  line-height:1.04!important;
+  font-weight:900!important;
+  letter-spacing:-.055em!important;
+  max-width:540px;
+}
+body:has(.main-column) .hero h1 span{color:#e44d91!important}
+body:has(.main-column) .hero-copy>p{
+  color:#76566e!important;
+  font-size:1rem!important;
+  line-height:1.55!important;
+  max-width:440px!important;
+}
+body:has(.main-column) .hero-quote{
+  display:inline-flex!important;
+  align-items:center;
+  gap:9px;
+  margin-top:8px;
+  padding:9px 13px!important;
+  border:1px solid #edcddd!important;
+  border-radius:12px!important;
+  background:rgba(255,255,255,.72)!important;
+  color:#87516f!important;
+  font-size:.82rem!important;
+  backdrop-filter:blur(6px);
+}
+body:has(.main-column) .hero-quote svg{color:#d94b8e!important}
+@media(max-width:760px){
+ body:has(.main-column) .hero{
+  min-height:330px!important;
+  border-radius:24px 54px 24px 24px!important;
+ }
+ body:has(.main-column) .hero-art{
+  width:58%!important;height:52%!important;bottom:0!important;top:auto!important;
+  opacity:.42!important;
+  clip-path:ellipse(85% 100% at 78% 100%)!important;
+  background-position:center 35%!important;
+ }
+ body:has(.main-column) .hero-copy{
+  max-width:100%!important;padding:25px 22px!important;
+ }
+ body:has(.main-column) .hero h1{font-size:1.9rem!important;max-width:290px}
+ body:has(.main-column) .hero-copy>p{max-width:300px!important;font-size:.93rem!important}
+ body:has(.main-column) .hero-quote{max-width:90%;font-size:.76rem!important}
+}
