@@ -78,15 +78,9 @@ function toggleMenu(){
 function closeMenu(){
   sidebar.classList.remove('open');backdrop.hidden=true;menuButton.setAttribute('aria-expanded','false');
 }
-function quickExit(){
-  // replace() evita adicionar a página atual à pilha de navegação durante a saída.
-  // Não apaga entradas anteriores do histórico ou rastros do dispositivo.
-  window.location.replace('https://www.google.com/');
-}
 function handleAction(action){
   switch(action){
     case 'sos': closeMenu();showDialog(sosDialog);break;
-    case 'quick-exit': quickExit();break;
     case 'accessibility': closeMenu();showDialog(accessDialog);break;
     case 'close-dialog': closeAllDialogs();break;
   }
@@ -105,9 +99,6 @@ $$('dialog').forEach(dialog=>dialog.addEventListener('click',event=>{
   if(event.target===dialog)dialog.close();
 }));
 document.addEventListener('keydown',event=>{
-  if(event.altKey && event.key.toLowerCase()==='x'){
-    event.preventDefault();quickExit();return;
-  }
   if(event.key==='Escape'){
     hideSearch();closeMenu();
   }
