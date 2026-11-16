@@ -29,3 +29,38 @@ button:hover,a:hover{filter:saturate(1.09)}
 :root[data-contrast="high"] .resource-card p,:root[data-contrast="high"] .resource-card label,:root[data-contrast="high"] .tool-tile p,:root[data-contrast="high"] .resource-view p{color:#eee!important}
 :root[data-contrast="high"] .resource-view input,:root[data-contrast="high"] .resource-view textarea,:root[data-contrast="high"] .resource-view select{background:#0b0b0b!important;color:#fff!important;border-color:#ddd!important}
 :root[data-contrast="high"] .cv-output{background:white!important;color:#111!important}
+
+
+/* Refinamento visual: identidade mais editorial, humana e discreta */
+:root{
+ --elas-ink:#302638;
+ --elas-primary:#75446d;
+ --elas-pink:#c66b91;
+ --elas-surface:#fff;
+ --elas-bg:#faf8f7;
+ --elas-stroke:#ece5e7;
+}
+body{background:#faf8f7;color:#302638}
+.sidebar{background:#fff!important;border-right:1px solid #eee8e9!important}
+.sidebar .sidebar-nav a.selected,.main-nav .nav-link.active{background:#f4e9ef;color:#75446d!important}
+.sidebar .sidebar-nav a:hover,.main-nav .nav-link:hover{background:#f8f2f4}
+.topbar{background:#fff!important;box-shadow:0 1px 0 #eee8e9!important}
+.panel,.resource-card,.tool-tile,.health-topic{box-shadow:0 3px 14px rgba(47,31,43,.045)!important}
+:where(.panel,.resource-card,.tool-tile,.health-topic,.card,.place){border-radius:12px!important}
+:where(button,.btn-main,.register-btn,.resource-primary){box-shadow:none!important}
+:where(.btn-main,.register-btn,.resource-primary){background:#75446d!important;color:#fff!important;border-radius:9px!important}
+:where(.hero,.resource-hero){
+ background:linear-gradient(110deg,#493447 0%,#69465d 100%)!important;
+ box-shadow:none!important;border-radius:13px!important
+}
+:where(.hero,.resource-hero):after{opacity:.22}
+:where(.shortcut,.tool-tile,.health-topic){box-shadow:none!important}
+.sidebar .logo strong{color:#392b39}
+.sidebar .brand-flower span{background:#bd7897!important}
+.sidebar .brand-flower span:nth-child(2){background:#d69bb1!important}
+.sidebar .brand-flower span:nth-child(3){background:#a85e83!important}
+.identity-chips button,.section-tabs a{border-radius:9px!important}
+@media(hover:hover){
+ :where(.panel,.resource-card,.tool-tile,.health-topic){transition:border-color .16s ease,transform .16s ease}
+ :where(.resource-card,.tool-tile,.health-topic):hover{transform:translateY(-2px)}
+}
