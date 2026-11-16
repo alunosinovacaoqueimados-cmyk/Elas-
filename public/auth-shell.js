@@ -34,7 +34,7 @@ function setUi(authenticated){
   const avatar=account.querySelector('.avatar');
   if(avatar)avatar.textContent=authenticated?'✓':'E';
   account.setAttribute('aria-label',authenticated?'Gerenciar minha conta Elas+':'Entrar ou criar conta no Elas+');
-  if(account.tagName==='A')account.href='login.html';
+  if(account.tagName==='A')account.href=authenticated?'recursos.html#perfil':'login.html';
  }
 }
 function endpoint(path,method,body,accessToken){
