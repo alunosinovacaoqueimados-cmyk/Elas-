@@ -64,3 +64,83 @@ body{background:#faf8f7;color:#302638}
  :where(.panel,.resource-card,.tool-tile,.health-topic){transition:border-color .16s ease,transform .16s ease}
  :where(.resource-card,.tool-tile,.health-topic):hover{transform:translateY(-2px)}
 }
+
+
+/* IDENTIDADE CROMÁTICA BORDÔ + DOURADO + ROXO — PLATAFORMA INTEIRA */
+:root{
+  --elas-bordo:#741f3d;
+  --elas-bordo-deep:#54152d;
+  --elas-bordo-soft:#f7eaf0;
+  --elas-gold:#c6a15b;
+  --elas-gold-deep:#896725;
+  --elas-gold-soft:#f8f1e2;
+  --elas-purple:#54258a;
+  --elas-purple-deep:#3d176c;
+  --elas-purple-soft:#f0eafa;
+  --elas-ink:#302238;
+  --elas-primary:var(--elas-bordo);
+  --elas-pink:var(--elas-gold);
+  --elas-bg:#fbf9fc;
+  --elas-surface:#fff;
+  --elas-stroke:#e9dfeb;
+  --primary:var(--elas-bordo);
+  --primary-strong:var(--elas-bordo-deep);
+  --primary-light:var(--elas-bordo-soft);
+  --pink:var(--elas-gold);
+  --focus:var(--elas-purple);
+}
+body{background:var(--elas-bg);color:var(--elas-ink)}
+/* Navegação lateral e abas */
+.sidebar{background:linear-gradient(160deg,#fff 0%,#fbf7fc 62%,#f7f0f8 100%)!important;border-right:1px solid #e8deeb!important}
+.sidebar .nav-link,.main-nav .nav-link,.nav-link{color:#46364e}
+.sidebar .nav-link svg,.main-nav .nav-link svg{color:var(--elas-purple)}
+.sidebar .nav-link.active,.sidebar .sidebar-nav a.selected,.main-nav .nav-link.active,
+.section-tabs a.active,.section-tabs button.active,.tabs [aria-selected="true"],
+[role="tab"][aria-selected="true"]{
+  color:var(--elas-bordo-deep)!important;
+  background:linear-gradient(100deg,var(--elas-bordo-soft),#f2eafa)!important;
+  border-color:#d8bfd0!important;
+  box-shadow:inset 3px 0 0 var(--elas-gold);
+}
+.sidebar .nav-link:hover,.main-nav .nav-link:hover,.nav-link:hover,
+.section-tabs a:hover,.section-tabs button:hover,[role="tab"]:hover{background:#f5edf7!important;color:var(--elas-purple-deep)}
+/* Botões principais, secundários e ações */
+:where(button,.btn,.btn-main,.primary-btn,.register-btn,.resource-primary,.send,.community-button,[type="submit"]){
+  border-color:transparent;
+}
+:where(.btn-main,.primary-btn,.register-btn,.resource-primary,.send,.community-button,[type="submit"]){
+  background:linear-gradient(115deg,var(--elas-bordo-deep),var(--elas-bordo))!important;
+  color:#fff!important;border-radius:10px!important;
+  box-shadow:0 4px 12px #54152d20!important;
+}
+:where(.btn-main,.primary-btn,.register-btn,.resource-primary,.send,.community-button,[type="submit"]):hover{
+  background:linear-gradient(115deg,var(--elas-purple-deep),var(--elas-purple))!important;
+  transform:translateY(-1px);
+}
+:where(.secondary-btn,.btn-secondary,.outline-btn,.icon-button){
+  border-color:#d9c9df!important;color:var(--elas-purple-deep)!important;
+}
+:where(.secondary-btn,.btn-secondary,.outline-btn,.icon-button):hover{background:var(--elas-purple-soft)!important}
+:where(.badge,.pill,.tag,.status-pill){border-color:#ead9ad}
+:where(.badge,.pill,.tag){background:var(--elas-gold-soft);color:var(--elas-gold-deep)}
+/* Detalhes dourados e roxos em cartões, indicadores e títulos */
+:where(.panel,.resource-card,.tool-tile,.health-topic,.card,.place,.feature-card){
+  border-color:#e9e0eb;
+}
+:where(.panel-heading h2,.section h2,.section-title){color:var(--elas-purple-deep)}
+:where(.progress-bar,.progress-fill,.progress-track span){background:linear-gradient(90deg,var(--elas-bordo),var(--elas-gold))}
+:where(.avatar,.brand-word span){background-color:var(--elas-purple)}
+:where(a:not(.nav-link):not(.brand)){color:var(--elas-purple)}
+:where(a:not(.nav-link):not(.brand)):hover{color:var(--elas-bordo)}
+:where(input,select,textarea):focus{border-color:var(--elas-purple)!important;box-shadow:0 0 0 3px #54258a18!important}
+:where(button,a,input,select,textarea):focus-visible{outline-color:var(--elas-gold)!important}
+:where(.hero,.resource-hero){
+  background:linear-gradient(112deg,var(--elas-purple-deep) 0%,var(--elas-bordo-deep) 72%,#7b3450 100%)!important;
+}
+:where(.hero-eyebrow,.eyebrow,.section-kicker){color:#e7c98c}
+:where(.hero h1 span,.highlight,.gold-accent){color:#e2c17b!important}
+:where(.service-icon,.community-icon,.feature-icon){background:var(--elas-purple-soft);color:var(--elas-purple)!important}
+:where(.notification .notify-dot,.unread-dot){background:var(--elas-gold)!important}
+@media(prefers-reduced-motion:no-preference){
+  :where(.btn-main,.primary-btn,.register-btn,.resource-primary,.send,.community-button){transition:background .18s ease,transform .18s ease,box-shadow .18s ease}
+}
