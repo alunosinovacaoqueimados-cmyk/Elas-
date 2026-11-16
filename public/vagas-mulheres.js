@@ -50,10 +50,10 @@ function eligibilityMatches(job,q){
  const location=normalize(job.location);
  const query=normalize(q);
  if(location.includes(query))return true;
- // A fonte Jobicy publica "Brazil" em inglês; o filtro padrão do Elas+ usa "Brasil".
+ // Reconhece Brazil e vagas remotas globais/regionais ao pesquisar Brasil.
  const brazilQuery=/^(brasil|brazil|rio de janeiro|rj|sao paulo|sp|japeri|queimados|baixada fluminense)$/i.test(query);
- const brazilLocation=/\\b(brazil|brasil)\\b/i.test(location);
- const regionalRemote=/\\b(worldwide|anywhere|global|latam|latin america|south america)\\b/i.test(location);
+ const brazilLocation=/\b(brazil|brasil)\b/i.test(location);
+ const regionalRemote=/\b(worldwide|anywhere|global|latam|latin america|south america)\b/i.test(location);
  if(brazilQuery&&(brazilLocation||regionalRemote))return true;
  return false;
 }
