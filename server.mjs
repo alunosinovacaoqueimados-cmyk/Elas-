@@ -94,9 +94,9 @@ function placeType(t){
   const a=t.amenity||'', o=t.office||'', h=t.healthcare||'', sh=t.shop||'';
   if(a==='police')return 'police';
   if(a==='pharmacy'||sh==='chemist')return 'pharmacy';
+  if(['kindergarten','childcare'].includes(a)||['day_care','childcare'].includes(t.social_facility)||t.childcare==='yes'||t.building==='kindergarten')return 'childcare';
+  if((['doctors','clinic','hospital'].includes(a)||['doctor','clinic','hospital'].includes(h))&&(/pediatr|paediatr|infantil|crian[cç]a/i.test(t.name||t['name:pt']||'')||/pediatric|paediatric|child/i.test(t['healthcare:speciality']||t['healthcare:specialty']||'')))return 'pediatrics';
   if(['hospital','clinic','doctors','dentist'].includes(a)||['hospital','clinic','doctor'].includes(h))return 'health';
-  if(['kindergarten','childcare'].includes(a)||t.social_facility==='day_care'||t.social_facility==='childcare')return 'childcare';
-  if((['doctors','clinic','hospital'].includes(a)||['doctor','clinic','hospital'].includes(h))&&(/pediatr|paediatr|infantil|crian[cç]a/i.test(t.name||t['name:pt']||'')||/pediatric|paediatric|child/i.test(t['healthcare:speciality']||'')))return 'pediatrics';
   if(['social_facility','community_centre'].includes(a)||['government','social','lawyer'].includes(o))return 'social';
   if(['restaurant','cafe','fast_food','food_court'].includes(a)||sh==='bakery')return 'food';
   if(sh)return 'shop';
@@ -141,12 +141,13 @@ async function nearby(lat,lon,filter='all',radius=3000){
       // Uma falha temporária do Overpass não deve esconder dados reais em cache.
       if(stale)return {...stale,stale:true};
       try{
-        const results=await queryPhotonPlaces({lat,lon,radius,type:filter,transport:remoteJSON,endpoint:process.env.PHOTON_URL||'https://photon.komoot.io/reverse',timeout:6800});
+        const results=await queryPhotonPlaces({lat,lon,radius,type:filter,transport:remoteJSON,endpoint:process.env.PHOTON_URL||'https://photon.komoot.io/api',timeout:6800});
         if(results.length){const fallback={places:results,source:'Photon / OpenStreetMap',partial:true};placesCache.set(key,{data:fallback,exp:Date.now()+5*60000});return fallback;}
       }catch(photonError){console.warn('[Elas+] Busca alternativa indisponível:',String(photonError?.message||'falha').slice(0,90));}
       throw overpassError;
     }
     data.sort((a,b)=>a.distance-b.distance||a.name.localeCompare(b.name,'pt-BR'));
+    if(!data.length){try{const results=await queryPhotonPlaces({lat,lon,radius,type:filter,transport:remoteJSON,endpoint:process.env.PHOTON_URL||'https://photon.komoot.io/api',timeout:6800});if(results.length){const fallback={places:results,source:'Photon / OpenStreetMap',partial:true};placesCache.set(key,{data:fallback,exp:Date.now()+5*60000});return fallback;}}catch(photonError){console.warn('[Elas+] Busca alternativa indisponível:',String(photonError?.message||'falha').slice(0,90));}}
     const output={places:data.slice(0,400),source:'OpenStreetMap / Overpass',partial:false};
     placesCache.set(key,{data:output,exp:Date.now()+15*60000});
     return output;
