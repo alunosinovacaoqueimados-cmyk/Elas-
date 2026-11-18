@@ -9,6 +9,7 @@ import crypto from 'node:crypto';
 import {fileURLToPath} from 'node:url';
 import {queryOverpass} from './lib/overpass.mjs';
 import {queryPhotonPlaces} from './lib/photon.mjs';
+import {queryNominatimPlaces} from './lib/nominatim.mjs';
 
 const ROOT=path.dirname(fileURLToPath(import.meta.url));
 // A Vercel oferece um sistema de arquivos efêmero: relatos exigem armazenamento persistente externo.
@@ -144,10 +145,14 @@ async function nearby(lat,lon,filter='all',radius=3000){
         const results=await queryPhotonPlaces({lat,lon,radius,type:filter,transport:remoteJSON,endpoint:process.env.PHOTON_URL||'https://photon.komoot.io/api',timeout:6800});
         if(results.length){const fallback={places:results,source:'Photon / OpenStreetMap',partial:true};placesCache.set(key,{data:fallback,exp:Date.now()+5*60000});return fallback;}
       }catch(photonError){console.warn('[Elas+] Busca alternativa indisponível:',String(photonError?.message||'falha').slice(0,90));}
+      try{
+        const results=await queryNominatimPlaces({lat,lon,radius,type:filter,transport:remoteJSON,timeout:6500});
+        if(results.length){const fallback={places:results,source:'Nominatim / OpenStreetMap',partial:true};placesCache.set(key,{data:fallback,exp:Date.now()+5*60000});return fallback;}
+      }catch(nominatimError){console.warn('[Elas+] Nominatim indisponível:',String(nominatimError?.message||'falha').slice(0,90));}
       throw overpassError;
     }
     data.sort((a,b)=>a.distance-b.distance||a.name.localeCompare(b.name,'pt-BR'));
-    if(!data.length){try{const results=await queryPhotonPlaces({lat,lon,radius,type:filter,transport:remoteJSON,endpoint:process.env.PHOTON_URL||'https://photon.komoot.io/api',timeout:6800});if(results.length){const fallback={places:results,source:'Photon / OpenStreetMap',partial:true};placesCache.set(key,{data:fallback,exp:Date.now()+5*60000});return fallback;}}catch(photonError){console.warn('[Elas+] Busca alternativa indisponível:',String(photonError?.message||'falha').slice(0,90));}}
+    if(!data.length){try{const results=await queryPhotonPlaces({lat,lon,radius,type:filter,transport:remoteJSON,endpoint:process.env.PHOTON_URL||'https://photon.komoot.io/api',timeout:6800});if(results.length){const fallback={places:results,source:'Photon / OpenStreetMap',partial:true};placesCache.set(key,{data:fallback,exp:Date.now()+5*60000});return fallback;}}catch(photonError){console.warn('[Elas+] Busca alternativa indisponível:',String(photonError?.message||'falha').slice(0,90));}try{const results=await queryNominatimPlaces({lat,lon,radius,type:filter,transport:remoteJSON,timeout:6500});if(results.length){const fallback={places:results,source:'Nominatim / OpenStreetMap',partial:true};placesCache.set(key,{data:fallback,exp:Date.now()+5*60000});return fallback;}}catch(nominatimError){console.warn('[Elas+] Nominatim indisponível:',String(nominatimError?.message||'falha').slice(0,90));}}
     const output={places:data.slice(0,400),source:'OpenStreetMap / Overpass',partial:false};
     placesCache.set(key,{data:output,exp:Date.now()+15*60000});
     return output;
