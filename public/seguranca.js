@@ -180,8 +180,8 @@ async function loadPOIs(){
   status('Buscando estabelecimentos próximos...');$('#placeList').innerHTML='<p class="muted">Carregando locais próximos do OpenStreetMap...</p>';
   updateMapFallbackLink();
   const summary=$('#placeResultsSummary');if(summary)summary.textContent='Consultando estabelecimentos...';
+  const type=Object.hasOwn(TYPES,state.filter)&&state.filter!=='community'?state.filter:'all';
   try{
-    const type=Object.hasOwn(TYPES,state.filter)&&state.filter!=='community'?state.filter:'all';
     // Reduzir precisão para ~100 m antes de a posição entrar na URL/na infraestrutura externa.
     const approxLat=center.lat.toFixed(3),approxLon=center.lng.toFixed(3);
     const url=`/api/locais?lat=${encodeURIComponent(approxLat)}&lon=${encodeURIComponent(approxLon)}&type=${encodeURIComponent(type)}&radius=${state.radius}`;
