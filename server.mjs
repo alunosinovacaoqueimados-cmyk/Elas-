@@ -75,6 +75,7 @@ const PLACE_FILTERS = Object.freeze({
   health: '[amenity~"^(hospital|clinic|doctors|dentist)$"]',
   pharmacy: '[amenity=pharmacy]',
   childcare: '[amenity~"^(kindergarten|childcare)$"]',
+  pediatrics: '[amenity~"^(doctors|clinic|hospital)$"][healthcare:speciality~"(?i)(pediatric|paediatric|child)"]',
   social: '[amenity~"^(social_facility|community_centre)$"]',
   shop: '[shop~"^(supermarket|convenience|department_store|mall|clothes|variety_store|electronics|books|general|hardware|beauty|chemist|bakery|shoes|mobile_phone|sports|pet|optician|stationery|furniture|florist|car_repair|bicycle|butcher|deli|greengrocer|gift|jewelry|toys|hairdresser|cosmetics)$"]',
   food: '[amenity~"^(restaurant|cafe|fast_food|food_court)$"]',
@@ -85,6 +86,7 @@ const EXTRA_FILTERS = Object.freeze({
   pharmacy: '[shop=chemist]',
   food: '[shop=bakery]',
   childcare: '[social_facility=day_care]',
+  pediatrics: '[healthcare=doctor][healthcare:speciality~"(?i)(pediatric|paediatric|child)"]',
   social: '[office~"^(government|social|lawyer)$"]'
 });
 const ALLOWED_PLACE_TYPES = new Set(['all', ...Object.keys(PLACE_FILTERS)]);
@@ -93,7 +95,8 @@ function placeType(t){
   if(a==='police')return 'police';
   if(a==='pharmacy'||sh==='chemist')return 'pharmacy';
   if(['hospital','clinic','doctors','dentist'].includes(a)||['hospital','clinic','doctor'].includes(h))return 'health';
-  if(['kindergarten','childcare'].includes(a)||t.social_facility==='day_care')return 'childcare';
+  if(['kindergarten','childcare'].includes(a)||t.social_facility==='day_care'||t.social_facility==='childcare')return 'childcare';
+  if((['doctors','clinic','hospital'].includes(a)||['doctor','clinic','hospital'].includes(h))&&(/pediatr|paediatr|infantil|crian[cç]a/i.test(t.name||t['name:pt']||'')||/pediatric|paediatric|child/i.test(t['healthcare:speciality']||'')))return 'pediatrics';
   if(['social_facility','community_centre'].includes(a)||['government','social','lawyer'].includes(o))return 'social';
   if(['restaurant','cafe','fast_food','food_court'].includes(a)||sh==='bakery')return 'food';
   if(sh)return 'shop';
