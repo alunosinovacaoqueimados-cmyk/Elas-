@@ -149,6 +149,30 @@ async function loadPublished(){
   try{const r=await fetch('/api/relatos');if(!r.ok)throw Error();const data=await r.json();state.published=Array.isArray(data.reports)?data.reports:[];renderPlaces();renderReports();}
   catch{notify('Não foi possível consultar relatos aprovados agora.');}
 }
+async function searchFreePlacesFromBrowser(center,type,radius){
+  const terms={childcare:['creche','educação infantil'],pediatrics:['pediatra','pediatria'],health:['hospital','posto de saúde'],pharmacy:['farmácia'],police:['delegacia'],social:['CRAS','assistência social'],shop:['mercado'],food:['restaurante'],services:['banco'],all:[]};
+  const queries=terms[type]||[];if(!queries.length)return [];
+  const found=new Map();
+  for(const q of queries){
+    try{
+      const u=new URL('https://photon.komoot.io/api');u.searchParams.set('q',q);u.searchParams.set('lat',center.lat.toFixed(3));u.searchParams.set('lon',center.lng.toFixed(3));u.searchParams.set('limit','20');u.searchParams.set('lang','pt');
+      const res=await fetch(u,{signal:AbortSignal.timeout(6500)});if(!res.ok)continue;const data=await res.json();
+      for(const feature of data.features||[]){const p=feature.properties||{},coords=feature.geometry?.coordinates;if(!Array.isArray(coords))continue;const la=Number(coords[1]),lo=Number(coords[0]);if(!Number.isFinite(la)||!Number.isFinite(lo))continue;const kind=String(p.osm_key||'')+':'+String(p.osm_value||'');const name=String(p.name||p.street||p.city||'').trim();if(!name)continue;
+        const cat=type==='childcare'?(['amenity:kindergarten','amenity:childcare','social_facility:day_care','social_facility:childcare'].includes(kind)?'childcare':null):type==='pediatrics'?((['amenity:doctors','amenity:clinic','amenity:hospital','healthcare:doctor','healthcare:clinic'].includes(kind)&&/pediatr|paediatr|infantil|crian[cç]a/i.test(name))?'pediatrics':null):type;
+        if(!cat)continue;const distance=Math.round(center.distanceTo(L.latLng(la,lo)));if(distance>radius)continue;const id=String(p.osm_type||'')+String(p.osm_id||name)+la+lo;if(found.has(id))continue;
+        const address=[p.street,p.housenumber,p.city].filter(Boolean).join(', ');
+        found.set(id,{id:'photon:'+id,name,lat:la,lon:lo,type:cat,address,phone:'',website:'',distance,source:'Photon / OpenStreetMap',coord:[la,lo],tags:{'addr:street':address}});
+      }
+    }catch{}
+  }
+  if(found.size)return [...found.values()].sort((a,b)=>a.distance-b.distance);
+  // Segunda alternativa gratuita: Nominatim, consulta limitada a uma categoria e região.
+  const deltaLat=radius/111320,deltaLon=radius/(111320*Math.max(.15,Math.cos(center.lat*Math.PI/180)));
+  for(const q of queries.slice(0,1)){
+    try{const u=new URL('https://nominatim.openstreetmap.org/search');u.searchParams.set('q',q);u.searchParams.set('format','jsonv2');u.searchParams.set('limit','15');u.searchParams.set('viewbox',[center.lng-deltaLon,center.lat+deltaLat,center.lng+deltaLon,center.lat-deltaLat].join(','));u.searchParams.set('bounded','1');const res=await fetch(u,{signal:AbortSignal.timeout(6500)});if(!res.ok)continue;const data=await res.json();for(const p of data){const la=Number(p.lat),lo=Number(p.lon);if(!Number.isFinite(la)||!Number.isFinite(lo))continue;const name=String(p.name||p.display_name?.split(',')[0]||'Local sem nome').trim();const distance=Math.round(center.distanceTo(L.latLng(la,lo)));if(distance>radius)continue;found.set('nominatim:'+p.place_id,{id:'nominatim:'+p.place_id,name,lat:la,lon:lo,type,address:String(p.display_name||'').slice(0,150),phone:'',website:'',distance,source:'Nominatim / OpenStreetMap',coord:[la,lo],tags:{'addr:street':p.display_name||''}});}}catch{}
+  }
+  return [...found.values()].sort((a,b)=>a.distance-b.distance);
+}
 async function loadPOIs(){
   if(!state.map)return;
   const req=++state.loadToken;const center=state.map.getCenter();
@@ -167,7 +191,7 @@ async function loadPOIs(){
     state.poi=(data.places||[]).map(p=>({...p,coord:[p.lat,p.lon],tags:{'addr:street':p.address||''}}));state.lastSearchedCenter=center;$('#refreshArea').hidden=true;state.listLimit=20;
     if($('#offlineSupport'))$('#offlineSupport').hidden=true;
     renderPlaces();status(data.stale?`${state.poi.length} locais de consulta anterior (dados em cache). Fonte temporariamente indisponível: confirme antes de visitar.`:data.partial?`${state.poi.length} local(is) indexado(s) nesta área. Fonte alternativa: Photon / OpenStreetMap (lista parcial). Confirme antes de visitar.`:`${state.poi.length} estabelecimentos encontrados na área consultada. Fonte: OpenStreetMap — confirme antes de visitar.`);
-  }catch(e){if(req!==state.loadToken)return;state.poi=[];renderPlaces();if($('#offlineSupport'))$('#offlineSupport').hidden=false;status('Serviços temporariamente indisponíveis nesta área. Use a busca externa no OpenStreetMap ou os contatos oficiais.');notify('A fonte de locais está indisponível agora.');}
+  }catch(e){if(req!==state.loadToken)return;try{status('Tentando uma fonte gratuita alternativa...');const fallback=await searchFreePlacesFromBrowser(center,type,state.radius);if(req!==state.loadToken)return;state.poi=fallback;state.lastSearchedCenter=center;state.listLimit=20;$('#refreshArea').hidden=true;renderPlaces();if($('#offlineSupport'))$('#offlineSupport').hidden=fallback.length>0;status(fallback.length?fallback.length+' locais encontrados por fonte alternativa gratuita (dados parciais do OpenStreetMap). Confirme antes de visitar.':'Nenhum local encontrado nessa consulta. Tente ampliar a área ou abrir a busca externa.');if(!fallback.length)notify('As fontes gratuitas não retornaram locais nesta região.');return;}catch(fallbackError){}state.poi=[];renderPlaces();if($('#offlineSupport'))$('#offlineSupport').hidden=false;status('Serviços temporariamente indisponíveis. Use a busca externa no OpenStreetMap ou os contatos oficiais.');notify('As fontes gratuitas estão indisponíveis agora.');}
 }
 function updateMapFallbackLink(){
   const anchor=$('#osmFallbackLink');if(!anchor)return;
