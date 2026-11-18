@@ -3,7 +3,7 @@
 const $ = (s, r=document) => r.querySelector(s);
 const $$ = (s, r=document) => [...r.querySelectorAll(s)];
 const DEFAULT_CENTER = [-22.718, -43.557]; // centro de demonstração: Queimados/RJ, não a localização da pessoa
-const TYPES = {police:{label:'Delegacia ou polícia',icon:'✹'},health:{label:'Saúde',icon:'✚'},pharmacy:{label:'Farmácia',icon:'✚'},social:{label:'Assistência / serviço',icon:'♧'},childcare:{label:'Creche e educação infantil',icon:'⌂'},shop:{label:'Loja ou mercado',icon:'▣'},food:{label:'Alimentação',icon:'☕'},services:{label:'Banco ou serviço local',icon:'▤'},community:{label:'Registro local',icon:'⌖'}};
+const TYPES = {police:{label:'Delegacia ou polícia',icon:'✹'},health:{label:'Saúde',icon:'✚'},pharmacy:{label:'Farmácia',icon:'✚'},social:{label:'Assistência / serviço',icon:'♧'},childcare:{label:'Creche e educação infantil',icon:'⌂'},pediatrics:{label:'Pediatria',icon:'✚'},shop:{label:'Loja ou mercado',icon:'▣'},food:{label:'Alimentação',icon:'☕'},services:{label:'Banco ou serviço local',icon:'▤'},community:{label:'Registro local',icon:'⌖'}};
 const state = {map:null, layers:null, userLayer:null, communityLayer:null, poi:[], filter:'all', radius:3000, nameSearch:'', listLimit:20, currentCenter:DEFAULT_CENTER, reports:[], published:[], contacts:[], selectedReportCoord:null,reportDraftMarker:null, reportKind:'positive', picking:false, lastSearchedCenter:null, toastTimeout:null, loadToken:0};
 function notify(message){const t=$('#toast');t.textContent=message;t.classList.add('is-visible');clearTimeout(state.toastTimeout);state.toastTimeout=setTimeout(()=>t.classList.remove('is-visible'),4300);}
 function escapeHtml(x){return String(x).replace(/[&<>"']/g,v=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[v]));}
@@ -171,7 +171,7 @@ async function loadPOIs(){
 }
 function updateMapFallbackLink(){
   const anchor=$('#osmFallbackLink');if(!anchor)return;
-  const terms={police:'delegacia polícia',health:'hospital posto de saúde',pharmacy:'farmácia',social:'assistência social CRAS',childcare:'creche',shop:'mercado',food:'restaurante',services:'banco'}; 
+  const terms={police:'delegacia polícia',health:'hospital posto de saúde',pharmacy:'farmácia',social:'assistência social CRAS',childcare:'creche educação infantil',pediatrics:'pediatra pediatria clínica infantil',shop:'mercado',food:'restaurante',services:'banco'}; 
   const q=([terms[state.filter]||'serviços públicos',$('#placeInput')?.value.trim()||'Queimados, RJ']).filter(Boolean).join(' ');
   anchor.href='https://www.openstreetmap.org/search?query='+encodeURIComponent(q);
   const google=$('#googleFallbackLink');
