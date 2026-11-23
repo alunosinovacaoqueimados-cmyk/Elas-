@@ -1,10 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
-<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#24113e"/><stop offset=".5" stop-color="#7c2a9c"/><stop offset="1" stop-color="#f044a7"/></linearGradient><linearGradient id="t" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff"/><stop offset="1" stop-color="#f5c9ff"/></linearGradient></defs>
-<rect width="1024" height="1024" rx="230" fill="url(#g)"/>
-<circle cx="512" cy="512" r="360" fill="none" stroke="#ffffff" stroke-opacity=".08" stroke-width="2"/>
-<path d="M245 285 Q512 120 779 285" fill="none" stroke="#ff8bd2" stroke-width="24" stroke-linecap="round" opacity=".75"/>
-<text x="495" y="650" font-family="Arial, Helvetica, sans-serif" font-size="440" font-weight="800" text-anchor="middle" fill="url(#t)" letter-spacing="-28">E</text>
-<path d="M638 386 V636 M513 511 H763" stroke="#ff73ca" stroke-width="78" stroke-linecap="round"/>
-<path d="M250 742 Q512 905 774 742" fill="none" stroke="#ff8bd2" stroke-width="20" stroke-linecap="round" opacity=".8"/>
-<circle cx="512" cy="218" r="12" fill="#fff" opacity=".9"/>
+<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff8fc"/><stop offset="1" stop-color="#f7e9f4"/></linearGradient><linearGradient id="petal1" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ff9ec8"/><stop offset="1" stop-color="#c83d95"/></linearGradient><linearGradient id="petal2" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffb4dc"/><stop offset="1" stop-color="#e84296"/></linearGradient><linearGradient id="petal3" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ee83ba"/><stop offset="1" stop-color="#942879"/></linearGradient></defs>
+<rect width="1024" height="1024" rx="220" fill="url(#bg)"/>
+<g transform="translate(512 382) scale(2.55)">
+<path d="M-11 52 C-21 25 -19 -9 2 -61 C17 -62 20 -30 14 -7 C10 13 8 35 -11 52Z" fill="url(#petal1)" transform="rotate(-3)"/>
+<path d="M-11 52 C-21 25 -19 -9 2 -61 C17 -62 20 -30 14 -7 C10 13 8 35 -11 52Z" fill="url(#petal2)" transform="rotate(-48)"/>
+<path d="M-11 52 C-21 25 -19 -9 2 -61 C17 -62 20 -30 14 -7 C10 13 8 35 -11 52Z" fill="url(#petal3)" transform="rotate(48)"/>
+</g>
+<text x="512" y="720" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="190" font-weight="700" fill="#291345" letter-spacing="-5">Elas<tspan fill="#bd237b">+</tspan></text>
 </svg>
