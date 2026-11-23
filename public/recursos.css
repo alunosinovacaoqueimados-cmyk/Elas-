@@ -69,3 +69,15 @@ body:has(#curriculoView:not([hidden])) .resource-hero,
 body:has(#curriculoView:not([hidden])) .section-tabs,
 body:has(#curriculoView:not([hidden])) .resource-view:not(#curriculoView) { display:none !important; }
 body:has(#curriculoView:not([hidden])) #curriculoView { display:block !important; visibility:visible !important; }
+
+/* Página dedicada: currículo, sem serviços públicos ou outras áreas. */
+.curriculum-page .resource-hero,
+.curriculum-page .section-tabs { display:none !important; }
+.curriculum-page #curriculoView { display:block !important; }
+.curriculum-page .resource-view:not(#curriculoView),
+.curriculum-page #maes-solo { display:none !important; }
+body.curriculum-only .resource-hero,
+body.curriculum-only .section-tabs,
+body.curriculum-only .resource-view:not(#curriculoView),
+body.curriculum-only #maes-solo { display:none !important; }
+body.curriculum-only #curriculoView { display:block !important; visibility:visible !important; }
