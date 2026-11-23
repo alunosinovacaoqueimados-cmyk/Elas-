@@ -1,0 +1,12 @@
+{
+  "appId": "br.com.elasplus.app",
+  "appName": "Elas+",
+  "webDir": "public",
+  "server": {
+    "url": "https://elas-one.vercel.app",
+    "cleartext": false
+  },
+  "android": {
+    "allowMixedContent": false
+  }
+}
