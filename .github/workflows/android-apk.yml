@@ -49,7 +49,10 @@ jobs:
           sudo apt-get install -y imagemagick
           mkdir -p assets
           convert -background none assets/elasplus-icon.svg -resize 1024x1024 assets/icon.png
-          convert -size 2732x2732 gradient:'#28104e-#a31aa5' -gravity center assets/icon.png -resize 900x900 -composite assets/splash.png
+          convert -size 2732x2732 gradient:'#28104e-#a31aa5' assets/splash-background.png
+          convert assets/icon.png -resize 900x900 assets/icon-center.png
+          convert assets/splash-background.png assets/icon-center.png -gravity center -composite assets/splash.png
+          rm assets/splash-background.png assets/icon-center.png
           npm install --no-save @capacitor/assets
           npx capacitor-assets generate --android
 
@@ -72,8 +75,8 @@ jobs:
       - name: Publish latest APK release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: apk-${{ github.run_number }}
-          name: Elas+ Android - Build ${{ github.run_number }}
+          tag_name: apk-${{ github.run_id }}
+          name: Elas+ Android - Build ${{ github.run_id }}
           files: ElasPlus.apk
           make_latest: true
           generate_release_notes: true
