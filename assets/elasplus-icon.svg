@@ -1,27 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
-<defs>
- <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff6fa"/><stop offset=".55" stop-color="#ffe6f1"/><stop offset="1" stop-color="#f7d4e8"/></linearGradient>
- <linearGradient id="petal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ff82bc"/><stop offset=".45" stop-color="#df238a"/><stop offset="1" stop-color="#920c5a"/></linearGradient>
- <linearGradient id="petalLight" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffb5d8"/><stop offset=".55" stop-color="#ec5aa5"/><stop offset="1" stop-color="#b71975"/></linearGradient>
- <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff0b8"/><stop offset=".3" stop-color="#d7a53b"/><stop offset=".65" stop-color="#f6d87b"/><stop offset="1" stop-color="#a97619"/></linearGradient>
- <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="16"/></filter>
-</defs>
-<rect width="1024" height="1024" rx="225" fill="url(#bg)"/>
-<rect x="34" y="34" width="956" height="956" rx="205" fill="none" stroke="url(#gold)" stroke-width="13"/>
-<rect x="55" y="55" width="914" height="914" rx="185" fill="none" stroke="#fff" stroke-opacity=".65" stroke-width="3"/>
-<!-- flower mark -->
-<g transform="translate(512 350)">
- <circle r="215" fill="#8e145b" opacity=".16" filter="url(#shadow)"/>
- <g stroke="url(#gold)" stroke-width="8" stroke-linejoin="round">
-  <path d="M0 122 C-75 95 -115 24 -90 -122 C-31 -154 26 -75 20 12 C16 63 28 103 0 122Z" fill="url(#petal)" transform="rotate(-4)"/>
-  <path d="M0 122 C-75 95 -115 24 -90 -122 C-31 -154 26 -75 20 12 C16 63 28 103 0 122Z" fill="url(#petalLight)" transform="rotate(-66)"/>
-  <path d="M0 122 C-75 95 -115 24 -90 -122 C-31 -154 26 -75 20 12 C16 63 28 103 0 122Z" fill="url(#petal)" transform="rotate(66)"/>
- </g>
- <path d="M-14 68 C-38 17 -24 -42 0 -104 C30 -48 35 12 14 68Z" fill="url(#gold)" stroke="#fff4c8" stroke-width="5"/>
- <circle cx="0" cy="4" r="30" fill="#fff1bc" stroke="url(#gold)" stroke-width="7"/>
- <circle cx="0" cy="4" r="11" fill="#d99523"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+<rect width="1024" height="1024" fill="#fff"/>
+<defs><linearGradient id="pink" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#9e0879"/><stop offset=".55" stop-color="#d3198c"/><stop offset="1" stop-color="#f02a8c"/></linearGradient><linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#a88726"/><stop offset=".55" stop-color="#e2c45d"/><stop offset="1" stop-color="#8d6b20"/></linearGradient></defs>
+<!-- Logo oficial Elas+: pétalas magenta/rosa com contorno dourado -->
+<g stroke="url(#gold)" stroke-width="12" stroke-linejoin="round">
+ <path d="M450 566 C305 520 218 391 270 244 C355 272 441 365 450 566Z" fill="#a40a7a"/>
+ <path d="M450 566 C410 388 438 275 566 246 C581 367 523 484 450 566Z" fill="#c41187"/>
+ <path d="M450 566 C489 383 610 295 755 324 C719 436 595 533 450 566Z" fill="#e71b8d"/>
 </g>
-<text x="512" y="715" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="182" font-weight="700" letter-spacing="-5" fill="#6d124c">Elas<tspan fill="#bd1c7d">+</tspan></text>
-<path d="M300 770 Q512 810 724 770" fill="none" stroke="url(#gold)" stroke-width="9" stroke-linecap="round"/>
-<circle cx="282" cy="770" r="8" fill="#d6a53d"/><circle cx="742" cy="770" r="8" fill="#d6a53d"/>
+<!-- Inner petal accents -->
+<path d="M450 566 C360 421 337 311 293 254" fill="none" stroke="#e5c85b" stroke-width="12"/>
+<path d="M450 566 C464 403 491 304 560 258" fill="none" stroke="#e5c85b" stroke-width="12"/>
+<path d="M450 566 C562 417 646 369 742 338" fill="none" stroke="#e5c85b" stroke-width="12"/>
+<path d="M566 454 C622 389 679 357 747 341 C698 407 644 445 578 465Z" fill="#a40a7a" stroke="url(#gold)" stroke-width="10"/>
+<path d="M580 462 C638 438 678 418 720 393" fill="none" stroke="#e5c85b" stroke-width="10"/>
+<!-- Wordmark -->
+<text x="160" y="790" font-family="Arial,Helvetica,sans-serif" font-weight="900" font-size="244" letter-spacing="-12" fill="#1d1b23">Elas</text>
+<text x="737" y="790" font-family="Arial,Helvetica,sans-serif" font-weight="900" font-size="240" fill="#c61c8a">+</text>
 </svg>
