@@ -6,7 +6,8 @@
   "description": "Ecossistema Elas+ com servidor Node, sem banco de dados",
   "scripts": {
     "start": "node server.mjs",
-    "test": "node --test tests/server.test.mjs tests/shell.test.mjs tests/vercel.test.mjs tests/ufrrj.test.mjs tests/mapa-ux.test.mjs tests/jobs-feed.test.mjs tests/map-auth-product.test.mjs tests/overpass-fallback.test.mjs tests/photon-fallback.test.mjs"
+    "test": "node --test tests/server.test.mjs tests/shell.test.mjs tests/vercel.test.mjs tests/ufrrj.test.mjs tests/mapa-ux.test.mjs tests/jobs-feed.test.mjs tests/map-auth-product.test.mjs tests/overpass-fallback.test.mjs tests/photon-fallback.test.mjs",
+    "android:build": "npx cap sync android && cd android && ./gradlew assembleDebug"
   },
   "engines": {
     "node": ">=20"
