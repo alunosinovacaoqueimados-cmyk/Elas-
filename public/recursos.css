@@ -81,3 +81,13 @@ body.curriculum-only .section-tabs,
 body.curriculum-only .resource-view:not(#curriculoView),
 body.curriculum-only #maes-solo { display:none !important; }
 body.curriculum-only #curriculoView { display:block !important; visibility:visible !important; }
+
+
+/* Isolamento reforçado da página dedicada Criar Currículo, também aplicado no acesso pelo site. */
+body.curriculum-page-mode .resource-main > .resource-hero,
+body.curriculum-page-mode .resource-main > .section-tabs,
+body.curriculum-page-mode .resource-main > .resource-view:not(#curriculoView),
+body.curriculum-page-mode #maes-solo { display:none !important; }
+body.curriculum-page-mode .resource-main #curriculoView,
+body.curriculum-page-mode .resource-main #curriculoView[hidden] { display:block !important; visibility:visible !important; }
+body.curriculum-page-mode .resource-main { max-width:1100px; }
