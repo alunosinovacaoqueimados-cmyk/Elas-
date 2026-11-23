@@ -48,3 +48,8 @@
 @media(max-width:850px){.career-resource-grid{grid-template-columns:repeat(2,minmax(0,1fr)}}
 @media(max-width:560px){.career-resource-grid{grid-template-columns:1fr}.career-resource-hub{padding:16px}.cv-template-label{font-size:.8rem}}
 @media print{.cv-output.cv-modern{border-top:4px solid #8e42b5}.cv-output.cv-compact{font-size:9.5pt}}
+
+/* Aba destacada de acesso direto ao gerador de currículo */
+.curriculum-nav{margin:8px 10px!important;padding:12px 14px!important;border-radius:12px!important;background:linear-gradient(115deg,#f6d9f0,#eedaff)!important;color:#712f71!important;border:1px solid #d9a8ce!important;box-shadow:0 4px 12px rgba(135,52,122,.13)!important;font-weight:800!important}
+.curriculum-nav:hover{background:linear-gradient(115deg,#efc5e5,#e4c6fb)!important;transform:translateY(-1px)}
+.curriculum-nav svg{color:#8b3d88!important;flex-shrink:0}
