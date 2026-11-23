@@ -36,7 +36,7 @@ jobs:
           java-version: 21
 
       - name: Install Capacitor Android tooling
-        run: npm install --no-save @capacitor/core@7 @capacitor/cli@7 @capacitor/android@7
+        run: npm install --no-save @capacitor/core@7 @capacitor/cli@7 @capacitor/android@7 @capacitor/assets
 
       - name: Generate Android project
         run: |
@@ -53,7 +53,6 @@ jobs:
           convert assets/icon.png -resize 900x900 assets/icon-center.png
           convert assets/splash-background.png assets/icon-center.png -gravity center -composite assets/splash.png
           rm assets/splash-background.png assets/icon-center.png
-          npm install --no-save @capacitor/assets
           npx capacitor-assets generate --android
 
       - name: Sync Android project
