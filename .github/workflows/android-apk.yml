@@ -8,6 +8,7 @@ on:
       - "package.json"
       - ".github/workflows/android-apk.yml"
       - "public/**"
+      - "assets/**"
   workflow_dispatch:
 
 permissions:
