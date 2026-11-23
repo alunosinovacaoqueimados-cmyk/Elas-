@@ -63,3 +63,9 @@ body.curriculum-only .section-tabs,
 body.curriculum-only .resource-view:not([data-view="curriculo"]) { display:none!important; }
 body.curriculum-only #curriculoView { display:block!important; }
 body.curriculum-only #curriculoView[hidden] { display:block!important; }
+
+/* Regra de contingência baseada no estado real do painel: curriculum-view visível = modo exclusivo. */
+body:has(#curriculoView:not([hidden])) .resource-hero,
+body:has(#curriculoView:not([hidden])) .section-tabs,
+body:has(#curriculoView:not([hidden])) .resource-view:not(#curriculoView) { display:none !important; }
+body:has(#curriculoView:not([hidden])) #curriculoView { display:block !important; visibility:visible !important; }
