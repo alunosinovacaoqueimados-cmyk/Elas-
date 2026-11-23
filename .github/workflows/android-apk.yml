@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build-apk:
@@ -65,3 +65,15 @@ jobs:
           name: ElasPlus-Android-APK
           path: android/app/build/outputs/apk/debug/app-debug.apk
           retention-days: 30
+
+      - name: Prepare public APK download
+        run: cp android/app/build/outputs/apk/debug/app-debug.apk ElasPlus.apk
+
+      - name: Publish latest APK release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: apk-${{ github.run_number }}
+          name: Elas+ Android - Build ${{ github.run_number }}
+          files: ElasPlus.apk
+          make_latest: true
+          generate_release_notes: true
