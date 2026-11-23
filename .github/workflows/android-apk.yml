@@ -42,6 +42,16 @@ jobs:
           rm -rf android
           npx cap add android
 
+      - name: Create branded Elas+ app icon and splash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y imagemagick
+          mkdir -p assets
+          convert -background none assets/elasplus-icon.svg -resize 1024x1024 assets/icon.png
+          convert -size 2732x2732 gradient:'#28104e-#a31aa5' -gravity center assets/icon.png -resize 900x900 -composite assets/splash.png
+          npm install --no-save @capacitor/assets
+          npx capacitor-assets generate --android
+
       - name: Sync Android project
         run: npx cap sync android
 
