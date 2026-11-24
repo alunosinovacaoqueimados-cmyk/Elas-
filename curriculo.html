@@ -75,11 +75,18 @@ const clearForm = () => {
 const printCv = () => {
   const d = getData();
   if (!d.name.trim()) { status.textContent = 'Preencha seu nome antes de exportar o PDF.'; form.elements.name.focus(); return; }
-  updatePreview(); output.className = 'cvpreview cv-ats-print';
-  try { saveLocally(d); status.textContent = 'Janela de impressão aberta. Selecione “Salvar como PDF” como destino e confirme para baixar.'; window.print(); }
-  catch(err) { console.error(err); status.textContent = 'Não foi possível abrir a impressão. Tente novamente pelo navegador.'; }
+  saveLocally(d);
+  const esc = value => String(value || '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  const sections = [['Resumo profissional',d.summary],['Experiência',d.experience],['Formação',d.education],['Habilidades',d.skills],['Projetos, cursos e certificados',d.projects]];
+  const contact = [d.email,d.phone,d.city,d.portfolio].filter(Boolean).map(esc).join(' • ');
+  const body = sections.filter(([,value]) => String(value || '').trim()).map(([title,value]) => '<section><h2>'+esc(title)+'</h2><p>'+esc(value).replace(/\n/g,'<br>')+'</p></section>').join('');
+  const popup = window.open('', '_blank');
+  if (!popup) { status.textContent = 'O navegador bloqueou a janela de PDF. Permita pop-ups para este site e tente novamente.'; return; }
+  popup.document.open();
+  popup.document.write('<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Currículo - '+esc(d.name)+'</title><style>@page{size:A4;margin:16mm}*{box-sizing:border-box}body{font:10.5pt/1.45 Arial,Helvetica,sans-serif;color:#202020;margin:0}.toolbar{position:sticky;top:0;padding:12px;background:#f2f2f2;text-align:center;margin-bottom:20px}.toolbar button{padding:10px 16px;border:0;border-radius:8px;background:#6c247b;color:white;font-weight:bold;cursor:pointer}.resume{max-width:800px;margin:auto}h1{font-size:22pt;margin:0 0 4px} .role{font-size:12pt;margin:0 0 8px;color:#444} .contact{font-size:9.5pt;margin:0 0 18px;color:#555;overflow-wrap:anywhere}section{margin:0 0 12px;break-inside:avoid}h2{font-size:12pt;text-transform:uppercase;border-bottom:1px solid #999;padding-bottom:4px;margin:14px 0 6px}p{margin:0;overflow-wrap:anywhere}@media print{.toolbar{display:none}.resume{max-width:none}}</style></head><body><div class="toolbar"><button onclick="window.print()">Imprimir / Salvar como PDF</button><span> · Escolha “Salvar como PDF” no destino da impressão.</span></div><main class="resume"><h1>'+esc(d.name)+'</h1><p class="role">'+esc(d.role)+'</p><p class="contact">'+contact+'</p>'+body+'</main></body></html>');
+  popup.document.close();
+  status.textContent = 'Currículo pronto em uma página limpa. Na nova janela, clique em “Imprimir / Salvar como PDF”.';
 };
-window.addEventListener('afterprint', () => { updatePreview(); status.textContent = 'Prévia restaurada. Se você salvou como PDF, o arquivo estará na pasta escolhida.'; });
 form.addEventListener('input', () => { updatePreview(); saveLocally(getData()); });
 byId('saveDraft')?.addEventListener('click', saveDraft);
 byId('restoreDraft')?.addEventListener('click', restoreDraft);
