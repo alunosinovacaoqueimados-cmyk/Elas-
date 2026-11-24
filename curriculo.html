@@ -9,17 +9,73 @@ body.cv-page{margin:0;background:#faf7fc;color:#321d46;font-family:system-ui,san
 <main class="cvwrap"><section class="cvhero"><small>ELAS+ · CARREIRA E AUTONOMIA</small><h1>Crie seu currículo profissional</h1><p>Preencha, veja a prévia e exporte seu currículo em PDF.</p></section>
 <section class="linkedin"><strong>LinkedIn · oportunidades</strong><p>Após montar seu currículo, abra o LinkedIn para atualizar seu perfil ou procurar vagas. O envio do arquivo deve ser feito dentro da sua conta LinkedIn.</p><div class="cvbuttons"><a class="cvbtn li" href="https://www.linkedin.com/jobs/" target="_blank" rel="noopener noreferrer">Abrir LinkedIn / buscar vagas ↗</a><button type="button" class="cvbtn alt" id="copyCv">Copiar currículo em texto</button></div><small id="liStatus">Não enviamos seu arquivo automaticamente para o LinkedIn. Você controla o upload e os dados compartilhados.</small></section>
 <div class="cvgrid"><form class="cvpanel" id="cvForm"><h2>Informações do currículo</h2><label>Modelo<select name="template"><option value="classic">Clássico</option><option value="modern">Moderno</option><option value="compact">Compacto</option></select></label><div class="cvformcols"><label>Nome<input name="name" required maxlength="90" placeholder="Nome completo"></label><label>Área ou cargo desejado<input name="role" maxlength="80" placeholder="Ex.: Recepcionista"></label><label>E-mail<input name="email" type="email" maxlength="100"></label><label>Telefone<input name="phone" maxlength="30"></label><label>Cidade / estado<input name="city" maxlength="80" placeholder="Ex.: Queimados - RJ"></label><label>LinkedIn / portfólio<input name="portfolio" maxlength="160" placeholder="Link"></label></div><label>Resumo profissional<textarea name="summary" rows="3" maxlength="800"></textarea></label><label>Experiências<textarea name="experience" rows="5" maxlength="2000" placeholder="Cargo, empresa, período, atividades e resultados"></textarea></label><label>Formação<textarea name="education" rows="3" maxlength="1200" placeholder="Instituição, curso, ano"></textarea></label><label>Habilidades<textarea name="skills" rows="3" maxlength="800" placeholder="Competências e ferramentas"></textarea></label><label>Projetos, cursos e certificados<textarea name="projects" rows="3" maxlength="1200"></textarea></label><div class="cvbuttons"><button class="cvbtn" type="button" id="saveCv">Baixar currículo (.txt)</button><button class="cvbtn alt" type="button" id="printCv">Imprimir / salvar PDF</button><button class="cvbtn alt" type="button" id="clearCv">Limpar</button></div><p id="cvStatus" class="cvstatus" role="status">Salvamento local opcional. Os dados não são enviados para servidor.</p></form><section class="cvpanel"><h2>Prévia</h2><div class="cvpreview cv-classic" id="cvOutput" aria-live="polite"><h2>Seu nome</h2><p>Preencha os campos para gerar a prévia.</p></div></section></div></main>
-<script>(()=>{const $=id=>document.getElementById(id),form=$('cvForm'),out=$('cvOutput'),status=$('cvStatus');
-if(!form||!out||!status){console.error('Elas+ currículo: elementos principais não encontrados');return}
-const get=()=>Object.fromEntries(new FormData(form).entries());
-const safeSave=(d)=>{try{localStorage.setItem('elasplus_cv',JSON.stringify(d));return true}catch(e){return false}};
-const render=()=>{const d=get();out.className='cvpreview cv-'+(d.template||'classic');out.replaceChildren();const add=(tag,text)=>{const el=document.createElement(tag);el.textContent=text||'';out.appendChild(el)};add('h2',d.name||'Seu nome');if(d.role)add('p',d.role);const contact=[d.email,d.phone,d.city,d.portfolio].filter(Boolean).join(' • ');if(contact)add('p',contact);[['summary','Resumo profissional'],['experience','Experiência'],['education','Formação'],['skills','Habilidades'],['projects','Projetos e cursos']].forEach(([key,title])=>{if((d[key]||'').trim()){add('h3',title);add('p',d[key])}});if(!Object.values(d).some(v=>String(v||'').trim()))add('p','Preencha os campos para gerar a prévia.')};
-form.addEventListener('input',render);
-$('saveCv').addEventListener('click',()=>{const d=get();if(!d.name.trim()){status.textContent='Informe seu nome antes de baixar.';form.querySelector('[name=name]').focus();return}
-const text=[d.name,d.role,[d.email,d.phone,d.city,d.portfolio].filter(Boolean).join(' | '),'','RESUMO PROFISSIONAL',d.summary,'','EXPERIÊNCIA',d.experience,'','FORMAÇÃO',d.education,'','HABILIDADES',d.skills,'','PROJETOS, CURSOS E CERTIFICADOS',d.projects].filter(v=>v!==null&&v!==undefined).join('\n').trim();
-safeSave(d);const blob=new Blob([text],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=(d.name.replace(/[^a-z0-9_-]+/gi,'_')||'curriculo')+'.txt';a.style.display='none';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);status.textContent='Download iniciado. Confira a pasta Downloads do seu computador.'});
-$('clearCv').addEventListener('click',()=>{form.reset();try{localStorage.removeItem('elasplus_cv')}catch(e){}render();status.textContent='Formulário limpo. Os dados salvos neste navegador foram removidos.'});
-$('printCv').addEventListener('click',()=>{if(!get().name.trim()){status.textContent='Preencha o nome antes de imprimir ou salvar PDF.';form.querySelector('[name=name]').focus();return}window.print()});
-$('copyCv').addEventListener('click',async()=>{const d=get(),text=[d.name,d.role,[d.email,d.phone,d.city,d.portfolio].filter(Boolean).join(' | '),d.summary,d.experience,d.education,d.skills,d.projects].filter(Boolean).join('\n\n');try{await navigator.clipboard.writeText(text);$('liStatus').textContent='Texto copiado. Você pode colar no LinkedIn.'}catch(e){$('liStatus').textContent='Copie o conteúdo da prévia manualmente para usar no LinkedIn.'}});
-try{const saved=JSON.parse(localStorage.getItem('elasplus_cv')||'null');if(saved)Object.entries(saved).forEach(([key,val])=>{const field=form.querySelector('[name="'+key+'"]');if(field)field.value=val})}catch(e){status.textContent='Preencha os dados; o salvamento local está indisponível neste navegador.'}
-render()})();</script></body></html>
+<script>(() => {
+'use strict';
+const byId = id => document.getElementById(id);
+const form = byId('cvForm'), output = byId('cvOutput'), status = byId('cvStatus');
+if (!form || !output || !status) { console.error('Currículo Elas+: elementos faltando'); return; }
+const getData = () => Object.fromEntries(new FormData(form).entries());
+const updatePreview = () => {
+  const d = getData();
+  output.className = 'cvpreview cv-' + (d.template || 'classic');
+  output.replaceChildren();
+  const add = (tag, value) => { const node = document.createElement(tag); node.textContent = value || ''; output.appendChild(node); };
+  add('h2', d.name || 'Seu nome');
+  if (d.role) add('p', d.role);
+  const contact = [d.email, d.phone, d.city, d.portfolio].filter(Boolean).join(' • ');
+  if (contact) add('p', contact);
+  [['summary','Resumo profissional'],['experience','Experiência'],['education','Formação'],['skills','Habilidades'],['projects','Projetos, cursos e certificados']].forEach(([key,title]) => {
+    if ((d[key] || '').trim()) { add('h3', title); add('p', d[key]); }
+  });
+  if (!Object.values(d).some(value => String(value || '').trim())) add('p', 'Preencha os campos para gerar a prévia.');
+};
+const saveLocally = d => { try { localStorage.setItem('elasplus_cv', JSON.stringify(d)); return true; } catch { return false; };
+const downloadText = () => {
+  try {
+    const d = getData();
+    if (!d.name.trim()) { status.textContent = 'Digite seu nome antes de baixar o currículo.'; form.elements.name.focus(); return; }
+    const sections = [
+      d.name, d.role, [d.email,d.phone,d.city,d.portfolio].filter(Boolean).join(' | '),
+      '', 'RESUMO PROFISSIONAL', d.summary, '', 'EXPERIÊNCIA', d.experience,
+      '', 'FORMAÇÃO', d.education, '', 'HABILIDADES', d.skills, '',
+      'PROJETOS, CURSOS E CERTIFICADOS', d.projects
+    ].filter(v => v !== null && v !== undefined);
+    const blob = new Blob(['\ufeff' + sections.join('\n').trim()], {type:'text/plain;charset=utf-8'});
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = (d.name.replace(/[^a-z0-9_-]+/gi,'_') || 'curriculo') + '.txt';
+    anchor.style.display = 'none';
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
+    const saved = saveLocally(d);
+    status.textContent = 'Download iniciado! Confira a pasta Downloads.' + (saved ? ' Dados também salvos neste navegador.' : '');
+  } catch (err) { console.error(err); status.textContent = 'Não foi possível baixar. Tente novamente ou use Imprimir / salvar PDF.'; }
+};
+const clearForm = () => {
+  form.reset();
+  try { localStorage.removeItem('elasplus_cv'); } catch {}
+  updatePreview();
+  status.textContent = 'Currículo apagado e formulário reiniciado.';
+};
+const printCv = () => {
+  if (!getData().name.trim()) { status.textContent = 'Preencha seu nome antes de imprimir ou salvar PDF.'; form.elements.name.focus(); return; }
+  try { window.print(); } catch(err) { console.error(err); status.textContent = 'Não foi possível abrir a impressão neste navegador.'; }
+};
+form.addEventListener('input', () => { updatePreview(); saveLocally(getData()); });
+byId('saveCv')?.addEventListener('click', downloadText);
+byId('clearCv')?.addEventListener('click', clearForm);
+byId('printCv')?.addEventListener('click', printCv);
+byId('copyCv')?.addEventListener('click', async () => {
+  const d = getData(), text = [d.name,d.role,[d.email,d.phone,d.city,d.portfolio].filter(Boolean).join(' | '),d.summary,d.experience,d.education,d.skills,d.projects].filter(Boolean).join('\n\n');
+  try { await navigator.clipboard.writeText(text); byId('liStatus').textContent = 'Currículo copiado! Agora você pode colar no LinkedIn.'; }
+  catch { byId('liStatus').textContent = 'Permissão de cópia indisponível. Copie o texto da prévia manualmente.'; }
+});
+try {
+  const saved = JSON.parse(localStorage.getItem('elasplus_cv') || 'null');
+  if (saved) Object.entries(saved).forEach(([key,value]) => { const field = form.elements.namedItem(key); if (field) field.value = value; });
+} catch(err) { console.warn('Dados salvos não puderam ser recuperados', err); }
+updatePreview();
+})();</script></body></html>
