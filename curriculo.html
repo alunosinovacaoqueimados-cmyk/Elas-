@@ -39,7 +39,7 @@ const updatePreview = () => {
   });
   if (!Object.values(d).some(value => String(value || '').trim())) add('p', 'Preencha os campos para gerar a prévia.');
 };
-const saveLocally = d => { try { localStorage.setItem('elasplus_cv', JSON.stringify(d)); return true; } catch { return false; };
+const saveLocally = d => { try { localStorage.setItem('elasplus_cv', JSON.stringify(d)); return true; } catch { return false; } };
 const downloadText = () => {
   try {
     const d = getData();
